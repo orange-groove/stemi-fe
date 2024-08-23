@@ -83,6 +83,25 @@ const LoginForm: React.FC = () => {
           &nbsp; Login with Google
         </Button>
       </Box>
+
+      <Box
+        sx={{
+          textAlign: 'center',
+          mt: 2,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Typography variant="body2">Don't have an account?</Typography>
+        <Button
+          variant="text"
+          onClick={() => router.push('/register')}
+          sx={{ color: '#ba000d' }}
+        >
+          Register here &rarr;
+        </Button>
+      </Box>
     </form>
   )
 }

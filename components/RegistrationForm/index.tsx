@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { Box, Button, TextField, Typography } from '@mui/material'
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -18,34 +19,30 @@ const RegisterForm: React.FC = () => {
       //   emailRedirectTo: 'https://example.com/welcome',
       // },
     })
-
-    if (data.user) {
-      console.log('User created successfully')
-      router.push('/login')
-    }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Register</button>
+      <Typography sx={{ textAlign: 'center', mb: 2 }}>
+        Register for a new account
+      </Typography>
+      <TextField
+        label="Email"
+        id="email"
+        sx={{ mb: 1, width: 1 }}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <TextField
+        label="Password"
+        id="password"
+        sx={{ mb: 1, width: 1 }}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Button variant="contained" type="submit">
+          Sign Up
+        </Button>
+      </Box>
     </form>
   )
 }
