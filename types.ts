@@ -6,3 +6,10 @@ export interface Track {
 export interface FilePayload {
   file: any
 }
+
+export interface Song {
+  id: string
+  title: string
+  artist: string
+  tracks: Track[]
+}

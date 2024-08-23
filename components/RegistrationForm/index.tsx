@@ -1,16 +1,28 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRegister } from '@/hooks/api/auth' // Adjust the import path as necessary
+import supabase from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const registerMutation = useRegister()
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    registerMutation.mutate({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      // options: {
+      //   emailRedirectTo: 'https://example.com/welcome',
+      // },
+    })
+
+    if (data.user) {
+      console.log('User created successfully')
+      router.push('/login')
+    }
   }
 
   return (

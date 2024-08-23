@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Providers from '@/components/Providers'
+import NavBar from '@/components/NavBar'
+import { Box, Container } from '@mui/material'
 
 import './globals.css'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-import { Provider } from 'jotai'
-import Providers from '@/components/Providers'
+import AuthGuard from '@/components/AuthGuard'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +26,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <AuthGuard>
+          <Providers>
+            <Box sx={{ display: 'flex', background: '#eee' }}>
+              <NavBar />
+              <Container>
+                <Box
+                  component="main"
+                  sx={{ marginLeft: [0, '150px', '200px'] }}
+                >
+                  {children}
+                </Box>
+              </Container>
+            </Box>
+          </Providers>
+        </AuthGuard>
       </body>
     </html>
   )

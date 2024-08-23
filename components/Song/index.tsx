@@ -1,10 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import type { Track } from '@/types'
+import type { Song, Track } from '@/types'
 
-export default function Song() {
-  const [tracks, setTracks] = useState<Track[]>([])
-
+export default function Song({ data }: { data: Song }) {
   return <div>test song</div>
 }
