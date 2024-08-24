@@ -1,18 +1,18 @@
 import { Box } from '@mui/material'
+import SongList from '@/components/SongList'
 
-export default function SongsPage() {
+const SongsPage = () => {
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-
         height: '100vh',
       }}
     >
-      Songs
+      <SongList />
     </Box>
   )
 }
+
+export default SongsPage

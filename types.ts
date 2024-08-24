@@ -9,7 +9,7 @@ export interface FilePayload {
 
 export interface Song {
   id: string
-  title: string
-  artist: string
-  tracks: Track[]
+  name: string
+  description: string
+  tracks?: Track[]
 }

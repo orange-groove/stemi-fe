@@ -31,12 +31,7 @@ export default function RootLayout({
             <Box sx={{ display: 'flex', background: '#eee' }}>
               <NavBar />
               <Container>
-                <Box
-                  component="main"
-                  sx={{ marginLeft: [0, '150px', '200px'] }}
-                >
-                  {children}
-                </Box>
+                <Box component="main">{children}</Box>
               </Container>
             </Box>
           </Providers>

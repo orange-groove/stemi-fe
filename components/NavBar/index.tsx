@@ -1,12 +1,18 @@
 'use client'
 
-import { Box, Button } from '@mui/material'
+import { Box, List, ListItemButton, ListItemText } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Header from '../Header'
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/state/user'
 
 export default function NavBar() {
   const router = useRouter()
+  const user = useAtomValue(userAtom)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -14,38 +20,37 @@ export default function NavBar() {
   }
 
   return (
-    <Box
-      component="nav"
-      sx={{
-        width: [0, 150, 200],
-        height: '100vh',
-        p: 6,
-        border: '1px solid',
-        borderColor: 'gray.500',
-      }}
-    >
+    !!user?.id && (
       <Box
-        component="ul"
+        component="nav"
         sx={{
-          listStyle: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          li: { height: '50px' },
+          width: [0, 150, 200],
+          height: '100vh',
+          borderRight: '1px solid',
+          borderColor: 'grey.300',
         }}
       >
-        <Box component="li" sx={{ mb: 6 }}>
-          <a href="/">
-            <HomeIcon sx={{ fontSize: 40 }} />
-          </a>
-        </Box>
-        <Box component="li" sx={{ height: '50px' }}>
-          <a href="/songs">Songs</a>
-        </Box>
+        <Header />
+        <List
+          sx={{ width: '100%', height: '100%', bgcolor: 'background.paper' }}
+          component="nav"
+          aria-labelledby="list-navigation"
+        >
+          <ListItemButton href="/">
+            <HomeIcon />
+            <ListItemText primary="Home" />
+          </ListItemButton>
 
-        <Box component="li" sx={{ height: '50px' }}>
-          <Button onClick={handleSignOut}>Log Out</Button>
-        </Box>
+          <ListItemButton href="/songs">
+            <LibraryMusicIcon />
+            <ListItemText primary="Songs" />
+          </ListItemButton>
+          <ListItemButton onClick={handleSignOut}>
+            <LogoutIcon />
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </List>
       </Box>
-    </Box>
+    )
   )
 }
