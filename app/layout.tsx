@@ -30,9 +30,9 @@ export default function RootLayout({
           <Providers>
             <Box sx={{ display: 'flex', background: '#eee' }}>
               <NavBar />
-              <Container>
+              <Box sx={{ width: 1 }}>
                 <Box component="main">{children}</Box>
-              </Container>
+              </Box>
             </Box>
           </Providers>
         </AuthGuard>

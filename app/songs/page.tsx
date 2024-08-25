@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import SongList from '@/components/SongList'
+import NewSongModal from '@/components/NewSongModal'
 
 const SongsPage = () => {
   return (

@@ -13,30 +13,31 @@ interface Song {
   user_id: string
 }
 
-export default function useSongsByUserId() {
-  const [songs, setSongs] = useState<Song[]>([])
+export default function useSongById(songId: string) {
+  const [song, setSong] = useState<Song | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const user = useAtomValue(userAtom)
 
   useEffect(() => {
-    const fetchSongs = async () => {
+    const fetchSong = async () => {
       setLoading(true)
       const { data, error } = await supabase
         .from('song')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('id', songId)
+        .single()
 
       if (error) {
         setError(error.message)
       } else {
-        setSongs(data)
+        setSong(data)
       }
       setLoading(false)
     }
 
-    !!user?.id && fetchSongs()
-  }, [user?.id])
+    !!user?.id && songId && fetchSong()
+  }, [user?.id, songId])
 
-  return { songs, loading, error }
+  return { song, loading, error }
 }

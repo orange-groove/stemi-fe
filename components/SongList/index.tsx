@@ -12,8 +12,13 @@ import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
 import { AddBox } from '@mui/icons-material'
+import NewSongModal from '../NewSongModal'
+import useMultiTrackPlayer from '@/hooks/useMultitrack'
+import { useRouter } from 'next/navigation'
 
-const SongList = () => {
+const Multitrack = () => {
+  const router = useRouter()
+
   const { songs, loading, error } = useSongsByUserId()
 
   if (loading) return <div>Loading...</div>
@@ -22,13 +27,17 @@ const SongList = () => {
 
   return (
     <>
-      <Box sx={{ my: 6 }}>
+      <Box sx={{ my: 6, display: 'flex', gap: 4 }}>
         <Typography variant="h3">Songs</Typography>
+        <NewSongModal />
       </Box>
       <Grid container spacing={2} sx={{ width: 1 }}>
         {songs.map((song: Song) => (
           <Grid key={song?.id} disablePadding>
-            <SongComponent song={song} />
+            <SongComponent
+              song={song}
+              onClick={() => router.push(`/songs/${song.id}`)}
+            />
           </Grid>
         ))}
       </Grid>
@@ -36,4 +45,4 @@ const SongList = () => {
   )
 }
 
-export default SongList
+export default Multitrack

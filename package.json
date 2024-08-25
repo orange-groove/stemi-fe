@@ -17,12 +17,15 @@
     "@mui/material": "^5.16.7",
     "@mui/material-nextjs": "^5.16.6",
     "@supabase/supabase-js": "^2.45.1",
-    "@tanstack/react-query": "^5.52.0",
+    "@tanstack/react-query": "^5.52.1",
+    "@wavesurfer/react": "^1.0.7",
     "jotai": "^2.9.3",
     "next": "14.2.6",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7.52.2"
+    "react-hook-form": "^7.53.0",
+    "wavesurfer-multitrack": "^0.4.12",
+    "wavesurfer.js": "^7.8.4"
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^5.52.0",
