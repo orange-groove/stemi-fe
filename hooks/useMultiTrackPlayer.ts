@@ -34,9 +34,8 @@ const useMultiTrackPlayer = (urls: string[]) => {
           draggable: true,
           volume: 1, // Default volume set to 1
           options: {
-            waveColor: gradient,
             barWidth: 2,
-            // waveColor: colors[index % colors.length],
+            waveColor: colors[index % colors.length],
             progressColor: colors[index % colors.length],
             cursorColor: 'rgb(255, 105, 180, 1)',
             height: 100,
@@ -115,6 +114,48 @@ const useMultiTrackPlayer = (urls: string[]) => {
     return track ? track.volume === 0 : false
   }
 
+  const addTrack = (url) => {
+    const trackId = multitrackRef.current.tracks.length // New track ID
+
+    const track = {
+      id: trackId,
+      url,
+      draggable: true,
+      volume: 1,
+      options: {
+        waveColor: 'rgba(255, 123, 0, 0.5)',
+        progressColor: 'rgba(255, 123, 0, 1)',
+        cursorColor: '#D72F21',
+        height: 80,
+        normalize: true,
+      },
+    }
+    multitrackRef.current.addTrack(track)
+
+    setTrackMetadata((prev) =>
+      prev.map((track) =>
+        track.id === trackId
+          ? {
+              ...track,
+              ...{
+                id: trackId,
+                url,
+                draggable: true,
+                volume: 1,
+                options: {
+                  waveColor: 'rgba(255, 123, 0, 0.5)',
+                  progressColor: 'rgba(255, 123, 0, 1)',
+                  cursorColor: '#D72F21',
+                  height: 80,
+                  normalize: true,
+                },
+              },
+            }
+          : track,
+      ),
+    )
+  }
+
   return {
     containerRef,
     isPlaying,
@@ -123,6 +164,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
     unmuteTrack,
     isTrackMuted,
     trackMetadata,
+    addTrack,
   }
 }
 

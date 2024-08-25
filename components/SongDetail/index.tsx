@@ -16,7 +16,10 @@ export default function SongDetail() {
     >
       <Typography variant="h4">{song?.name}</Typography>
       <Typography variant="h5">{song?.description}</Typography>
-      <MultiTrackPlayer urls={song?.tracks?.map((track) => track.url) || []} />
+      <MultiTrackPlayer
+        urls={song?.tracks?.map((track) => track.url) || []}
+        songId={params.songId}
+      />
     </Box>
   )
 }
