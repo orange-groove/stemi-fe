@@ -14,7 +14,7 @@ export default function LoginPage() {
       }}
     >
       <Typography variant="h1" sx={{ mb: 8, fontSize: 200 }}>
-        mixtape
+        mixtape.ai
       </Typography>
       <LoginForm />
     </Box>

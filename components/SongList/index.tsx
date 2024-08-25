@@ -19,8 +19,8 @@ const Multitrack = () => {
 
   return (
     <>
-      <Box sx={{ my: 6, display: 'flex', gap: 4 }}>
-        <Typography variant="h3">Songs</Typography>
+      <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
+        <Typography variant="h4">Songs</Typography>
         <NewSongModal />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

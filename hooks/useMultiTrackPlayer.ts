@@ -50,7 +50,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
             waveColor: colors[index % colors.length],
             progressColor: colors[index % colors.length],
             cursorColor: 'rgb(255, 105, 180, 1)',
-            height: 100,
+            height: 150,
             normalize: true,
           },
           startPosition: 0,

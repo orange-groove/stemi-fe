@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import useMultiTrackPlayer from '@/hooks/useMultiTrackPlayer'
-import { Box, Button, Input } from '@mui/material'
+import { Box, Button, Input, Paper } from '@mui/material'
 import AudioInputSelector from '../AudioInputSelector'
 import WaveSurfer from 'wavesurfer.js'
 import { useAddTrackBySongId } from '@/hooks/useAddTrackBySongId'
@@ -85,7 +85,6 @@ const MultiTrackPlayer = ({ urls, songId }) => {
   return (
     <Box
       sx={{
-        height: 1,
         width: 1,
         display: 'flex',
         gap: 2,
@@ -101,44 +100,39 @@ const MultiTrackPlayer = ({ urls, songId }) => {
           skipForward={skipForward}
         />
       </Box>
-      <Box sx={{ display: 'flex', height: 1, width: 1 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            height: 100,
-          }}
-        >
+      <Box sx={{ display: 'flex', height: 1, width: 1, gap: 1 }}>
+        <Box>
           {trackMetadata.map((track) => (
-            <Box
+            <Paper
+              elevation={3}
               key={track.id}
               sx={{
                 display: 'flex',
                 gap: 1,
                 justifyContent: 'space-between',
+                alignItems: 'center',
                 p: 2,
-                height: 1,
+                mb: '2px',
+                height: '150px',
               }}
             >
               {track.name}
               {isTrackMuted(track.id) ? (
-                <Button
+                <Box
                   onClick={() => unmuteTrack(track.id)}
-                  variant="contained"
-                  sx={{ bgcolor: 'gray.400' }}
+                  sx={{ backgroundColor: 'red.500', border: '1px solid' }}
                 >
-                  Unmute
-                </Button>
+                  M
+                </Box>
               ) : (
-                <Button
+                <Box
                   onClick={() => muteTrack(track.id)}
-                  sx={{ bgcolor: 'gray.400' }}
+                  sx={{ bgcolor: 'grey.400' }}
                 >
-                  Mute
-                </Button>
+                  M
+                </Box>
               )}
-            </Box>
+            </Paper>
           ))}
         </Box>
 

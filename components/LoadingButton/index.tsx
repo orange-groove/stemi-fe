@@ -13,7 +13,7 @@ export default function LoadingButton({
   return (
     <Box sx={{ m: 1, position: 'relative' }}>
       <Button variant="contained" disabled={isLoading} {...props}>
-        {loadingText || children}
+        {isLoading ? loadingText : children}
       </Button>
       {isLoading && (
         <CircularProgress

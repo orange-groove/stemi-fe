@@ -22,29 +22,45 @@ const RegisterForm: React.FC = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Typography sx={{ textAlign: 'center', mb: 2 }}>
-        Register for a new account
-      </Typography>
-      <TextField
-        label="Email"
-        id="email"
-        sx={{ mb: 1, width: 1 }}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <TextField
-        label="Password"
-        id="password"
-        type="password"
-        sx={{ mb: 1, width: 1 }}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Button variant="contained" type="submit">
-          Sign Up
+    <>
+      <form onSubmit={handleSubmit}>
+        <Typography sx={{ textAlign: 'center', mb: 2 }}>
+          Register for a new account
+        </Typography>
+        <TextField
+          label="Email"
+          id="email"
+          sx={{ mb: 1, width: 1 }}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label="Password"
+          id="password"
+          type="password"
+          sx={{ mb: 1, width: 1 }}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Button variant="contained" type="submit">
+            Sign Up
+          </Button>
+        </Box>
+      </form>
+      <Box
+        sx={{
+          textAlign: 'center',
+          mt: 2,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Typography variant="body2">Already have an account?</Typography>
+        <Button onClick={() => router.push('/login')} sx={{ color: '#ba000d' }}>
+          Log in here &rarr;
         </Button>
       </Box>
-    </form>
+    </>
   )
 }
 

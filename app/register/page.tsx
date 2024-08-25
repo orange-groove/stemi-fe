@@ -1,21 +1,8 @@
 import React, { useState } from 'react'
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Box, Typography } from '@mui/material'
 import RegisterForm from '@/components/RegistrationForm'
 
-export default function LoginPage() {
-  // const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setEmail(e.target.value)
-  // }
-
-  // const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setPassword(e.target.value)
-  // }
-
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault()
-  //   // Add your login logic here
-  // }
-
+export default function RegisterPage() {
   return (
     <Box
       sx={{
@@ -27,6 +14,9 @@ export default function LoginPage() {
         height: '100vh',
       }}
     >
+      <Typography variant="h1" sx={{ mb: 8, fontSize: 200 }}>
+        mixtape.ai
+      </Typography>
       <RegisterForm />
     </Box>
   )

@@ -11,7 +11,7 @@ export default function Track({ track }: { track: Track }) {
   useWavesurfer({
     container: containerRef,
     height: 40,
-    waveColor: 'rgb(200, 0, 200)',
+    waveColor: 'lightgrey',
     progressColor: 'rgb(100, 0, 100)',
     url: track.url,
     barHeight: 50,

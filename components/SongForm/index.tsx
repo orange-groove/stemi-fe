@@ -8,6 +8,12 @@ import {
   Button,
   Typography,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
 } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
 import { useAtomValue } from 'jotai'
@@ -18,7 +24,9 @@ interface FormData {
   name: string
   description: string
   file: FileList
+  stems: string[]
 }
+const stemOptions = ['vocals', 'bass', 'drums', 'other']
 
 const SongForm = () => {
   const [fileName, setFileName] = useState('')
@@ -38,6 +46,7 @@ const SongForm = () => {
         name: data.name,
         description: data.description,
         file: data.file, // Ensure the file is correctly passed
+        stems: data.stems, // Pass the selected stems
         userId: user?.id,
       },
       {
@@ -99,6 +108,36 @@ const SongForm = () => {
       />
 
       <Controller
+        name="stems"
+        control={control}
+        defaultValue={[]}
+        rules={{ required: 'At least one stem must be selected' }}
+        render={({ field }) => (
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Select Stems to Separate</InputLabel>
+            <Select
+              {...field}
+              multiple
+              renderValue={(selected) => selected.join(', ')}
+              error={!!errors.stems}
+            >
+              {stemOptions?.map((option) => (
+                <MenuItem key={option} value={option}>
+                  <Checkbox checked={field.value.indexOf(option) > -1} />
+                  <ListItemText primary={option} />
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.stems && (
+              <Typography style={{ color: 'red' }}>
+                {errors.stems.message}
+              </Typography>
+            )}
+          </FormControl>
+        )}
+      />
+
+      <Controller
         name="file"
         control={control}
         rules={{ required: 'File is required' }}
@@ -131,7 +170,7 @@ const SongForm = () => {
 
       <LoadingButton
         type="submit"
-        isLoading={addSongMutation.isPending}
+        isLoading={!addSongMutation.isPending}
         loadingText="Processing... Please wait."
         fullWidth
         variant="contained"
