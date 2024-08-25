@@ -18,8 +18,13 @@ export default function Song({ song }: { song: Song }) {
       </Box>
       <List disablePadding>
         {song?.tracks?.map((track: Track) => (
-          <ListItem key={track.url}>
-            <Typography variant="subtitle1">{track.name}</Typography>
+          <ListItem
+            key={track.url}
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Typography variant="subtitle1" sx={{ width: '100px' }}>
+              {track.name}
+            </Typography>
             <TrackComponent track={track} />
           </ListItem>
         ))}

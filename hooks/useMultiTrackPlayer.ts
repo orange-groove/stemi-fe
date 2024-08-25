@@ -2,6 +2,7 @@ import MultiTrackPlayer from 'wavesurfer-multitrack'
 import { useEffect, useRef, useState } from 'react'
 import { useColorMode } from '@/components/AppThemeProvider'
 import Hover from 'wavesurfer.js/dist/plugins/hover.esm.js'
+import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js'
 
 const colors = [
   'rgba(0, 123, 255, 0.5)',
@@ -12,13 +13,20 @@ const colors = [
   'rgba(0, 255, 255, 0.5)',
 ]
 
-const useMultiTrackPlayer = (urls: string[]) => {
+const useMultiTrackPlayer = (tracks: string[]) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const multitrackRef = useRef<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [trackMetadata, setTrackMetadata] = useState<
-    { id: number; volume: number; name: string }[]
+    {
+      id: number
+      volume: number
+      name: string
+      startPosition: number
+      url: string
+    }[]
   >([])
+  const [recordingWaveSurfer, setRecordingWaveSurfer] = useState(null)
 
   const colorMode = useColorMode()
 
@@ -32,7 +40,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
       gradient?.addColorStop(1, 'rgb(0, 0, 0)')
 
       const multitrack = MultiTrackPlayer.create(
-        urls.map((url, index) => ({
+        tracks.map((url, index) => ({
           id: index,
           url,
           draggable: true,
@@ -54,6 +62,10 @@ const useMultiTrackPlayer = (urls: string[]) => {
               labelColor: '#fff',
               labelSize: '11px',
             }),
+            RecordPlugin.create({
+              scrollingWaveform: true,
+              renderRecordedAudio: true,
+            }),
           ],
         })),
         {
@@ -67,13 +79,21 @@ const useMultiTrackPlayer = (urls: string[]) => {
 
       multitrackRef.current = multitrack
 
-      // Initialize track metadata
-      const initialMetadata = urls.map((url, index) => ({
-        id: index,
-        volume: 1, // Default volume for each track
-        name: url.split('/').pop()?.split('.').shift() || `Track ${index + 1}`, // Default name for each track
-      }))
-      setTrackMetadata(initialMetadata)
+      tracks.forEach((track) => {
+        track.files.forEach((file) => {
+          fetch(file.url)
+            .then((response) => response.arrayBuffer())
+            .then((buffer) => {
+              waveSurfer.loadDecodedBuffer(buffer)
+              // Apply offset by setting start time
+              waveSurfer.addRegion({
+                start: file.offset,
+                end: file.offset + waveSurfer.getDuration(),
+                loop: false,
+              })
+            })
+        })
+      })
 
       multitrack.on('interaction', () => {
         multitrack.play()
@@ -158,12 +178,11 @@ const useMultiTrackPlayer = (urls: string[]) => {
     return track ? track.volume === 0 : false
   }
 
-  const addTrack = (url) => {
-    const trackId = multitrackRef.current.tracks.length // New track ID
-
+  const addBlankTrack = (trackName, startPosition) => {
     const track = {
-      id: trackId,
-      url,
+      id: trackMetadata.length,
+      url: '', // Placeholder, no URL yet
+      startPosition: startPosition || 0,
       draggable: true,
       volume: 1,
       options: {
@@ -175,29 +194,11 @@ const useMultiTrackPlayer = (urls: string[]) => {
       },
     }
     multitrackRef.current.addTrack(track)
+    setTrackMetadata((prev) => [...prev, { name: trackName, ...track }])
+  }
 
-    setTrackMetadata((prev) =>
-      prev.map((track) =>
-        track.id === trackId
-          ? {
-              ...track,
-              ...{
-                id: trackId,
-                url,
-                draggable: true,
-                volume: 1,
-                options: {
-                  waveColor: 'rgba(255, 123, 0, 0.5)',
-                  progressColor: 'rgba(255, 123, 0, 1)',
-                  cursorColor: '#D72F21',
-                  height: 80,
-                  normalize: true,
-                },
-              },
-            }
-          : track,
-      ),
-    )
+  const getCurrentTime = () => {
+    return multitrackRef.current ? multitrackRef.current.getCurrentTime() : 0
   }
 
   useEffect(() => {
@@ -218,7 +219,9 @@ const useMultiTrackPlayer = (urls: string[]) => {
 
   return {
     containerRef,
+    multitrackRef,
     isPlaying,
+    trackMetadata,
     playPause,
     skipForward,
     skipBackward,
@@ -226,8 +229,22 @@ const useMultiTrackPlayer = (urls: string[]) => {
     muteTrack,
     unmuteTrack,
     isTrackMuted,
-    trackMetadata,
-    addTrack,
+    setTrackMetadata,
+    getCurrentTime,
+    addBlankTrack,
+    startRecording: (deviceId) => {
+      if (recordingWaveSurfer) {
+        recordingWaveSurfer.plugins.record.startRecording({ deviceId })
+      }
+    },
+    stopRecording: (callback) => {
+      if (recordingWaveSurfer) {
+        recordingWaveSurfer.plugins.record.stopRecording()
+        recordingWaveSurfer.on('record-end', (blob) => {
+          callback(blob)
+        })
+      }
+    },
   }
 }
 

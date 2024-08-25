@@ -1,7 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 
-export const mutationFn = async ({ userId, songId, trackName, file }) => {
+export const mutationFn = async ({
+  userId,
+  songId,
+  trackName,
+  file,
+  offset,
+}) => {
   try {
     // Define the bucket and file path
     const bucketName = 'yoke-stems'
@@ -43,7 +49,7 @@ export const mutationFn = async ({ userId, songId, trackName, file }) => {
     // Append the new track to the 'tracks' array
     const updatedTracks = [
       ...currentTracks,
-      { name: trackName, url: publicURL },
+      { name: trackName, url: publicURL, offset },
     ]
 
     // Update the 'tracks' field in the 'songs' table

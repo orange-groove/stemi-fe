@@ -1,24 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import useMultiTrackPlayer from '@/hooks/useMultiTrackPlayer'
 import { Box, Button, Input } from '@mui/material'
 import AudioInputSelector from '../AudioInputSelector'
-import { useAudioRecorder } from '@/hooks/useAudioRecorder'
+import WaveSurfer from 'wavesurfer.js'
 import { useAddTrackBySongId } from '@/hooks/useAddTrackBySongId'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import TransportBar from './components/TransportBar'
 
-const MultiTrackPlayer = ({
-  urls,
-  songId,
-}: {
-  urls: string[]
-  songId: string
-}) => {
-  const { isRecording, startRecording, stopRecording } = useAudioRecorder()
+const MultiTrackPlayer = ({ urls, songId }) => {
   const [selectedDeviceId, setSelectedDeviceId] = useState(null)
   const [trackName, setTrackName] = useState('')
+  const [recordingWaveSurfer, setRecordingWaveSurfer] = useState(null)
   const user = useAtomValue(userAtom)
+  const [scrollingWaveform, setScrollingWaveform] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const {
     containerRef,
@@ -30,8 +26,12 @@ const MultiTrackPlayer = ({
     muteTrack,
     unmuteTrack,
     isTrackMuted,
-    addTrack,
     trackMetadata,
+    startRecording,
+    stopRecording,
+    getCurrentTime,
+    addBlankTrack,
+    setTrackMetadata,
   } = useMultiTrackPlayer(urls)
 
   const addTrackMutation = useAddTrackBySongId()
@@ -40,65 +40,46 @@ const MultiTrackPlayer = ({
     setSelectedDeviceId(deviceId)
   }
 
+  const handleAddTrack = () => {
+    const currentTime = getCurrentTime()
+    addBlankTrack(trackName, currentTime)
+  }
+
   const handleStartRecording = () => {
     startRecording(selectedDeviceId)
+    setIsRecording(true)
   }
 
-  const handleStopRecording = async () => {
-    const audioBlob = await stopRecording()
-    const file = new File([audioBlob], `${trackName}.mp3`, {
-      type: 'audio/mp3',
-    })
+  const handleStopRecording = () => {
+    stopRecording((blob) => {
+      const recordedUrl = URL.createObjectURL(blob)
 
-    addTrackMutation.mutate({
-      userId: user?.id,
-      songId,
-      trackName,
-      file,
-    })
-  }
+      const offset = getCurrentTime() // Use the cursor position as the offset
 
-  const addNewTrack = async () => {
-    if (selectedDeviceId) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            deviceId: selectedDeviceId
-              ? { exact: selectedDeviceId }
-              : undefined,
-          },
+      const lastTrack = trackMetadata[trackMetadata.length - 1]
+      if (lastTrack) {
+        // Replace the blank track with the recorded audio
+        lastTrack.url = recordedUrl
+        lastTrack.startPosition = offset
+        // Update trackMetadata state
+        setTrackMetadata([...trackMetadata])
+
+        // Upload the file and include metadata with the offset
+        const file = new File([blob], `${trackName}.mp3`, {
+          type: 'audio/mp3',
         })
 
-        const audioContext = new AudioContext()
-        const source = audioContext.createMediaStreamSource(stream)
-        const destination = audioContext.createMediaStreamDestination()
-        source.connect(destination)
-
-        const recordedChunks = []
-        const mediaRecorder = new MediaRecorder(destination.stream)
-
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            recordedChunks.push(event.data)
-          }
-        }
-
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunks, { type: 'audio/wav' })
-          const url = URL.createObjectURL(blob)
-          addTrack(url)
-        }
-
-        mediaRecorder.start()
-
-        // Stop recording after a fixed duration (e.g., 5 seconds)
-        setTimeout(() => {
-          mediaRecorder.stop()
-        }, 5000)
-      } catch (error) {
-        console.error('Error accessing audio device:', error)
+        addTrackMutation.mutate({
+          userId: user?.id,
+          songId,
+          trackName,
+          file,
+          offset,
+        })
       }
-    }
+
+      setIsRecording(false)
+    })
   }
 
   return (
@@ -159,7 +140,6 @@ const MultiTrackPlayer = ({
           }}
         />
       </Box>
-      <Button onClick={addNewTrack}>Add new track</Button>
       <Box>
         <Input
           type="text"
@@ -167,7 +147,7 @@ const MultiTrackPlayer = ({
           value={trackName}
           onChange={(e) => setTrackName(e.target.value)}
         />
-
+        <Button onClick={handleAddTrack}>Add Track</Button>
         <Button onClick={handleStartRecording} disabled={isRecording}>
           Start Recording
         </Button>
