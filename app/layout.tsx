@@ -29,11 +29,15 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthGuard>
           <Providers>
-            <Box sx={{ display: 'flex', bgcolor: 'background.paper' }}>
-              <DarkModeToggle />
+            <Box
+              sx={{ display: 'flex', bgcolor: 'background.paper', height: 1 }}
+            >
               <NavBar />
-              <Box sx={{ bgcolor: 'background.paper' }}>
-                <Box component="main" sx={{ bgcolor: 'background.paper' }}>
+              <Box sx={{ bgcolor: 'background.paper', width: 1, height: 1 }}>
+                <Box
+                  component="main"
+                  sx={{ bgcolor: 'background.paper', height: 1 }}
+                >
                   {children}
                 </Box>
               </Box>

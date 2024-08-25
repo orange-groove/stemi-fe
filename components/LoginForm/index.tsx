@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useLogin } from '@/hooks/api/auth' // Adjust the import path as necessary
+import { useLogin } from '@/hooks/useAuth' // Adjust the import path as necessary
 import { Box, Button, TextField, Typography } from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
 import supabase from '@/lib/supabase'

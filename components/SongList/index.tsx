@@ -1,13 +1,13 @@
 'use client'
 
 import React from 'react'
-import { Box, Unstable_Grid2 as Grid, Typography } from '@mui/material'
-import Song from '@/components/Song'
+import { Box, Grid, Typography } from '@mui/material'
+import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
-import { AddBox } from '@mui/icons-material'
 import NewSongModal from '../NewSongModal'
 import { useRouter } from 'next/navigation'
+import Masonry from '@mui/lab/Masonry'
 
 const Multitrack = () => {
   const router = useRouter()
@@ -24,13 +24,16 @@ const Multitrack = () => {
         <Typography variant="h3">Songs</Typography>
         <NewSongModal />
       </Box>
-      <Grid container spacing={2} sx={{ width: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {songs.map((song: Song) => (
-          <Grid key={song?.id} disablePadding>
+          <Box
+            key={song?.id}
+            sx={{ border: '1px dotted', borderColor: 'secondary.main', m: 2 }}
+          >
             <SongComponent song={song} />
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </>
   )
 }

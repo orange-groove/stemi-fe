@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import LoginForm from '@/components/LoginForm'
 
 export default function LoginPage() {
@@ -13,6 +13,9 @@ export default function LoginPage() {
         height: '100vh',
       }}
     >
+      <Typography variant="h1" sx={{ mb: 8, fontSize: 200 }}>
+        supayoke
+      </Typography>
       <LoginForm />
     </Box>
   )

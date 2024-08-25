@@ -112,7 +112,7 @@ const MultiTrackPlayer = ({
             <PlayArrowIcon color="success" sx={{ fontSize: 60 }} />
           )}
         </Button>
-        <AudioInputSelector onDeviceSelect={handleDeviceSelect} />
+
         <Button onClick={addNewTrack}>Add new track</Button>
       </Box>
       <Box
@@ -139,9 +139,20 @@ const MultiTrackPlayer = ({
             >
               {track.name}
               {isTrackMuted(track.id) ? (
-                <VolumeOffIcon onClick={() => unmuteTrack(track.id)} />
+                <Button
+                  onClick={() => unmuteTrack(track.id)}
+                  variant="contained"
+                  sx={{ bgcolor: 'gray.400' }}
+                >
+                  Mute
+                </Button>
               ) : (
-                <VolumeUpIcon onClick={() => muteTrack(track.id)} />
+                <Button
+                  onClick={() => muteTrack(track.id)}
+                  sx={{ bgcolor: 'gray.400' }}
+                >
+                  Mute
+                </Button>
               )}
             </Box>
           ))}
@@ -155,19 +166,22 @@ const MultiTrackPlayer = ({
           }}
         />
       </Box>
-      <Input
-        type="text"
-        placeholder="Track Name"
-        value={trackName}
-        onChange={(e) => setTrackName(e.target.value)}
-      />
+      <Box>
+        <Input
+          type="text"
+          placeholder="Track Name"
+          value={trackName}
+          onChange={(e) => setTrackName(e.target.value)}
+        />
 
-      <Button onClick={handleStartRecording} disabled={isRecording}>
-        Start Recording
-      </Button>
-      <Button onClick={handleStopRecording} disabled={!isRecording}>
-        Stop Recording & Upload
-      </Button>
+        <Button onClick={handleStartRecording} disabled={isRecording}>
+          Start Recording
+        </Button>
+        <Button onClick={handleStopRecording} disabled={!isRecording}>
+          Stop Recording & Upload
+        </Button>
+        <AudioInputSelector onDeviceSelect={handleDeviceSelect} />
+      </Box>
     </Box>
   )
 }
