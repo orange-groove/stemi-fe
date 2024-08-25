@@ -1,6 +1,7 @@
 import MultiTrackPlayer from 'wavesurfer-multitrack'
 import { useEffect, useRef, useState } from 'react'
 import { useColorMode } from '@/components/AppThemeProvider'
+import Hover from 'wavesurfer.js/dist/plugins/hover.esm.js'
 
 const colors = [
   'rgba(0, 123, 255, 0.5)',
@@ -45,6 +46,15 @@ const useMultiTrackPlayer = (urls: string[]) => {
             normalize: true,
           },
           startPosition: 0,
+          plugins: [
+            Hover.create({
+              lineColor: '#ff0000',
+              lineWidth: 2,
+              labelBackground: '#555',
+              labelColor: '#fff',
+              labelSize: '11px',
+            }),
+          ],
         })),
         {
           container: containerRef.current,
@@ -65,8 +75,8 @@ const useMultiTrackPlayer = (urls: string[]) => {
       }))
       setTrackMetadata(initialMetadata)
 
-      multitrack.on('ready', () => {
-        setIsPlaying(false)
+      multitrack.on('interaction', () => {
+        multitrack.play()
       })
 
       // Clean up on unmount
@@ -80,6 +90,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
     }
   }, [urls, colorMode.mode])
 
+  // Transport controls
   const playPause = () => {
     if (multitrackRef.current) {
       if (isPlaying) {
@@ -89,6 +100,34 @@ const useMultiTrackPlayer = (urls: string[]) => {
         multitrackRef.current.play()
         setIsPlaying(true)
       }
+    }
+  }
+
+  const skipForward = () => {
+    if (multitrackRef?.current) {
+      const currentTime = multitrackRef.current.getCurrentTime()
+      if (isFinite(currentTime)) {
+        multitrackRef.current.setTime(currentTime + 10)
+      } else {
+        console.error('Invalid current time:', currentTime)
+      }
+    }
+  }
+
+  const skipBackward = () => {
+    if (multitrackRef?.current) {
+      const currentTime = multitrackRef.current.getCurrentTime()
+      if (isFinite(currentTime)) {
+        multitrackRef.current.setTime(Math.max(currentTime - 10))
+      } else {
+        console.error('Invalid current time:', currentTime)
+      }
+    }
+  }
+
+  const backToStart = () => {
+    if (multitrackRef?.current) {
+      multitrackRef.current.setTime(0)
     }
   }
 
@@ -161,10 +200,29 @@ const useMultiTrackPlayer = (urls: string[]) => {
     )
   }
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === 'Space') {
+        event.preventDefault() // Prevent default spacebar scrolling behavior
+        playPause()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Cleanup the event listener on unmount
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [playPause])
+
   return {
     containerRef,
     isPlaying,
     playPause,
+    skipForward,
+    skipBackward,
+    backToStart,
     muteTrack,
     unmuteTrack,
     isTrackMuted,

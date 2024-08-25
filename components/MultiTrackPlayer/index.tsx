@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import PauseIcon from '@mui/icons-material/Pause'
-import VolumeOffIcon from '@mui/icons-material/VolumeOff'
-import VolumeUpIcon from '@mui/icons-material/VolumeUp'
 import useMultiTrackPlayer from '@/hooks/useMultiTrackPlayer'
 import { Box, Button, Input } from '@mui/material'
 import AudioInputSelector from '../AudioInputSelector'
 import { useAudioRecorder } from '@/hooks/useAudioRecorder'
 import { useAddTrackBySongId } from '@/hooks/useAddTrackBySongId'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
+import TransportBar from './components/TransportBar'
 
 const MultiTrackPlayer = ({
   urls,
@@ -27,6 +24,9 @@ const MultiTrackPlayer = ({
     containerRef,
     isPlaying,
     playPause,
+    skipForward,
+    skipBackward,
+    backToStart,
     muteTrack,
     unmuteTrack,
     isTrackMuted,
@@ -74,7 +74,6 @@ const MultiTrackPlayer = ({
         const destination = audioContext.createMediaStreamDestination()
         source.connect(destination)
 
-        // Convert the MediaStream to a blob to add as a new track
         const recordedChunks = []
         const mediaRecorder = new MediaRecorder(destination.stream)
 
@@ -103,23 +102,17 @@ const MultiTrackPlayer = ({
   }
 
   return (
-    <Box sx={{ height: 1 }}>
+    <Box sx={{ height: 1, display: 'flex', gap: 2, flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: '85px' }}>
-        <Button onClick={playPause}>
-          {isPlaying ? (
-            <PauseIcon color="warning" sx={{ fontSize: 60 }} />
-          ) : (
-            <PlayArrowIcon color="success" sx={{ fontSize: 60 }} />
-          )}
-        </Button>
-
-        <Button onClick={addNewTrack}>Add new track</Button>
+        <TransportBar
+          isPlaying={isPlaying}
+          playPause={playPause}
+          backToStart={backToStart}
+          skipBackward={skipBackward}
+          skipForward={skipForward}
+        />
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-        }}
-      >
+      <Box sx={{ display: 'flex' }}>
         <Box
           sx={{
             display: 'flex',
@@ -127,7 +120,7 @@ const MultiTrackPlayer = ({
             justifyContent: 'space-around',
           }}
         >
-          {trackMetadata.map((track, index) => (
+          {trackMetadata.map((track) => (
             <Box
               key={track.id}
               sx={{
@@ -144,7 +137,7 @@ const MultiTrackPlayer = ({
                   variant="contained"
                   sx={{ bgcolor: 'gray.400' }}
                 >
-                  Mute
+                  Unmute
                 </Button>
               ) : (
                 <Button
@@ -166,6 +159,7 @@ const MultiTrackPlayer = ({
           }}
         />
       </Box>
+      <Button onClick={addNewTrack}>Add new track</Button>
       <Box>
         <Input
           type="text"
