@@ -12,7 +12,13 @@ export default function SongDetail() {
 
   return (
     <Box
-      sx={{ background: 'white', borderRadius: 2, width: 1, height: 1, p: 2 }}
+      sx={{
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        width: 1,
+        height: 1,
+        p: 2,
+      }}
     >
       <Typography variant="h4">{song?.name}</Typography>
       <Typography variant="h5">{song?.description}</Typography>

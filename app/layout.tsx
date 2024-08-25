@@ -10,6 +10,7 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import AuthGuard from '@/components/AuthGuard'
+import DarkModeToggle from '@/components/DarkModeToggle'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,10 +29,13 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthGuard>
           <Providers>
-            <Box sx={{ display: 'flex', background: '#eee' }}>
+            <Box sx={{ display: 'flex', bgcolor: 'background.paper' }}>
+              <DarkModeToggle />
               <NavBar />
-              <Box sx={{ width: 1 }}>
-                <Box component="main">{children}</Box>
+              <Box sx={{ bgcolor: 'background.paper' }}>
+                <Box component="main" sx={{ bgcolor: 'background.paper' }}>
+                  {children}
+                </Box>
               </Box>
             </Box>
           </Providers>
