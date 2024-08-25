@@ -9,12 +9,12 @@ export default function LoginPage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-
+        width: 1,
         height: '100vh',
       }}
     >
       <Typography variant="h1" sx={{ mb: 8, fontSize: 200 }}>
-        supayoke
+        mixtape
       </Typography>
       <LoginForm />
     </Box>

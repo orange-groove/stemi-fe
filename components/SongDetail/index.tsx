@@ -15,7 +15,7 @@ export default function SongDetail() {
       sx={{
         bgcolor: 'background.paper',
         borderRadius: 2,
-        width: 1,
+        width: 'calc(100% - 100px)',
         height: 1,
         p: 2,
       }}

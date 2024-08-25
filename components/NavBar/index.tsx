@@ -1,16 +1,8 @@
 'use client'
 
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from '@mui/material'
-import HomeIcon from '@mui/icons-material/Home'
+import { Avatar, Box, Tooltip, Typography } from '@mui/material'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import Header from '../Header'
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useAtomValue } from 'jotai'
@@ -31,41 +23,49 @@ export default function NavBar() {
       <Box
         component="nav"
         sx={{
-          width: [0, 150, 200],
-          height: 1,
-          borderRight: '1px solid',
-          borderColor: 'grey.300',
+          width: 1,
+          height: 60,
+          p: 2,
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'space-between',
         }}
       >
-        <Box sx={{ height: 1 }}>
-          <Header />
-          <List
-            sx={{
-              width: '100%',
-              bgcolor: 'background.paper',
-            }}
-            aria-labelledby="list-navigation"
-          >
-            <ListItemButton href="/">
-              <HomeIcon />
-              <ListItemText primary="Home" />
-            </ListItemButton>
-
-            <ListItemButton href="/songs">
-              <LibraryMusicIcon />
-              <ListItemText primary="Songs" />
-            </ListItemButton>
-            <ListItemButton onClick={handleSignOut}>
-              <LogoutIcon />
-              <ListItemText primary="Logout" />
-            </ListItemButton>
-          </List>
+        <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
+          <Typography variant="h4">Mixtape</Typography>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-          <DarkModeToggle />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'right',
+            alignItems: 'center',
+            gap: 2,
+            bgcolor: 'background.paper',
+            flexGrow: 1,
+            height: 1,
+          }}
+          aria-labelledby="list-navigation"
+        >
+          <Tooltip title="Library">
+            <Box onClick={() => router.push('/songs')}>
+              <LibraryMusicIcon />
+            </Box>
+          </Tooltip>
+          <Tooltip title="Sign Out">
+            <Box onClick={handleSignOut}>
+              <LogoutIcon />
+            </Box>
+          </Tooltip>
+          <Tooltip title="Dark Mode">
+            <Box>
+              <DarkModeToggle />
+            </Box>
+          </Tooltip>
+          <Tooltip title="Profile">
+            <Avatar
+              alt={user?.user_metadata.name}
+              src={user?.user_metadata?.image}
+            />
+          </Tooltip>
         </Box>
       </Box>
     )

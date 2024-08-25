@@ -6,6 +6,7 @@ export default function SongDetailPage() {
     <Box
       sx={{
         height: '100vh',
+        width: 1,
         bgcolor: 'background.paper',
       }}
     >

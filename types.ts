@@ -1,6 +1,10 @@
 export interface Track {
   name: string
-  url: string
+  files: {
+    name: string
+    url: string
+    offset: number
+  }[]
 }
 
 export interface FilePayload {

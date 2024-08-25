@@ -13,7 +13,7 @@ const colors = [
   'rgba(0, 255, 255, 0.5)',
 ]
 
-const useMultiTrackPlayer = (tracks: string[]) => {
+const useMultiTrackPlayer = (urls: string[]) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const multitrackRef = useRef<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -40,7 +40,7 @@ const useMultiTrackPlayer = (tracks: string[]) => {
       gradient?.addColorStop(1, 'rgb(0, 0, 0)')
 
       const multitrack = MultiTrackPlayer.create(
-        tracks.map((url, index) => ({
+        urls.map((url, index) => ({
           id: index,
           url,
           draggable: true,
@@ -79,21 +79,13 @@ const useMultiTrackPlayer = (tracks: string[]) => {
 
       multitrackRef.current = multitrack
 
-      tracks.forEach((track) => {
-        track.files.forEach((file) => {
-          fetch(file.url)
-            .then((response) => response.arrayBuffer())
-            .then((buffer) => {
-              waveSurfer.loadDecodedBuffer(buffer)
-              // Apply offset by setting start time
-              waveSurfer.addRegion({
-                start: file.offset,
-                end: file.offset + waveSurfer.getDuration(),
-                loop: false,
-              })
-            })
-        })
-      })
+      // Initialize track metadata
+      const initialMetadata = urls.map((url, index) => ({
+        id: index,
+        volume: 1, // Default volume for each track
+        name: url.split('/').pop()?.split('.').shift() || `Track ${index + 1}`, // Default name for each track
+      }))
+      setTrackMetadata(initialMetadata)
 
       multitrack.on('interaction', () => {
         multitrack.play()

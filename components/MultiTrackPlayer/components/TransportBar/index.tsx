@@ -30,26 +30,26 @@ export default function TransportBar({
         <Tooltip title="Play">
           <Button onClick={playPause}>
             {isPlaying ? (
-              <PauseIcon color="warning" sx={{ fontSize: 60 }} />
+              <PauseIcon color="warning" sx={{ fontSize: 80 }} />
             ) : (
-              <PlayArrowIcon color="success" sx={{ fontSize: 60 }} />
+              <PlayArrowIcon color="success" sx={{ fontSize: 80 }} />
             )}
           </Button>
         </Tooltip>
 
         <Tooltip title="Back to start">
           <Button onClick={backToStart}>
-            <FirstPageIcon sx={{ fontSize: 60 }}>Back to Start</FirstPageIcon>{' '}
+            <FirstPageIcon sx={{ fontSize: 80 }}>Back to Start</FirstPageIcon>{' '}
           </Button>
         </Tooltip>
         <Tooltip title="Skip back 10s">
           <Button onClick={skipBackward}>
-            <FastRewindIcon sx={{ fontSize: 60 }}>Skip Backward</FastRewindIcon>
+            <FastRewindIcon sx={{ fontSize: 80 }}>Skip Backward</FastRewindIcon>
           </Button>
         </Tooltip>
         <Tooltip title="Skip forward 10s">
           <Button onClick={skipForward}>
-            <FastForwardIcon sx={{ fontSize: 60 }}>
+            <FastForwardIcon sx={{ fontSize: 80 }}>
               Skip Forward
             </FastForwardIcon>
           </Button>

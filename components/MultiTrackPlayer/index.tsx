@@ -83,8 +83,16 @@ const MultiTrackPlayer = ({ urls, songId }) => {
   }
 
   return (
-    <Box sx={{ height: 1, display: 'flex', gap: 2, flexDirection: 'column' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: '85px' }}>
+    <Box
+      sx={{
+        height: 1,
+        width: 1,
+        display: 'flex',
+        gap: 2,
+        flexDirection: 'column',
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <TransportBar
           isPlaying={isPlaying}
           playPause={playPause}
@@ -93,12 +101,13 @@ const MultiTrackPlayer = ({ urls, songId }) => {
           skipForward={skipForward}
         />
       </Box>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', height: 1, width: 1 }}>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-around',
+            height: 100,
           }}
         >
           {trackMetadata.map((track) => (
@@ -109,6 +118,7 @@ const MultiTrackPlayer = ({ urls, songId }) => {
                 gap: 1,
                 justifyContent: 'space-between',
                 p: 2,
+                height: 1,
               }}
             >
               {track.name}
@@ -131,30 +141,18 @@ const MultiTrackPlayer = ({ urls, songId }) => {
             </Box>
           ))}
         </Box>
+
         <Box
           ref={containerRef}
           sx={{
             background: '#2d2d2d',
             color: '#fff',
-            width: 'calc(100% - 300px)',
+            width: 'calc(100% - 100px)',
+            height: 1,
+            display: 'flex',
+            flexDirection: 'column',
           }}
         />
-      </Box>
-      <Box>
-        <Input
-          type="text"
-          placeholder="Track Name"
-          value={trackName}
-          onChange={(e) => setTrackName(e.target.value)}
-        />
-        <Button onClick={handleAddTrack}>Add Track</Button>
-        <Button onClick={handleStartRecording} disabled={isRecording}>
-          Start Recording
-        </Button>
-        <Button onClick={handleStopRecording} disabled={!isRecording}>
-          Stop Recording & Upload
-        </Button>
-        <AudioInputSelector onDeviceSelect={handleDeviceSelect} />
       </Box>
     </Box>
   )
