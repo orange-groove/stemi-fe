@@ -1,5 +1,6 @@
 import MultiTrackPlayer from 'wavesurfer-multitrack'
 import { useEffect, useRef, useState } from 'react'
+import { useColorMode } from '@/components/AppThemeProvider'
 
 const colors = [
   'rgba(0, 123, 255, 0.5)',
@@ -17,6 +18,8 @@ const useMultiTrackPlayer = (urls: string[]) => {
   const [trackMetadata, setTrackMetadata] = useState<
     { id: number; volume: number; name: string }[]
   >([])
+
+  const colorMode = useColorMode()
 
   useEffect(() => {
     if (containerRef.current) {
@@ -47,7 +50,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
           container: containerRef.current,
           minPxPerSec: 10,
           cursorWidth: 2,
-          trackBackground: '#2D2D2D',
+          trackBackground: colorMode.mode === 'dark' ? '#2D2D2D' : '#F5F5F5',
           trackBorderColor: '#7C7C7C',
         },
       )
@@ -71,9 +74,11 @@ const useMultiTrackPlayer = (urls: string[]) => {
         if (multitrackRef.current) {
           multitrackRef.current.destroy()
         }
+
+        multitrack.unAll()
       }
     }
-  }, [urls])
+  }, [urls, colorMode.mode])
 
   const playPause = () => {
     if (multitrackRef.current) {

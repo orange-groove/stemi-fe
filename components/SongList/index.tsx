@@ -1,13 +1,12 @@
 'use client'
 
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
 import { useRouter } from 'next/navigation'
-import Masonry from '@mui/lab/Masonry'
 
 const Multitrack = () => {
   const router = useRouter()

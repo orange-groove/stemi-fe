@@ -33,7 +33,17 @@ export default function RootLayout({
               sx={{ display: 'flex', bgcolor: 'background.paper', height: 1 }}
             >
               <NavBar />
-              <Box sx={{ bgcolor: 'background.paper', width: 1, height: 1 }}>
+              <Box
+                sx={{
+                  bgcolor: 'background.paper',
+                  width: {
+                    sm: 0,
+                    md: 'calc(100vw - 150px)',
+                    lg: 'calc(100vw - 200px)',
+                  },
+                  height: 1,
+                }}
+              >
                 <Box
                   component="main"
                   sx={{ bgcolor: 'background.paper', height: 1 }}
