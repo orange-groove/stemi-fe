@@ -3,25 +3,30 @@ import { useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase' // Adjust the import to your supabase client path
 
 const useDeleteSong = () => {
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   const deleteSong = async ({ songId, userId, tracks }) => {
     try {
-      // Delete files from Supabase storage
       const bucketName = 'yoke-stems' // Adjust to your bucket name
 
+      // Iterate over each track
       for (const track of tracks) {
-        for (const file of track.files) {
-          const filePath = file.url.split(bucketName + '/')[1] // Extract file path from the URL
-          const { error: storageError } = await supabase.storage
-            .from(bucketName)
-            .remove([filePath])
+        const filePath = track.url.split(`${bucketName}/`)[1] // Extract the path after the bucket name
+        if (!filePath) {
+          throw new Error(`Invalid file path for track: ${track.url}`)
+        }
 
-          if (storageError) {
-            throw new Error(
-              `Error deleting file ${filePath}: ${storageError.message}`,
-            )
-          }
+        console.log(`Deleting file at path: ${filePath}`)
+
+        // Remove the file from Supabase storage
+        const { error: storageError } = await supabase.storage
+          .from(bucketName)
+          .remove([filePath])
+
+        if (storageError) {
+          throw new Error(
+            `Error deleting file ${filePath}: ${storageError.message}`,
+          )
         }
       }
 
@@ -38,12 +43,21 @@ const useDeleteSong = () => {
 
       return { success: true }
     } catch (err) {
+      console.error('Error in deleteSong:', err)
       setError(err.message)
       return { success: false, error: err.message }
     }
   }
 
-  const mutation = useMutation({ mutationFn: deleteSong })
+  const mutation = useMutation({
+    mutationFn: deleteSong,
+    onSuccess: (data) => {
+      console.log('onSuccess called', data)
+    },
+    onError: (err) => {
+      console.error('onError called', err)
+    },
+  })
 
   return {
     ...mutation,

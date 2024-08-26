@@ -1,18 +1,18 @@
 'use client'
 
-import type { Song, Track } from '@/types'
 import { Box, Button, List, ListItem, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import TrackComponent from '@/components/Track'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { use } from 'react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
+import { userSongsAtom } from '@/state/song'
 
-export default function Song({ song }: { song: Song }) {
+export default function Song({ song }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
+  const setUserSongs = useSetAtom(userSongsAtom)
 
   const { mutate: deleteSong, isPending, error } = useDeleteSong()
 
@@ -22,6 +22,7 @@ export default function Song({ song }: { song: Song }) {
       {
         onSuccess: () => {
           console.log('Song and associated files deleted successfully.')
+          setUserSongs((prev) => prev.filter((s) => s.id !== song.id))
         },
         onError: (err) => {
           console.error('Error deleting song:', err)
@@ -49,7 +50,7 @@ export default function Song({ song }: { song: Song }) {
         </Box>
       </Box>
       <List disablePadding>
-        {song?.tracks?.map((track: Track) => (
+        {song?.tracks?.map((track) => (
           <ListItem
             key={track.url}
             sx={{ display: 'flex', justifyContent: 'space-between' }}
