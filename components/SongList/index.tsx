@@ -1,17 +1,21 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
-import { useRouter } from 'next/navigation'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { userSongsAtom } from '@/state/song'
 
-const Multitrack = () => {
-  const router = useRouter()
-
+const SongList = () => {
   const { songs, loading, error } = useSongsByUserId()
+  const [userSongs, setUserSongs] = useAtom(userSongsAtom)
+
+  useEffect(() => {
+    setUserSongs(songs)
+  }, [songs])
 
   if (loading) return <div>Loading...</div>
 
@@ -24,7 +28,7 @@ const Multitrack = () => {
         <NewSongModal />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {songs.map((song: Song) => (
+        {userSongs.map((song: Song) => (
           <Box
             key={song?.id}
             sx={{ border: '1px dotted', borderColor: 'secondary.main', m: 2 }}
@@ -37,4 +41,4 @@ const Multitrack = () => {
   )
 }
 
-export default Multitrack
+export default SongList

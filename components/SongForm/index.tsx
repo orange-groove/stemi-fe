@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Box,
@@ -16,10 +16,14 @@ import {
   ListItemText,
 } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
+import { userSongsAtom } from '@/state/song'
 
+interface Props {
+  onComplete: () => void
+}
 interface FormData {
   name: string
   description: string
@@ -28,7 +32,7 @@ interface FormData {
 }
 const stemOptions = ['vocals', 'bass', 'drums', 'other']
 
-const SongForm = () => {
+const SongForm = ({ onComplete }: Props) => {
   const [fileName, setFileName] = useState('')
   const {
     handleSubmit,
@@ -39,6 +43,7 @@ const SongForm = () => {
 
   const addSongMutation = useAddSong()
   const user = useAtomValue(userAtom)
+  const setUserSongs = useSetAtom(userSongsAtom)
 
   const onSubmit = (data: FormData) => {
     addSongMutation.mutate(
@@ -54,6 +59,8 @@ const SongForm = () => {
           console.log('Success:', data)
           reset()
           setFileName('')
+          onComplete()
+          setUserSongs((prev) => [...prev, data.song_entry])
         },
         onError: (error) => {
           console.error('Error:', error)
@@ -170,13 +177,13 @@ const SongForm = () => {
 
       <LoadingButton
         type="submit"
-        isLoading={!addSongMutation.isPending}
+        isLoading={addSongMutation.isPending}
         loadingText="Processing... Please wait."
         fullWidth
         variant="contained"
         color="primary"
       >
-        Submit
+        Upload Song
       </LoadingButton>
     </Box>
   )

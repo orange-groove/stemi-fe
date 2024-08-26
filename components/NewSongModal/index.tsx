@@ -35,7 +35,7 @@ export default function NewSongModal() {
             p: 4,
           }}
         >
-          <SongForm />
+          <SongForm onComplete={handleClose} />
         </Box>
       </Modal>
     </>

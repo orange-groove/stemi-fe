@@ -26,6 +26,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
+    "socket.io-client": "^4.7.5",
     "wavesurfer-multitrack": "^0.4.12",
     "wavesurfer.js": "^7.8.4"
   },

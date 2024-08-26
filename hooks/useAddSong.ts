@@ -1,8 +1,6 @@
 'use client'
 
-import { userAtom } from '@/state/user'
 import { useMutation } from '@tanstack/react-query'
-import { useAtomValue } from 'jotai'
 
 interface AddSongParams {
   name: string

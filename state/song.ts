@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { tracksAtom } from './tracks'
 
-const songAtom = atom((get) => {
+export const songAtom = atom((get) => {
   const tracks = get(tracksAtom)
 
   return {
@@ -9,3 +9,5 @@ const songAtom = atom((get) => {
     name: '',
   }
 })
+
+export const userSongsAtom = atom([])
