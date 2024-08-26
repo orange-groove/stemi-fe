@@ -12,7 +12,10 @@ export default function NewSongModal() {
 
   return (
     <>
-      <Button onClick={handleOpen} sx={{ color: 'secondary.main' }}>
+      <Button
+        onClick={handleOpen}
+        sx={{ color: 'secondary.main', display: 'flex', gap: 1 }}
+      >
         <AddBoxIcon />
         Add New Song
       </Button>

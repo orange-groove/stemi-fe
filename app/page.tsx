@@ -43,8 +43,8 @@ export default function Home() {
               for a performance or just having fun, our tool provides everything
               you need to sing and play your heart out.
             </Typography>
-            <Button variant="contained" color="primary" href="/songs">
-              Visit the Songs Page
+            <Button variant="contained" color="secondary" href="/songs">
+              Upload you first song
             </Button>
           </Grid>
           <Grid item xs={12} md={6}>

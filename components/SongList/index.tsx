@@ -24,7 +24,7 @@ const SongList = () => {
   return (
     <>
       <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
-        <Typography variant="h4">Songs</Typography>
+        <Typography variant="h4">My Library</Typography>
         <NewSongModal />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

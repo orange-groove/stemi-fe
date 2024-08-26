@@ -11,9 +11,14 @@ const useDeleteSong = () => {
 
       // Iterate over each track
       for (const track of tracks) {
-        const filePath = track.url.split(`${bucketName}/`)[1] // Extract the path after the bucket name
+        const fileUrl = track.url
+        console.log(`Processing file URL: ${fileUrl}`)
+
+        const filePath = fileUrl.split(`${bucketName}/`)[1] // Extract the path after the bucket name
+        console.log(`Extracted file path: ${filePath}`)
+
         if (!filePath) {
-          throw new Error(`Invalid file path for track: ${track.url}`)
+          throw new Error(`Invalid file path for track: ${fileUrl}`)
         }
 
         console.log(`Deleting file at path: ${filePath}`)
@@ -24,9 +29,14 @@ const useDeleteSong = () => {
           .remove([filePath])
 
         if (storageError) {
+          console.error(
+            `Error deleting file ${filePath}: ${storageError.message}`,
+          )
           throw new Error(
             `Error deleting file ${filePath}: ${storageError.message}`,
           )
+        } else {
+          console.log(`File ${filePath} deleted successfully`)
         }
       }
 

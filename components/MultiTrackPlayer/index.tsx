@@ -110,28 +110,42 @@ const MultiTrackPlayer = ({ urls, songId }) => {
                 display: 'flex',
                 gap: 1,
                 justifyContent: 'space-between',
-                alignItems: 'center',
-                p: 2,
+                p: 1,
                 mb: '2px',
                 height: '150px',
+                position: 'relative',
               }}
             >
-              {track.name}
-              {isTrackMuted(track.id) ? (
-                <Box
-                  onClick={() => unmuteTrack(track.id)}
-                  sx={{ backgroundColor: 'red.500', border: '1px solid' }}
-                >
-                  M
-                </Box>
-              ) : (
-                <Box
-                  onClick={() => muteTrack(track.id)}
-                  sx={{ bgcolor: 'grey.400' }}
-                >
-                  M
-                </Box>
-              )}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  zIndex: 2,
+                  top: 0,
+                  left: 50,
+                  backgroundColor: '#444444aa',
+                  p: 0.5,
+                }}
+              >
+                {track.name}
+              </Box>
+              <Box
+                onClick={() =>
+                  isTrackMuted(track.id)
+                    ? unmuteTrack(track.id)
+                    : muteTrack(track.id)
+                }
+                sx={{
+                  bgcolor: isTrackMuted(track.id) ? 'error.main' : 'grey.400',
+                  color: isTrackMuted(track.id) ? 'white' : 'black',
+                  width: 20,
+                  height: 20,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                M
+              </Box>
             </Paper>
           ))}
         </Box>
@@ -141,7 +155,7 @@ const MultiTrackPlayer = ({ urls, songId }) => {
           sx={{
             background: '#2d2d2d',
             color: '#fff',
-            width: 'calc(100% - 100px)',
+            width: 1,
             height: 1,
             display: 'flex',
             flexDirection: 'column',

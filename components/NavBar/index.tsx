@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Paper,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -53,7 +54,7 @@ export default function NavBar() {
         }}
       >
         <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
-          <Typography variant="h3" color="secondary.main">
+          <Typography variant="h4" color="secondary.main">
             mixtape.ai
           </Typography>
         </Box>
@@ -66,19 +67,14 @@ export default function NavBar() {
             bgcolor: 'background.paper',
             flexGrow: 1,
             height: 1,
+            cursor: 'pointer',
           }}
           aria-labelledby="list-navigation"
         >
           <Tooltip title="Library">
-            <Box onClick={() => router.push('/songs')}>
-              <LibraryMusicIcon />
-            </Box>
+            <Box onClick={() => router.push('/songs')}>My Library</Box>
           </Tooltip>
-          <Tooltip title="Sign Out">
-            <Box onClick={handleSignOut}>
-              <LogoutIcon />
-            </Box>
-          </Tooltip>
+
           <Tooltip title="Dark Mode">
             <Box>
               <DarkModeToggle />
@@ -93,7 +89,10 @@ export default function NavBar() {
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              <Avatar
+                alt={user?.user_metadata.name}
+                sx={{ width: 32, height: 32 }}
+              />
             </IconButton>
           </Tooltip>
         </Box>
@@ -103,29 +102,38 @@ export default function NavBar() {
           open={open}
           onClose={handleClose}
           onClick={handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
+          slotProps={{
+            root: {
+              sx: {
+                '& .MuiMenu-paper': {
+                  cursor: 'pointer',
+                },
               },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
+            },
+            paper: {
+              elevation: 0,
+              sx: {
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                mt: 1.5,
+                '& .MuiAvatar-root': {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                '&::before': {
+                  content: '""',
+                  display: 'block',
+                  position: 'absolute',
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: 'background.paper',
+                  transform: 'translateY(-50%) rotate(45deg)',
+                  zIndex: 0,
+                },
               },
             },
           }}
@@ -135,23 +143,16 @@ export default function NavBar() {
           <MenuItem onClick={handleClose}>
             <Avatar /> Profile
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Avatar /> My account
-          </MenuItem>
+
           <Divider />
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            Add another account
-          </MenuItem>
+
           <MenuItem onClick={handleClose}>
             <ListItemIcon>
               <Settings fontSize="small" />
             </ListItemIcon>
             Settings
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleSignOut}>
             <ListItemIcon>
               <Logout fontSize="small" />
             </ListItemIcon>

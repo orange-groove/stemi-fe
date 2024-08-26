@@ -20,7 +20,7 @@ export default function TransportBar({
   backToStart: () => void
 }) {
   return (
-    <Box sx={{ bgcolor: 'grey.900', borderRadius: 2 }}>
+    <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
       <Box
         sx={{
           display: 'flex',

@@ -54,6 +54,7 @@ const useMultiTrackPlayer = (urls: string[]) => {
             normalize: true,
           },
           startPosition: 0,
+          draggable: false,
           plugins: [
             Hover.create({
               lineColor: '#ff0000',
