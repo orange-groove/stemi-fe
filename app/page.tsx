@@ -32,13 +32,13 @@ export default function Home() {
         <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={6}>
             <Typography variant="h2" component="h1" gutterBottom>
-              Welcome to Mixtape.ai
+              Welcome to Stemjams!
             </Typography>
             <Typography variant="h5" component="h2" gutterBottom>
               Your Ultimate Karaoke and Practice Companion
             </Typography>
             <Typography variant="body1" paragraph>
-              Unleash your inner star with Mixtape.ai, the perfect platform for
+              Unleash your inner star with Stemjams, the perfect platform for
               karaoke lovers and aspiring musicians. Whether you're practicing
               for a performance or just having fun, our tool provides everything
               you need to sing and play your heart out.

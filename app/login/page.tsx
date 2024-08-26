@@ -13,8 +13,8 @@ export default function LoginPage() {
         height: '100vh',
       }}
     >
-      <Typography variant="h1" sx={{ mb: 8, fontSize: 200 }}>
-        mixtape.ai
+      <Typography sx={{ mb: 8, fontSize: [50, 100, 200] }}>
+        stemjams.ai
       </Typography>
       <LoginForm />
     </Box>

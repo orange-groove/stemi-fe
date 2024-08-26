@@ -38,7 +38,7 @@ export default function Song({ song }) {
           <Typography variant="h4">{song.name}</Typography>
         </Box>
         <Box sx={{ display: 'flex' }}>
-          <Button onClick={() => router.push(`/songs/${song.id}`)}>Mix</Button>
+          <Button onClick={() => router.push(`/songs/${song.id}`)}>Jam</Button>
           <Button onClick={handleDelete} disabled={isPending}>
             {isPending ? (
               'Deleting...'
