@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import useMultiTrackPlayer from '@/hooks/useMultiTrackPlayer'
-import { Box, Button, Input, Paper } from '@mui/material'
-import AudioInputSelector from '../AudioInputSelector'
-import WaveSurfer from 'wavesurfer.js'
+import { Box, Paper } from '@mui/material'
 import { useAddTrackBySongId } from '@/hooks/useAddTrackBySongId'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import TransportBar from './components/TransportBar'
+import TransportBar from '../TransportBar'
 
 const MultiTrackPlayer = ({ urls, songId }) => {
   const [selectedDeviceId, setSelectedDeviceId] = useState(null)
@@ -35,52 +33,6 @@ const MultiTrackPlayer = ({ urls, songId }) => {
   } = useMultiTrackPlayer(urls)
 
   const addTrackMutation = useAddTrackBySongId()
-
-  const handleDeviceSelect = (deviceId) => {
-    setSelectedDeviceId(deviceId)
-  }
-
-  const handleAddTrack = () => {
-    const currentTime = getCurrentTime()
-    addBlankTrack(trackName, currentTime)
-  }
-
-  const handleStartRecording = () => {
-    startRecording(selectedDeviceId)
-    setIsRecording(true)
-  }
-
-  const handleStopRecording = () => {
-    stopRecording((blob) => {
-      const recordedUrl = URL.createObjectURL(blob)
-
-      const offset = getCurrentTime() // Use the cursor position as the offset
-
-      const lastTrack = trackMetadata[trackMetadata.length - 1]
-      if (lastTrack) {
-        // Replace the blank track with the recorded audio
-        lastTrack.url = recordedUrl
-        lastTrack.startPosition = offset
-        // Update trackMetadata state
-        setTrackMetadata([...trackMetadata])
-
-        // Upload the file and include metadata with the offset
-        const file = new File([blob], `${trackName}.mp3`, {
-          type: 'audio/mp3',
-        })
-
-        addTrackMutation.mutate({
-          userId: user?.id,
-          songId,
-          trackName,
-          file,
-          offset,
-        })
-      }
-
-      setIsRecording(false)
-    })
-  }
 
   return (
     <Box

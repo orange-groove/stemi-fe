@@ -1,22 +1,26 @@
-'use client'
-
-import type { Track } from '@/types'
-import { Box } from '@mui/material'
+import React, { useEffect, useRef } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
-import { useRef } from 'react'
+import { Box } from '@mui/material'
 
-export default function Track({ track }: { track: Track }) {
+export default function TrackComponent({ track, onReady }) {
   const containerRef = useRef(null)
 
-  useWavesurfer({
+  const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
-    height: 40,
+    url: track.url,
     waveColor: 'lightgrey',
     progressColor: 'rgb(100, 0, 100)',
-    url: track.url,
+    height: 40,
     barHeight: 50,
     normalize: true,
+    backend: 'WebAudio',
   })
+
+  useEffect(() => {
+    if (isReady && wavesurfer && typeof onReady === 'function') {
+      onReady(wavesurfer)
+    }
+  }, [isReady, wavesurfer])
 
   return (
     <Box sx={{ bgcolor: 'background.paper', borderRadius: 2, width: 1 }}>

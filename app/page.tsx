@@ -32,7 +32,7 @@ export default function Home() {
         <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={6}>
             <Typography variant="h2" component="h1" gutterBottom>
-              Welcome to Stemjams!
+              Welcome to Stemjam!
             </Typography>
             <Typography variant="h5" component="h2" gutterBottom>
               Your Ultimate Karaoke and Practice Companion

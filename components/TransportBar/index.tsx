@@ -12,13 +12,17 @@ export default function TransportBar({
   skipForward,
   skipBackward,
   backToStart,
+  variant = 'small',
 }: {
   isPlaying: boolean
   playPause: () => void
   skipForward: () => void
   skipBackward: () => void
   backToStart: () => void
+  variant?: 'small' | 'large'
 }) {
+  const iconSize = variant === 'large' ? 80 : 40
+
   return (
     <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
       <Box
@@ -30,26 +34,30 @@ export default function TransportBar({
         <Tooltip title="Play">
           <Button onClick={playPause}>
             {isPlaying ? (
-              <PauseIcon color="warning" sx={{ fontSize: 80 }} />
+              <PauseIcon color="warning" sx={{ fontSize: iconSize }} />
             ) : (
-              <PlayArrowIcon color="success" sx={{ fontSize: 80 }} />
+              <PlayArrowIcon color="success" sx={{ fontSize: iconSize }} />
             )}
           </Button>
         </Tooltip>
 
         <Tooltip title="Back to start">
           <Button onClick={backToStart}>
-            <FirstPageIcon sx={{ fontSize: 80 }}>Back to Start</FirstPageIcon>{' '}
+            <FirstPageIcon sx={{ fontSize: iconSize }}>
+              Back to Start
+            </FirstPageIcon>{' '}
           </Button>
         </Tooltip>
         <Tooltip title="Skip back 10s">
           <Button onClick={skipBackward}>
-            <FastRewindIcon sx={{ fontSize: 80 }}>Skip Backward</FastRewindIcon>
+            <FastRewindIcon sx={{ fontSize: iconSize }}>
+              Skip Backward
+            </FastRewindIcon>
           </Button>
         </Tooltip>
         <Tooltip title="Skip forward 10s">
           <Button onClick={skipForward}>
-            <FastForwardIcon sx={{ fontSize: 80 }}>
+            <FastForwardIcon sx={{ fontSize: iconSize }}>
               Skip Forward
             </FastForwardIcon>
           </Button>

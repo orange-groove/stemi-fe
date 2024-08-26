@@ -1,15 +1,16 @@
 'use client'
 
-import { Box, Button, List, ListItem, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import TrackComponent from '@/components/Track'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import { userSongsAtom } from '@/state/song'
+import MultiTrackPlayer from '../MultiTrackPlayer2'
+import { Song as SongType } from '@/types'
 
-export default function Song({ song }) {
+export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
   const setUserSongs = useSetAtom(userSongsAtom)
@@ -37,7 +38,7 @@ export default function Song({ song }) {
         <Box>
           <Typography variant="h4">{song.name}</Typography>
         </Box>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <Button onClick={() => router.push(`/songs/${song.id}`)}>Jam</Button>
           <Button onClick={handleDelete} disabled={isPending}>
             {isPending ? (
@@ -49,19 +50,7 @@ export default function Song({ song }) {
           {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         </Box>
       </Box>
-      <List disablePadding>
-        {song?.tracks?.map((track) => (
-          <ListItem
-            key={track.url}
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Typography variant="subtitle1" sx={{ width: '100px' }}>
-              {track.name}
-            </Typography>
-            <TrackComponent track={track} />
-          </ListItem>
-        ))}
-      </List>
+      <MultiTrackPlayer song={song} />
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
     </Box>
   )
