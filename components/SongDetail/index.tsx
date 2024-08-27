@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Typography } from '@mui/material'
-import MultiTrackPlayer from '../MultiTrackPlayer'
+import MultiTrackPlayer from '../MultiTrackPlayer2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 
@@ -22,10 +22,7 @@ export default function SongDetail() {
     >
       <Typography variant="h4">{song?.name}</Typography>
       <Typography variant="h5">{song?.description}</Typography>
-      <MultiTrackPlayer
-        urls={song?.tracks?.map((track) => track.url) || []}
-        songId={params.songId}
-      />
+      <MultiTrackPlayer song={song} />
     </Box>
   )
 }

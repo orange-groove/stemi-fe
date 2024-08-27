@@ -33,7 +33,9 @@ export default function Song({ song }: { song: SongType }) {
   }
 
   return (
-    <Box sx={{ bgcolor: 'background.paper', borderRadius: 2, width: 1, p: 2 }}>
+    <Box
+      sx={{ bgcolor: 'background.paper', borderRadius: 2, width: 1, p: [1, 2] }}
+    >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <Typography variant="h4">{song.name}</Typography>
