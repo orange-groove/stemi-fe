@@ -29,10 +29,7 @@ const SongList = () => {
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {userSongs.map((song: Song) => (
-          <Box
-            key={song?.id}
-            sx={{ border: '1px dotted', borderColor: 'secondary.main', m: 2 }}
-          >
+          <Box key={song?.id}>
             <SongComponent song={song} />
           </Box>
         ))}

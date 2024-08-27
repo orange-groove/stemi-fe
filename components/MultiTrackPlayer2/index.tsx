@@ -83,13 +83,24 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
   }, [playPause])
 
   return (
-    <Box sx={{ bgcolor: 'background.paper', borderRadius: 2, width: 1, p: 2 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        width: 1,
+        p: 2,
+      }}
+    >
       <TransportBar
         isPlaying={isPlaying}
         backToStart={backToStart}
         playPause={playPause}
         skipBackward={skipBackward}
         skipForward={skipForward}
+        ws={waveSurferInstances}
       />
       <List disablePadding>
         {song?.tracks?.map((track, index) => (
@@ -113,6 +124,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
       <KeySignatureBar
         ws={waveSurferInstances[0]}
         keyChanges={song?.keyChanges}
+        tempoChanges={song?.tempoChanges}
       />
     </Box>
   )

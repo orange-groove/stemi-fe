@@ -18,6 +18,8 @@ const CCM = {
   B: '#D84F7F', // Subtle pink
 }
 
+const OFFSET = 0.0 // Offset to sync with the first beat
+
 interface KeyChange {
   beat: number
   key: string
@@ -40,15 +42,45 @@ export default function KeySignatureBar({
   tempoChanges,
 }: Props) {
   const [highlightedKey, setHighlightedKey] = useState<string>()
+  const keyChangesRef = useRef<HTMLDivElement[]>([])
   const timeDisplayRef = useRef<HTMLDivElement>(null)
   const keyDisplayRef = useRef<HTMLDivElement>(null)
   const currentTimeRef = useRef(0)
   const currentBeatRef = useRef<number>(0)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const keyBarRef = useRef<HTMLDivElement>(null)
+  const keyWidth = 40 // Width of each key cell
+
+  const updateScrollPosition = (
+    currentTime: number,
+    duration: number,
+    beat: number,
+  ) => {
+    // Calculate the scroll position
+    if (keyBarRef.current && containerRef.current) {
+      const totalBeats = Object.keys(keyChanges).length
+      const totalWidth = totalBeats * (keyWidth + 10)
+      const progress = currentTime / duration
+      const scrollPosition =
+        progress * (totalWidth - containerRef.current.clientWidth)
+
+      keyBarRef.current.style.transform = `translateX(-${scrollPosition}px)`
+      if (keyChangesRef.current?.[beat]) {
+        keyChangesRef.current[beat].style.opacity = 1
+      }
+      keyChangesRef.current.forEach((el, i) => {
+        if (i !== beat) {
+          el.style.opacity = 0.5
+        }
+      })
+    }
+  }
 
   useEffect(() => {
     const updateCurrentTime = () => {
-      const currentTime = ws?.getCurrentTime() || 0
+      const currentTime = ws?.getCurrentTime() + OFFSET
+      const duration = ws?.getDuration() || 1 // Avoid division by zero
+
       const tempo = tempoChanges?.[0]?.tempo || 120 // Default tempo if not provided
       const beatInterval = 60 / tempo
       const beat = Math.floor(currentTime / beatInterval)
@@ -66,6 +98,8 @@ export default function KeySignatureBar({
       }
 
       setHighlightedKey(keyChange)
+
+      updateScrollPosition(currentTime, duration, beat)
     }
 
     if (ws) {
@@ -81,43 +115,67 @@ export default function KeySignatureBar({
 
   return (
     keyChanges && (
-      <>
+      <Box
+        ref={containerRef}
+        sx={{
+          position: 'relative',
+          overflow: 'hidden',
+          width: '100%',
+          whiteSpace: 'nowrap',
+        }}
+      >
         <Box
-          sx={{ display: 'flex', gap: 2, overflow: 'hidden', width: '20000px' }}
+          ref={keyBarRef}
+          sx={{
+            display: 'flex',
+            gap: 0.5,
+            whiteSpace: 'nowrap',
+            width: 'fit-content',
+            height: '100%',
+            position: 'relative',
+            transition: 'transform 0.01s ease-in-out',
+            left: `100px`,
+          }}
         >
-          {Object.entries(keyChanges).map(([beat, key]) => (
+          {Object.entries(keyChanges).map(([beat, keyChange]) => (
             <Box
+              ref={(el) => (keyChangesRef.current[beat] = el)}
               key={beat}
               sx={{
-                bgcolor: CCM[key] || '#ccc', // Default color if key is not found
+                bgcolor: CCM[keyChange] || '#ccc',
                 color: 'white',
                 borderRadius: 2,
+                border: '1px solid white',
                 p: 0.5,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 40,
+                width: keyWidth,
                 height: 40,
-                opacity: currentBeatRef.current === Number(beat) ? 1 : 0.5,
-                zoom: currentBeatRef.current === Number(beat) ? 1.5 : 1,
+                transition: 'transform 0.01s ease-in-out',
+                opacity: 0.5,
               }}
             >
-              {key}
+              {keyChange}
             </Box>
           ))}
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
-          <div ref={timeDisplayRef}>
-            {/* Initial content or placeholder */}
-            Current Time: 0.00s
-          </div>
-          <div ref={keyDisplayRef}>
-            {/* Initial content or placeholder */}
-            Key: Unknown
-          </div>
+        <Box sx={{ position: 'absolute', top: 0, left: 0, width: '100%' }}>
+          {/* Highlighted Key Position Marker */}
+          <Box
+            sx={{
+              position: 'absolute',
+              left: `calc(${(Object.keys(keyChanges).length * keyWidth) / 2}px - 20px)`,
+              width: 40,
+              height: '100%',
+              bgcolor: 'rgba(255,255,255,0.5)',
+              border: '1px solid black',
+              zIndex: 10,
+            }}
+          />
         </Box>
-      </>
+      </Box>
     )
   )
 }
