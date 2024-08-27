@@ -30,8 +30,8 @@ interface TempoChange {
 
 interface Props {
   ws: WaveSurfer
-  keyChanges: { [beat: number]: KeyChange }
-  tempoChanges: TempoChange[]
+  keyChanges: any
+  tempoChanges: any
 }
 
 export default function KeySignatureBar({
@@ -44,6 +44,7 @@ export default function KeySignatureBar({
   const keyDisplayRef = useRef<HTMLDivElement>(null)
   const currentTimeRef = useRef(0)
   const currentBeatRef = useRef<number>(0)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     const updateCurrentTime = () => {
@@ -64,7 +65,7 @@ export default function KeySignatureBar({
         keyDisplayRef.current.textContent = keyChange?.key
       }
 
-      setHighlightedKey(keyChange?.key)
+      setHighlightedKey(keyChange)
     }
 
     if (ws) {
@@ -84,11 +85,11 @@ export default function KeySignatureBar({
         <Box
           sx={{ display: 'flex', gap: 2, overflow: 'hidden', width: '20000px' }}
         >
-          {Object.entries(keyChanges).map(([beat, keyChange]) => (
+          {Object.entries(keyChanges).map(([beat, key]) => (
             <Box
               key={beat}
               sx={{
-                bgcolor: CCM[keyChange.key] || '#ccc', // Default color if key is not found
+                bgcolor: CCM[key] || '#ccc', // Default color if key is not found
                 color: 'white',
                 borderRadius: 2,
                 p: 0.5,
@@ -101,10 +102,11 @@ export default function KeySignatureBar({
                 zoom: currentBeatRef.current === Number(beat) ? 1.5 : 1,
               }}
             >
-              {keyChange.key}
+              {key}
             </Box>
           ))}
         </Box>
+
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
           <div ref={timeDisplayRef}>
             {/* Initial content or placeholder */}

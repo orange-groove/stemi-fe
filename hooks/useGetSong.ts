@@ -41,8 +41,9 @@ export default function useSongById(songId: string) {
             const key = data.key_changes.find((kc) => kc.beat === i)
             if (key) {
               previousKey = key.key
+              return key.key
             }
-            return key || previousKey
+            return previousKey
           })
 
         setSong({
