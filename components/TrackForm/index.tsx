@@ -70,8 +70,6 @@ const SongForm = () => {
             variant="outlined"
             fullWidth
             margin="normal"
-            multiline
-            rows={4}
             error={!!errors.description}
             helperText={errors.description ? errors.description.message : ''}
           />

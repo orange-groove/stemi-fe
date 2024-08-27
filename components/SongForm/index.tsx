@@ -26,7 +26,7 @@ interface Props {
 }
 interface FormData {
   name: string
-  description: string
+  artist: string
   file: FileList
   stems: string[]
 }
@@ -49,7 +49,7 @@ const SongForm = ({ onComplete }: Props) => {
     addSongMutation.mutate(
       {
         name: data.name,
-        description: data.description,
+        artist: data.artist,
         file: data.file, // Ensure the file is correctly passed
         stems: data.stems, // Pass the selected stems
         userId: user?.id,
@@ -95,21 +95,19 @@ const SongForm = ({ onComplete }: Props) => {
       />
 
       <Controller
-        name="description"
+        name="artist"
         control={control}
         defaultValue=""
         rules={{ required: 'Description is required' }}
         render={({ field }) => (
           <TextField
             {...field}
-            label="Description"
+            label="Artist"
             variant="outlined"
             fullWidth
             margin="normal"
-            multiline
-            rows={4}
-            error={!!errors.description}
-            helperText={errors.description ? errors.description.message : ''}
+            error={!!errors.artist}
+            helperText={errors.artist ? errors.artist.message : ''}
           />
         )}
       />

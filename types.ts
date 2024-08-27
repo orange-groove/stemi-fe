@@ -10,7 +10,7 @@ export interface FilePayload {
 export interface Song {
   id: string
   name: string
-  description: string
+  artist: string
   tracks?: Track[]
   keyChanges?: KeyChanges[]
   tempoChanges?: TempoChanges[]

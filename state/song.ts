@@ -7,6 +7,9 @@ export const songAtom = atom((get) => {
   return {
     tracks,
     name: '',
+    artist: '',
+    keyChanges: [],
+    tempoChanges: [],
   }
 })
 

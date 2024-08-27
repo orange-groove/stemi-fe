@@ -7,14 +7,6 @@ import { userAtom } from '@/state/user'
 import { Song as SongType, TempoChanges } from '@/types'
 import keyBy from 'lodash/keyBy'
 
-interface Song {
-  id: string
-  name: string
-  description: string
-  created_at: string
-  user_id: string
-}
-
 export default function useSongById(songId: string) {
   const [song, setSong] = useState<SongType | null>(null)
   const [loading, setLoading] = useState(true)
@@ -47,7 +39,7 @@ export default function useSongById(songId: string) {
           })
 
         setSong({
-          description: data.description,
+          artist: data.artist,
           id: data.id,
           name: data.name,
           tracks: data.tracks || [],

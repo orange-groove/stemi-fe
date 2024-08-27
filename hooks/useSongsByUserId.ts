@@ -8,7 +8,7 @@ import { userAtom } from '@/state/user'
 interface Song {
   id: string
   name: string
-  description: string
+  artist: string
   created_at: string
   user_id: string
 }

@@ -4,17 +4,17 @@ import { useMutation } from '@tanstack/react-query'
 
 interface AddSongParams {
   name: string
-  description?: string
+  artist?: string
   file: string
   userId: string
 }
 
 const addSong = async (params: AddSongParams) => {
-  const { name, description, file, userId: user_id } = params
+  const { name, artist, file, userId: user_id } = params
 
   const formData = new FormData()
   formData.append('name', name)
-  formData.append('description', description || '')
+  formData.append('artist', artist || '')
   formData.append('file', file)
   formData.append('user_id', user_id)
 

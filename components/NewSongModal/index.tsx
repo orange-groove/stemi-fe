@@ -23,7 +23,7 @@ export default function NewSongModal() {
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-describedby="modal-modal-artist"
       >
         <Box
           sx={{

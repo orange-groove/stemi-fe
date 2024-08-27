@@ -62,7 +62,7 @@ export default function Song({ song }: { song: SongType }) {
             <Typography variant="h5">{song.name}</Typography>
           </Box>
           <Box>
-            <Typography variant="h6">{song.description}</Typography>
+            <Typography variant="h6">{song.artist}</Typography>
           </Box>
           <ListItemIcon>
             <Button onClick={handleDelete} disabled={isPending}>

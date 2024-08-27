@@ -1,14 +1,31 @@
 'use client'
 
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Paper, Typography } from '@mui/material'
 import MultiTrackPlayer from '../MultiTrackPlayer2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
+import useSongFromGenius from '@/hooks/useSongFromGenius'
+import Lyrics from '../Lyrics'
 
 export default function SongDetail() {
   const params = useParams()
 
   const { song, loading, error } = useSongById(params.songId as string)
+  const { data: geniusSongData, isFetching } = useSongFromGenius(
+    song?.name,
+    song?.artist,
+  )
+
+  console.log('genius song', geniusSongData)
+
+  const handleLyricsClick = () => {
+    // geniusSongData?.result?.url
+    window.open(
+      geniusSongData?.result?.url,
+      'winname',
+      'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350',
+    )
+  }
 
   return (
     <Box
@@ -20,8 +37,34 @@ export default function SongDetail() {
         p: 2,
       }}
     >
-      <Typography variant="h4">{song?.name}</Typography>
-      <Typography variant="h5">{song?.description}</Typography>
+      <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
+        <Box>
+          <Paper
+            sx={{
+              backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
+              width: '200px',
+              height: '200px',
+              backgroundSize: 'contain',
+            }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+          <Typography variant="h4">{song?.artist}</Typography>
+          <Typography variant="h5">{song?.name}</Typography>
+          <Button onClick={handleLyricsClick} variant="outlined" sx={{ mt: 1 }}>
+            See Lyrics
+          </Button>
+          <Button
+            onClick={handleLyricsClick}
+            variant="outlined"
+            sx={{ mt: 1 }}
+            disabled
+          >
+            See Tab (coming soon)
+          </Button>
+        </Box>
+      </Box>
+
       <MultiTrackPlayer song={song} />
     </Box>
   )

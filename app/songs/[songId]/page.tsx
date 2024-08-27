@@ -1,4 +1,5 @@
 import SongDetail from '@/components/SongDetail'
+import useSongFromGenius from '@/hooks/useSongFromGenius'
 import { Box } from '@mui/material'
 
 export default function SongDetailPage() {
