@@ -22,7 +22,7 @@ export default function TrackComponent({ track, onReady, onClick }) {
     if (isReady && wavesurfer && typeof onReady === 'function') {
       onReady(wavesurfer)
     }
-  }, [isReady, wavesurfer])
+  }, [isReady, wavesurfer, onReady])
 
   useEffect(() => {
     if (wavesurfer) {

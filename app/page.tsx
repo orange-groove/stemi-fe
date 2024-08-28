@@ -39,9 +39,9 @@ export default function Home() {
             </Typography>
             <Typography variant="body1" paragraph>
               Unleash your inner star with Stemjams, the perfect platform for
-              karaoke lovers and aspiring musicians. Whether you're practicing
-              for a performance or just having fun, our tool provides everything
-              you need to sing and play your heart out.
+              karaoke lovers and aspiring musicians. Whether you&apos;re
+              practicing for a performance or just having fun, our tool provides
+              everything you need to sing and play your heart out.
             </Typography>
             <Button variant="contained" color="secondary" href="/songs">
               Upload you first song
