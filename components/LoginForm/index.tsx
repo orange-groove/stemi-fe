@@ -94,7 +94,7 @@ const LoginForm: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="body2">Don't have an account?</Typography>
+        <Typography variant="body2">Don&apos;t have an account?</Typography>
         <Button
           variant="text"
           onClick={() => router.push('/register')}
