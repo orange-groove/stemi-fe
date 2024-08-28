@@ -6,12 +6,23 @@ import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
 import Lyrics from '../Lyrics'
+import useGetSongInfo from '@/hooks/useGetSongInfo'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/state/user'
 
 export default function SongDetail() {
   const params = useParams()
+  const user = useAtomValue(userAtom)
 
   const { song, loading, error } = useSongById(params.songId as string)
   const { data: geniusSongData, isFetching } = useSongFromGenius(
+    song?.name,
+    song?.artist,
+  )
+
+  const { data: infoData, isFetching: isInfoFetching } = useGetSongInfo(
+    user?.id,
+
     song?.name,
     song?.artist,
   )
@@ -38,17 +49,18 @@ export default function SongDetail() {
       }}
     >
       <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
-        <Box>
-          <Paper
-            sx={{
-              backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
-              width: '200px',
-              height: '200px',
-              backgroundSize: 'contain',
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+        <Paper
+          sx={{
+            backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
+            width: '200px',
+            height: '200px',
+            backgroundSize: 'contain',
+            flexShrink: 0,
+          }}
+        />
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', p: 2, flexShrink: 0 }}
+        >
           <Typography variant="h4">{song?.artist}</Typography>
           <Typography variant="h5">{song?.name}</Typography>
           <Button onClick={handleLyricsClick} variant="outlined" sx={{ mt: 1 }}>
@@ -63,6 +75,7 @@ export default function SongDetail() {
             See Tab (coming soon)
           </Button>
         </Box>
+        <Box>{infoData}</Box>
       </Box>
 
       <MultiTrackPlayer song={song} />

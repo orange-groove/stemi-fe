@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  Box,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  Typography,
-} from '@mui/material'
+import { Box, Button, List, ListItem, Paper, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -16,11 +9,17 @@ import { userAtom } from '@/state/user'
 import { userSongsAtom } from '@/state/song'
 import { Song as SongType } from '@/types'
 import { SyntheticEvent } from 'react'
+import useSongFromGenius from '@/hooks/useSongFromGenius'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
   const setUserSongs = useSetAtom(userSongsAtom)
+
+  const { data: geniusSongData, isFetching } = useSongFromGenius(
+    song?.name,
+    song?.artist,
+  )
 
   const { mutate: deleteSong, isPending, error } = useDeleteSong()
 
@@ -51,28 +50,42 @@ export default function Song({ song }: { song: SongType }) {
         borderRadius: 2,
         width: 1,
         p: [1, 2],
-        border: '1px dotted',
+        border: '3px dashed',
         borderColor: 'secondary.main',
         m: 2,
       }}
     >
+      <Box sx={{ position: 'relative' }}>
+        <Button
+          onClick={handleDelete}
+          disabled={isPending}
+          sx={{ position: 'absolute', top: 6, right: 6 }}
+        >
+          {isPending ? (
+            'Deleting...'
+          ) : (
+            <DeleteForeverIcon sx={{ color: 'secondary.main', fontSize: 60 }} />
+          )}
+        </Button>
+      </Box>
       <List>
         <ListItem onClick={handleClick}>
-          <Box>
-            <Typography variant="h5">{song.name}</Typography>
+          <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
+            <Box>
+              <Paper
+                sx={{
+                  backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
+                  width: '200px',
+                  height: '200px',
+                  backgroundSize: 'contain',
+                }}
+              />
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+              <Typography variant="h4">{song?.artist}</Typography>
+              <Typography variant="h5">{song?.name}</Typography>
+            </Box>
           </Box>
-          <Box>
-            <Typography variant="h6">{song.artist}</Typography>
-          </Box>
-          <ListItemIcon>
-            <Button onClick={handleDelete} disabled={isPending}>
-              {isPending ? (
-                'Deleting...'
-              ) : (
-                <DeleteForeverIcon sx={{ color: 'secondary.main' }} />
-              )}
-            </Button>
-          </ListItemIcon>
         </ListItem>
       </List>
 

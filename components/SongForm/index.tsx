@@ -14,12 +14,14 @@ import {
   MenuItem,
   Checkbox,
   ListItemText,
+  Autocomplete,
 } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
 import { userSongsAtom } from '@/state/song'
+import SongAutocomplete from '../SongAutocomplete'
 
 interface Props {
   onComplete: () => void
@@ -82,7 +84,7 @@ const SongForm = ({ onComplete }: Props) => {
         defaultValue=""
         rules={{ required: 'Name is required' }}
         render={({ field }) => (
-          <TextField
+          <SongAutocomplete
             {...field}
             label="Name"
             variant="outlined"

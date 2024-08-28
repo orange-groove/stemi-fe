@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^2.45.1",
     "@tanstack/react-query": "^5.52.1",
     "@wavesurfer/react": "^1.0.7",
+    "axios": "^1.7.5",
     "hamburger-react": "^2.5.1",
     "jotai": "^2.9.3",
     "lodash": "^4.17.21",
@@ -28,6 +29,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "socket.io-client": "^4.7.5",
+    "string-similarity-js": "^2.1.4",
     "wavesurfer-multitrack": "^0.4.12",
     "wavesurfer.js": "^7.8.4"
   },

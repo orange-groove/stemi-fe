@@ -27,7 +27,15 @@ const SongList = () => {
         <Typography variant="h4">My Library</Typography>
         <NewSongModal />
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '66%',
+          margin: 'auto',
+        }}
+      >
         {userSongs.map((song: Song) => (
           <Box key={song?.id}>
             <SongComponent song={song} />
