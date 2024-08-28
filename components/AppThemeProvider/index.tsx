@@ -4,6 +4,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  ReactNode,
 } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -19,7 +20,7 @@ const ColorModeContext = createContext({
 
 export const useColorMode = () => useContext(ColorModeContext)
 
-const AppThemeProvider = ({ children }) => {
+const AppThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<'light' | 'dark'>('light')
 
   useEffect(() => {

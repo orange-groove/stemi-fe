@@ -7,6 +7,7 @@ interface AddSongParams {
   artist?: string
   file: string
   userId: string
+  stems?: string[]
 }
 
 const addSong = async (params: AddSongParams) => {

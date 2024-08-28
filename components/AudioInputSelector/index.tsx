@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-const AudioInputSelector = ({ onDeviceSelect }) => {
-  const [devices, setDevices] = useState([])
+interface AudioInputSelectorProps {
+  onDeviceSelect: (deviceId: string) => void
+}
+
+const AudioInputSelector = ({ onDeviceSelect }: AudioInputSelectorProps) => {
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
 
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {

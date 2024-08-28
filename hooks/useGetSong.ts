@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import supabase from '@/lib/supabase'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { Song as SongType, TempoChanges } from '@/types'
+import { Song as SongType } from '@/types'
 import keyBy from 'lodash/keyBy'
 
 export default function useSongById(songId: string) {
@@ -30,7 +30,9 @@ export default function useSongById(songId: string) {
         const processedKeyChanges = Array(numBeats)
           .fill(null)
           .map((keyChange, i) => {
-            const key = data.key_changes.find((kc) => kc.beat === i)
+            const key = data.key_changes.find(
+              (kc: { beat: number }) => kc.beat === i,
+            )
             if (key) {
               previousKey = key.key
               return key.key
@@ -45,7 +47,8 @@ export default function useSongById(songId: string) {
           tracks: data.tracks || [],
           userId: data.user_id,
           keyChanges: processedKeyChanges,
-          tempoChanges: keyBy<TempoChanges>(data.tempo_changes, 'beat') || [],
+          // @ts-ignore
+          tempoChanges: keyBy(data.tempo_changes, 'beat') || [],
         })
       }
       setLoading(false)

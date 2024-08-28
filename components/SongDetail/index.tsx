@@ -5,7 +5,6 @@ import MultiTrackPlayer from '../MultiTrackPlayer2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
-import Lyrics from '../Lyrics'
 import useGetSongInfo from '@/hooks/useGetSongInfo'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
@@ -21,10 +20,9 @@ export default function SongDetail() {
   )
 
   const { data: infoData, isFetching: isInfoFetching } = useGetSongInfo(
-    user?.id,
-
-    song?.name,
-    song?.artist,
+    user?.id || '',
+    song?.name || '',
+    song?.artist || '',
   )
 
   console.log('genius song', geniusSongData)
@@ -78,7 +76,7 @@ export default function SongDetail() {
         <Box>{infoData}</Box>
       </Box>
 
-      <MultiTrackPlayer song={song} />
+      {song && <MultiTrackPlayer song={song} />}
     </Box>
   )
 }

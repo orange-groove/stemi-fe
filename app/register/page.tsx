@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { TextField, Button, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import RegisterForm from '@/components/RegistrationForm'
 
 export default function RegisterPage() {

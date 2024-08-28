@@ -1,8 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Box, Button, Typography } from '@mui/material'
 
-export default function TrackComponent({ track, onReady, onClick }) {
+interface TrackComponentProps {
+  track: {
+    name: string
+    url: string
+  }
+  onReady?: (wavesurfer: any) => void
+  onClick: (position: number) => void
+}
+
+export default function TrackComponent({
+  track,
+  onReady,
+  onClick,
+}: TrackComponentProps) {
   const containerRef = useRef(null)
   const [isMuted, setIsMuted] = useState(false)
   const [volume, setVolume] = useState(1) // Default volume is 1 (max)
@@ -34,10 +47,10 @@ export default function TrackComponent({ track, onReady, onClick }) {
     setIsMuted((prev) => !prev)
   }
 
-  const handleClick = (event) => {
+  const handleClick: MouseEventHandler = (event) => {
     const position =
       (event.nativeEvent.offsetX / event.currentTarget.clientWidth) *
-      wavesurfer.getDuration()
+      Number(wavesurfer?.getDuration())
     if (wavesurfer) {
       wavesurfer.seekTo(position / wavesurfer.getDuration())
       onClick(position)

@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { stringSimilarity } from 'string-similarity-js'
 
-export default function useSearchSong(name: string, artist: string) {
-  console.log('genius data', name, artist)
+export default function useSearchSong(name?: string, artist?: string) {
   return useQuery({
     enabled: !!name && !!artist,
     queryKey: ['search-song', name, artist],
@@ -16,7 +15,8 @@ export default function useSearchSong(name: string, artist: string) {
 
         const song = jsonResult.response.hits.find(
           (hit: any) =>
-            stringSimilarity(hit.result.primary_artist_names, artist) > 0.6,
+            stringSimilarity(hit.result.primary_artist_names, artist || '') >
+            0.6,
         )
 
         return song

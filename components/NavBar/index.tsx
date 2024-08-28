@@ -8,18 +8,15 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Paper,
   Tooltip,
   Typography,
 } from '@mui/material'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic'
-import LogoutIcon from '@mui/icons-material/Logout'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import DarkModeToggle from '../DarkModeToggle'
-import { Logout, PersonAdd, Settings } from '@mui/icons-material'
+import { Logout, Settings } from '@mui/icons-material'
 import { useState } from 'react'
 
 export default function NavBar() {

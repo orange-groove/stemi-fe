@@ -2,13 +2,7 @@
 
 import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  CircularProgress,
-} from '@mui/material'
+import { Box, TextField, Button, Typography } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
@@ -36,6 +30,7 @@ const SongForm = () => {
   return (
     <Box
       component="form"
+      // @ts-ignore
       onSubmit={handleSubmit(onSubmit)}
       noValidate
       sx={{ mt: 3 }}
@@ -53,6 +48,7 @@ const SongForm = () => {
             fullWidth
             margin="normal"
             error={!!errors.name}
+            // @ts-ignore
             helperText={errors.name ? errors.name.message : ''}
           />
         )}
@@ -71,6 +67,7 @@ const SongForm = () => {
             fullWidth
             margin="normal"
             error={!!errors.description}
+            // @ts-ignore
             helperText={errors.description ? errors.description.message : ''}
           />
         )}
@@ -94,7 +91,9 @@ const SongForm = () => {
                 hidden
                 accept="audio/*"
                 onChange={(e) => {
+                  // @ts-ignore
                   field.onChange(e.target.files[0])
+                  // @ts-ignore
                   setFileName(e.target.files[0]?.name || '')
                 }}
               />
@@ -104,6 +103,7 @@ const SongForm = () => {
         )}
       />
       {errors.file && (
+        // @ts-ignore
         <Typography style={{ color: 'red' }}>{errors.file.message}</Typography>
       )}
 

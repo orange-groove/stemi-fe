@@ -25,18 +25,20 @@ export default function Song({ song }: { song: SongType }) {
 
   const handleDelete = (e: SyntheticEvent) => {
     e.stopPropagation()
-    deleteSong(
-      { songId: song.id, userId: user.id, tracks: song.tracks },
-      {
-        onSuccess: () => {
-          console.log('Song and associated files deleted successfully.')
-          setUserSongs((prev) => prev.filter((s) => s.id !== song.id))
+    user?.id &&
+      song?.tracks &&
+      deleteSong(
+        { songId: song.id, userId: user.id, tracks: song.tracks },
+        {
+          onSuccess: () => {
+            console.log('Song and associated files deleted successfully.')
+            setUserSongs((prev) => prev.filter((s: any) => s?.id !== song?.id))
+          },
+          onError: (err) => {
+            console.error('Error deleting song:', err)
+          },
         },
-        onError: (err) => {
-          console.error('Error deleting song:', err)
-        },
-      },
-    )
+      )
   }
 
   const handleClick = (e: SyntheticEvent) => {

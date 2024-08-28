@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Box, List, ListItem, Typography } from '@mui/material'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
+import { Box, List, ListItem } from '@mui/material'
 import TransportBar from '../TransportBar'
 import TrackComponent from '../Track'
 import { Song } from '@/types'
@@ -11,7 +11,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
   const [waveSurferInstances, setWaveSurferInstances] = useState<WaveSurfer[]>(
     [],
   )
-  const [syncPosition, setSyncPosition] = useState(0)
+  const [syncPosition, setSyncPosition] = useState<number>(0)
 
   // Play or pause all tracks at once
   const playPause = () => {
@@ -51,7 +51,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
     setWaveSurferInstances((prev) => [...prev, ws])
   }
 
-  const handleTrackClick = (position) => {
+  const handleTrackClick = (position: number) => {
     setSyncPosition(position)
     waveSurferInstances.forEach((ws) => {
       ws.setTime(position)
@@ -67,7 +67,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
   }, [isPlaying, waveSurferInstances])
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === 'Space') {
         event.preventDefault() // Prevent default spacebar scrolling behavior
         playPause()

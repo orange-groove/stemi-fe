@@ -1,11 +1,20 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase' // Adjust the import to your supabase client path
+import { Track } from '@/types'
 
 const useDeleteSong = () => {
   const [error, setError] = useState<string | null>(null)
 
-  const deleteSong = async ({ songId, userId, tracks }) => {
+  const deleteSong = async ({
+    songId,
+    userId,
+    tracks,
+  }: {
+    songId: string
+    userId: string
+    tracks: Track[]
+  }) => {
     try {
       const bucketName = 'yoke-stems' // Adjust to your bucket name
 
@@ -52,7 +61,7 @@ const useDeleteSong = () => {
       }
 
       return { success: true }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error in deleteSong:', err)
       setError(err.message)
       return { success: false, error: err.message }

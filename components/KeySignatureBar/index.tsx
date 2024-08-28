@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import WaveSurfer from 'wavesurfer.js'
-import { useEffect, useRef, useState } from 'react'
+import { Ref, useEffect, useRef, useState } from 'react'
 import _ from 'lodash'
 
 const CCM = {
@@ -41,11 +41,10 @@ export default function KeySignatureBar({
   keyChanges,
   tempoChanges,
 }: Props) {
-  const [highlightedKey, setHighlightedKey] = useState<string>()
-  const keyChangesRef = useRef<HTMLDivElement[]>([])
+  const keyChangesRef = useRef<any[]>([])
   const timeDisplayRef = useRef<HTMLDivElement>(null)
   const keyDisplayRef = useRef<HTMLDivElement>(null)
-  const currentTimeRef = useRef(0)
+  const currentTimeRef = useRef<number>(0)
   const currentBeatRef = useRef<number>(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const keyBarRef = useRef<HTMLDivElement>(null)
@@ -66,11 +65,11 @@ export default function KeySignatureBar({
 
       keyBarRef.current.style.transform = `translateX(-${scrollPosition}px)`
       if (keyChangesRef.current?.[beat]) {
-        keyChangesRef.current[beat].style.opacity = 1
+        keyChangesRef.current[beat].style.opacity = '1'
       }
       keyChangesRef.current.forEach((el, i) => {
         if (i !== beat) {
-          el.style.opacity = 0.5
+          el.style.opacity = '0.5'
         }
       })
     }
@@ -96,8 +95,6 @@ export default function KeySignatureBar({
       if (keyDisplayRef.current) {
         keyDisplayRef.current.textContent = keyChange?.key
       }
-
-      setHighlightedKey(keyChange)
 
       updateScrollPosition(currentTime, duration, beat)
     }
@@ -137,12 +134,12 @@ export default function KeySignatureBar({
             left: `100px`,
           }}
         >
-          {Object.entries(keyChanges).map(([beat, keyChange]) => (
+          {keyChanges.map((keyChange: string, beat: number) => (
             <Box
-              ref={(el) => (keyChangesRef.current[beat] = el)}
+              ref={(el: any) => (keyChangesRef.current[beat] = el)}
               key={beat}
               sx={{
-                bgcolor: CCM[keyChange] || '#ccc',
+                bgcolor: CCM[keyChange as keyof typeof CCM] || '#ccc',
                 color: 'white',
                 borderRadius: 2,
                 border: '1px solid white',

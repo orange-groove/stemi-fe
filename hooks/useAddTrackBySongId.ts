@@ -1,13 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
 
+interface AddTrackBySongIdMutation {
+  userId: string
+  songId: string
+  trackName: string
+  file: File
+  offset: number
+}
+
 export const mutationFn = async ({
   userId,
   songId,
   trackName,
   file,
   offset,
-}) => {
+}: AddTrackBySongIdMutation) => {
   try {
     // Define the bucket and file path
     const bucketName = 'yoke-stems'
@@ -23,6 +31,7 @@ export const mutationFn = async ({
     }
 
     // Get the public URL of the uploaded file
+    // @ts-ignore
     const { data: publicURLData, error: urlError } = supabase.storage
       .from(bucketName)
       .getPublicUrl(filePath)
@@ -64,7 +73,7 @@ export const mutationFn = async ({
     }
 
     return updateData
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error uploading track and updating song:', error.message)
     throw error
   }

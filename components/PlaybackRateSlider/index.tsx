@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import WaveSurfer from 'wavesurfer.js'
-import { Box, Slider, Typography } from '@mui/material'
+import { Box, Slider, SliderProps, Typography } from '@mui/material'
 
 interface Props {
   ws: WaveSurfer[]
 }
 
 export default function PlaybackRateSlider({ ws }: Props) {
-  const [playbackRate, setPlaybackRate] = useState(1) // Default playback rate is 1 (normal speed)
+  const [playbackRate, setPlaybackRate] = useState<number>(1) // Default playback rate is 1 (normal speed)
 
   useEffect(() => {
     if (ws?.length > 0) {
@@ -17,8 +17,11 @@ export default function PlaybackRateSlider({ ws }: Props) {
     }
   }, [playbackRate, ws])
 
-  const handlePlaybackRateChange = (event, newValue) => {
-    setPlaybackRate(newValue)
+  const handlePlaybackRateChange: SliderProps['onChange'] = (
+    event,
+    newValue,
+  ) => {
+    setPlaybackRate(newValue as number)
   }
 
   return (

@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { userSongsAtom } from '@/state/song'
 
 const SongList = () => {
@@ -14,6 +14,7 @@ const SongList = () => {
   const [userSongs, setUserSongs] = useAtom(userSongsAtom)
 
   useEffect(() => {
+    // @ts-ignore
     setUserSongs(songs)
   }, [songs])
 

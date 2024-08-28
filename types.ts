@@ -12,7 +12,7 @@ export interface Song {
   name: string
   artist: string
   tracks?: Track[]
-  keyChanges?: KeyChanges[]
-  tempoChanges?: TempoChanges[]
+  keyChanges?: string[]
+  tempoChanges?: any[]
   userId?: string
 }

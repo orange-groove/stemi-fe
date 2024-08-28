@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button, ButtonProps, CircularProgress } from '@mui/material'
 
 export default function LoadingButton({
   isLoading,
@@ -9,7 +9,7 @@ export default function LoadingButton({
   isLoading: boolean
   children: React.ReactNode
   loadingText?: string
-}) {
+} & ButtonProps) {
   return (
     <Box sx={{ m: 1, position: 'relative' }}>
       <Button variant="contained" disabled={isLoading} {...props}>

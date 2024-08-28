@@ -1,11 +1,9 @@
 'use client'
 
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Providers from '@/components/Providers'
 import NavBar from '@/components/NavBar'
-import { Box, Container } from '@mui/material'
-import Hamburger from 'hamburger-react'
+import { Box } from '@mui/material'
 
 import './globals.css'
 import '@fontsource/roboto/300.css'
@@ -13,8 +11,6 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import AuthGuard from '@/components/AuthGuard'
-import DarkModeToggle from '@/components/DarkModeToggle'
-import { useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 

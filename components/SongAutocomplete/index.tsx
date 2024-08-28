@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import MusicNoteIcon from '@mui/icons-material/MusicNote'
-import { Box, CircularProgress, Grid, Typography } from '@mui/material'
+import { CircularProgress, Grid, Typography } from '@mui/material'
 
-interface SongAutocompleteProps {
-  artist: string[]
-}
-
-const SongAutocomplete = ({ artist }: SongAutocompleteProps) => {
+const SongAutocomplete = (props: any) => {
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const handleSearch = async (event) => {
+  const handleSearch = async (event: any) => {
     const query = event.target.value
     if (query?.length < 3) return // Wait until the user has typed at least 3 characters
 
@@ -27,7 +23,7 @@ const SongAutocomplete = ({ artist }: SongAutocompleteProps) => {
         },
       })
 
-      const songs = response.data.response.hits.map((hit) => ({
+      const songs = response.data.response.hits.map((hit: any) => ({
         title: hit.result.full_title,
         id: hit.result.id,
       }))
@@ -43,7 +39,7 @@ const SongAutocomplete = ({ artist }: SongAutocompleteProps) => {
   return (
     <Autocomplete
       options={options}
-      getOptionLabel={(option) => option.title}
+      getOptionLabel={(option: any) => option.title}
       loading={loading}
       freeSolo
       onInputChange={handleSearch}
@@ -65,7 +61,7 @@ const SongAutocomplete = ({ artist }: SongAutocompleteProps) => {
           }}
         />
       )}
-      renderOption={(props, option) => {
+      renderOption={(props, option: any) => {
         const { key, ...optionProps } = props
 
         return (
@@ -79,13 +75,14 @@ const SongAutocomplete = ({ artist }: SongAutocompleteProps) => {
                 sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}
               >
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {option.title}
+                  {option?.title}
                 </Typography>
               </Grid>
             </Grid>
           </li>
         )
       }}
+      {...props}
     />
   )
 }
