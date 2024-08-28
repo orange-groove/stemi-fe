@@ -1,3 +1,5 @@
+'use client'
+
 import SongDetail from '@/components/SongDetail'
 import { Box } from '@mui/material'
 
