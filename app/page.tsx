@@ -58,7 +58,7 @@ export default function Home() {
               <Typography variant="h6" component="h3" gutterBottom>
                 Key Features:
               </Typography>
-              <Typography variant="body1" paragraph>
+              <Box>
                 <ul>
                   <li>
                     Karaoke Mode: Sing along to your favorite tracks with
@@ -89,7 +89,7 @@ export default function Home() {
                     from anywhere.
                   </li>
                 </ul>
-              </Typography>
+              </Box>
               <Typography variant="body1" paragraph>
                 Start your musical journey today and take your performances to
                 the next level.

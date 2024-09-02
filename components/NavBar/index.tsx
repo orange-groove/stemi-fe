@@ -18,12 +18,14 @@ import { userAtom } from '@/state/user'
 import DarkModeToggle from '../DarkModeToggle'
 import { Logout, Settings } from '@mui/icons-material'
 import { useState } from 'react'
+import { useUser } from '@/hooks/useAuth'
 
 export default function NavBar() {
   const router = useRouter()
-  const user = useAtomValue(userAtom)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+
+  const user = useUser()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -36,6 +38,11 @@ export default function NavBar() {
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleProfileClick = () => {
+    router.push('/profile')
+    handleClose()
   }
 
   return (
@@ -88,6 +95,7 @@ export default function NavBar() {
             >
               <Avatar
                 alt={user?.user_metadata.name}
+                src={user?.user_metadata.avatar_url}
                 sx={{ width: 32, height: 32 }}
               />
             </IconButton>
@@ -137,7 +145,7 @@ export default function NavBar() {
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleProfileClick}>
             <Avatar /> Profile
           </MenuItem>
 

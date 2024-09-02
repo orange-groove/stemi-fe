@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, List, ListItem } from '@mui/material'
 import TransportBar from '../TransportBar'
 import TrackComponent from '../Track'
@@ -11,7 +11,6 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
   const [waveSurferInstances, setWaveSurferInstances] = useState<WaveSurfer[]>(
     [],
   )
-  const [syncPosition, setSyncPosition] = useState<number>(0)
 
   // Play or pause all tracks at once
   const playPause = () => {
@@ -52,7 +51,6 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
   }
 
   const handleTrackClick = (position: number) => {
-    setSyncPosition(position)
     waveSurferInstances.forEach((ws) => {
       ws.setTime(position)
     })
@@ -105,7 +103,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
       <List disablePadding>
         {song?.tracks?.map((track, index) => (
           <ListItem
-            key={track.url}
+            key={track.name}
             sx={{
               display: 'flex',
               justifyContent: 'space-between',

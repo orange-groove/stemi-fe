@@ -30,7 +30,11 @@ const LoginForm: React.FC = () => {
     })()
   }, [loginMutation.isSuccess, router])
 
-  const handleGoogleLogin = () => {}
+  const handleGoogleLogin = () => {
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit}>

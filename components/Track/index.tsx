@@ -1,12 +1,9 @@
-import React, { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Box, Button, Typography } from '@mui/material'
 
 interface TrackComponentProps {
-  track: {
-    name: string
-    url: string
-  }
+  track: { name: string; url: string }
   onReady?: (wavesurfer: any) => void
   onClick: (position: number) => void
 }
@@ -35,7 +32,7 @@ export default function TrackComponent({
     if (isReady && wavesurfer && typeof onReady === 'function') {
       onReady(wavesurfer)
     }
-  }, [isReady, wavesurfer, onReady])
+  }, [isReady, wavesurfer])
 
   useEffect(() => {
     if (wavesurfer) {
@@ -47,11 +44,11 @@ export default function TrackComponent({
     setIsMuted((prev) => !prev)
   }
 
-  const handleClick: MouseEventHandler = (event) => {
-    const position =
-      (event.nativeEvent.offsetX / event.currentTarget.clientWidth) *
-      Number(wavesurfer?.getDuration())
+  const handleClick = (event: any) => {
     if (wavesurfer) {
+      const position =
+        (event.nativeEvent.offsetX / event.currentTarget.clientWidth) *
+        wavesurfer.getDuration()
       wavesurfer.seekTo(position / wavesurfer.getDuration())
       onClick(position)
     }

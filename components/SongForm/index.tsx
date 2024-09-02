@@ -84,14 +84,13 @@ const SongForm = ({ onComplete }: Props) => {
         defaultValue=""
         rules={{ required: 'Name is required' }}
         render={({ field }) => (
-          <SongAutocomplete
+          <TextField
             {...field}
             label="Name"
             variant="outlined"
             fullWidth
             margin="normal"
             error={!!errors.name}
-            helperText={errors.name ? errors.name.message : ''}
           />
         )}
       />
@@ -109,7 +108,6 @@ const SongForm = ({ onComplete }: Props) => {
             fullWidth
             margin="normal"
             error={!!errors.artist}
-            helperText={<Box>errors.artist?.message</Box>}
           />
         )}
       />

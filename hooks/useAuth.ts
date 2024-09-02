@@ -1,7 +1,9 @@
 'use client'
 
 import config from '@/config'
+import supabase from '@/lib/supabase'
 import { useMutation } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 
 export function useRegister() {
   return useMutation({
@@ -33,4 +35,15 @@ export function useLogin() {
       return await res.json()
     },
   })
+}
+
+export function useUser() {
+  const [user, setUser] = useState<any>(null)
+  useEffect(() => {
+    ;(async () => {
+      const u = await supabase.auth.getUser()
+      setUser(u.data.user)
+    })()
+  }, [])
+  return user
 }

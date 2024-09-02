@@ -1,40 +1,44 @@
-import React, { useState } from 'react'
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
+import React, { useState, useCallback } from 'react'
+import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import MusicNoteIcon from '@mui/icons-material/MusicNote'
 import { CircularProgress, Grid, Typography } from '@mui/material'
+import debounce from 'lodash/debounce'
 
 const SongAutocomplete = (props: any) => {
   const [options, setOptions] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const handleSearch = async (event: any) => {
-    const query = event.target.value
-    if (query?.length < 3) return // Wait until the user has typed at least 3 characters
+  // Define a debounced version of the handleSearch function
+  const handleSearch = useCallback(
+    debounce(async (e, value: string) => {
+      if (value?.length < 3) return // Wait until the user has typed at least 3 characters
 
-    setLoading(true)
+      setLoading(true)
 
-    try {
-      const response = await axios.get('https://api.genius.com/search', {
-        params: {
-          q: query,
-          access_token: process.env.NEXT_PUBLIC_GENIUS_ACCESS_TOKEN,
-        },
-      })
+      try {
+        const response = await axios.get('https://api.genius.com/search', {
+          params: {
+            q: value,
+            access_token: process.env.NEXT_PUBLIC_GENIUS_ACCESS_TOKEN,
+          },
+        })
 
-      const songs = response.data.response.hits.map((hit: any) => ({
-        title: hit.result.full_title,
-        id: hit.result.id,
-      }))
+        const songs = response.data.response.hits.map((hit: any) => ({
+          title: hit.result.full_title,
+          id: hit.result.id,
+        }))
 
-      setOptions(songs)
-    } catch (error) {
-      console.error('Error fetching data from Genius API:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+        setOptions(songs)
+      } catch (error) {
+        console.error('Error fetching data from Genius API:', error)
+      } finally {
+        setLoading(false)
+      }
+    }, 500), // Adjust debounce delay as needed
+    [],
+  )
 
   return (
     <Autocomplete
@@ -43,6 +47,7 @@ const SongAutocomplete = (props: any) => {
       loading={loading}
       freeSolo
       onInputChange={handleSearch}
+      filterOptions={(x) => x}
       renderInput={(params) => (
         <TextField
           {...params}
