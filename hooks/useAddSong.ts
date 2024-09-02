@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
-
+import config from '@/config'
 interface AddSongParams {
   name: string
   artist?: string
@@ -21,7 +21,7 @@ const addSong = async (params: AddSongParams) => {
 
   // Perform upload logic here
   const response = await fetch(
-    `http://localhost:5000/api/v1/user/${user_id}/song`,
+    `${config.baseApiUrl}/api/v1/user/${user_id}/song`,
     {
       method: 'POST',
       body: formData,

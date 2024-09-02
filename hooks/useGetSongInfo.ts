@@ -1,3 +1,4 @@
+import config from '@/config'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useGetSongInfo(
@@ -12,7 +13,7 @@ export default function useGetSongInfo(
     queryFn: async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/v1/user/${user_id}/song/info?name=${name}&artist=${artist}`,
+          `${config.baseApiUrl}/api/v1/user/${user_id}/song/info?name=${name}&artist=${artist}`,
         )
 
         const jsonResult = await res.json()
