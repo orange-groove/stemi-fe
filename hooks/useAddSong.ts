@@ -20,13 +20,10 @@ const addSong = async (params: AddSongParams) => {
   formData.append('user_id', user_id)
 
   // Perform upload logic here
-  const response = await fetch(
-    `${config.baseApiUrl}/api/v1/user/${user_id}/song`,
-    {
-      method: 'POST',
-      body: formData,
-    },
-  )
+  const response = await fetch(`${config.baseApiUrl}/user/${user_id}/song`, {
+    method: 'POST',
+    body: formData,
+  })
 
   if (!response.ok) {
     throw new Error('Error uploading song')

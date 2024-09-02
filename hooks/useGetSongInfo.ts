@@ -13,7 +13,7 @@ export default function useGetSongInfo(
     queryFn: async () => {
       try {
         const res = await fetch(
-          `${config.baseApiUrl}/api/v1/user/${user_id}/song/info?name=${name}&artist=${artist}`,
+          `${config.baseApiUrl}/user/${user_id}/song/info?name=${name}&artist=${artist}`,
         )
 
         const jsonResult = await res.json()
