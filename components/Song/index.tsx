@@ -1,6 +1,15 @@
 'use client'
 
-import { Box, Button, List, ListItem, Paper, Typography } from '@mui/material'
+import {
+  Box,
+  IconButton,
+  List,
+  ListItem,
+  Menu,
+  MenuItem,
+  Paper,
+  Typography,
+} from '@mui/material'
 import { useRouter } from 'next/navigation'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
@@ -8,13 +17,26 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import { userSongsAtom } from '@/state/song'
 import { Song as SongType } from '@/types'
-import { SyntheticEvent } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
+import MenuIcon from '@mui/icons-material/Menu'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
   const setUserSongs = useSetAtom(userSongsAtom)
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const isMenuOpen = Boolean(anchorEl)
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    console.log('Menu open triggered') // Added logging
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   const { data: geniusSongData, isFetching } = useSongFromGenius(
     song?.name,
@@ -25,6 +47,7 @@ export default function Song({ song }: { song: SongType }) {
 
   const handleDelete = (e: SyntheticEvent) => {
     e.stopPropagation()
+    handleMenuClose()
     user?.id &&
       song?.tracks &&
       deleteSong(
@@ -42,6 +65,7 @@ export default function Song({ song }: { song: SongType }) {
   }
 
   const handleClick = (e: SyntheticEvent) => {
+    e.stopPropagation()
     router.push(`/songs/${song.id}`)
   }
 
@@ -58,17 +82,24 @@ export default function Song({ song }: { song: SongType }) {
       }}
     >
       <Box sx={{ position: 'relative' }}>
-        <Button
-          onClick={handleDelete}
+        <IconButton
+          onClick={handleMenuOpen}
           disabled={isPending}
           sx={{ position: 'absolute', top: 6, right: 6 }}
         >
-          {isPending ? (
-            'Deleting...'
-          ) : (
-            <DeleteForeverIcon sx={{ color: 'secondary.main', fontSize: 60 }} />
-          )}
-        </Button>
+          <MenuIcon sx={{ color: 'secondary.main', fontSize: 60 }} />
+        </IconButton>
+        <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
+          <MenuItem onClick={handleDelete} disabled={isPending}>
+            {isPending ? (
+              'Deleting...'
+            ) : (
+              <DeleteForeverIcon
+                sx={{ color: 'secondary.main', fontSize: 60 }}
+              />
+            )}
+          </MenuItem>
+        </Menu>
       </Box>
       <List>
         <ListItem onClick={handleClick}>
@@ -86,6 +117,19 @@ export default function Song({ song }: { song: SongType }) {
             <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
               <Typography variant="h4">{song?.artist}</Typography>
               <Typography variant="h5">{song?.name}</Typography>
+              <Typography variant="body1">
+                Created At:{' '}
+                {song.createdAt
+                  ? new Date(song.createdAt).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                      hour12: true,
+                    })
+                  : 'N/A'}
+              </Typography>
             </Box>
           </Box>
         </ListItem>

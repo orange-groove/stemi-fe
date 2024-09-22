@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import WaveSurfer from 'wavesurfer.js'
-import { Ref, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import _ from 'lodash'
 
 const CCM = {

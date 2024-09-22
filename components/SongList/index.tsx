@@ -1,22 +1,49 @@
 'use client'
 
-import React, { useEffect } from 'react'
-import { Box, Typography } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material'
 import SongComponent from '@/components/Song'
 import useSongsByUserId from '@/hooks/useSongsByUserId'
 import { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
-import { useAtom } from 'jotai'
-import { userSongsAtom } from '@/state/song'
 
 const SongList = () => {
   const { songs, loading, error } = useSongsByUserId()
-  const [userSongs, setUserSongs] = useAtom(userSongsAtom)
+  const [sortedSongs, setSortedSongs] = useState<Song[]>([])
+  const [sort, setSort] = useState('date-desc')
 
   useEffect(() => {
-    // @ts-ignore
-    setUserSongs(songs)
+    if (songs) {
+      sortSongs(sort)
+    }
   }, [songs])
+
+  const sortSongs = (sort: string) => {
+    if (sort === 'date-asc') {
+      setSortedSongs(
+        songs.toSorted(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        ),
+      )
+    } else if (sort === 'date-desc') {
+      setSortedSongs(
+        songs.toSorted(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        ),
+      )
+    } else if (sort === 'name') {
+      setSortedSongs(songs.toSorted((a, b) => a.name.localeCompare(b.name)))
+    }
+  }
 
   if (loading) return <div>Loading...</div>
 
@@ -26,6 +53,23 @@ const SongList = () => {
     <>
       <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
         <Typography variant="h4">My Library</Typography>
+
+        <FormControl>
+          <InputLabel id="sort-label">Sort By</InputLabel>
+          <Select
+            labelId="sort-label"
+            id="sort-select"
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value as string)
+              sortSongs(e.target.value as string)
+            }}
+          >
+            <MenuItem value="date-asc">Date (asc)</MenuItem>
+            <MenuItem value="date-desc">Date (desc)</MenuItem>
+            <MenuItem value="name">Name</MenuItem>
+          </Select>
+        </FormControl>
         <NewSongModal />
       </Box>
       <Box
@@ -37,7 +81,7 @@ const SongList = () => {
           margin: 'auto',
         }}
       >
-        {userSongs.map((song: Song) => (
+        {sortedSongs.map((song: Song) => (
           <Box key={song?.id}>
             <SongComponent song={song} />
           </Box>

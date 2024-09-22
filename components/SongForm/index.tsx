@@ -19,7 +19,6 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
 import { userSongsAtom } from '@/state/song'
-import SongAutocomplete from '../SongAutocomplete'
 
 interface Props {
   onComplete: () => void

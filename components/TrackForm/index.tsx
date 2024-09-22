@@ -1,31 +1,29 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Box, TextField, Button, Typography } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
-import { useAtomValue } from 'jotai'
-import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
-
-interface FormData {
-  name: string
-  url: FileList
-}
+import { useRouter } from 'next/navigation'
 
 const SongForm = () => {
   const [fileName, setFileName] = useState('')
   const {
     handleSubmit,
     control,
-    reset,
     formState: { errors },
   } = useForm()
+  const router = useRouter()
 
   const addSongMutation = useAddSong()
-  const user = useAtomValue(userAtom)
 
-  const onSubmit = (data: FormData) => {}
+  useEffect(() => {
+    if (addSongMutation.isSuccess) {
+      setFileName('')
+      router.push(`/songs/${addSongMutation.data.id}`)
+    }
+  }, [addSongMutation.isSuccess])
 
   return (
     <Box

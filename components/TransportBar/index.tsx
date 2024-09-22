@@ -52,59 +52,60 @@ export default function TransportBar({
   }, [ws])
 
   return (
-    <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
-        <Box>
-          <Tooltip title="Play">
-            <Button onClick={playPause}>
-              {isPlaying ? (
-                <PauseIcon color="warning" sx={{ fontSize: iconSize }} />
-              ) : (
-                <PlayArrowIcon color="success" sx={{ fontSize: iconSize }} />
-              )}
-            </Button>
-          </Tooltip>
-
-          <Tooltip title="Back to start">
-            <Button onClick={backToStart}>
-              <FirstPageIcon sx={{ fontSize: iconSize }}>
-                Back to Start
-              </FirstPageIcon>{' '}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Skip back 10s">
-            <Button onClick={skipBackward}>
-              <FastRewindIcon sx={{ fontSize: iconSize }}>
-                Skip Backward
-              </FastRewindIcon>
-            </Button>
-          </Tooltip>
-          <Tooltip title="Skip forward 10s">
-            <Button onClick={skipForward}>
-              <FastForwardIcon sx={{ fontSize: iconSize }}>
-                Skip Forward
-              </FastForwardIcon>
-            </Button>
-          </Tooltip>
-        </Box>
-        <Tooltip title="Time display">
-          <Box sx={{ width: '75px' }}>
-            <Box>Time</Box>
-            <Box ref={timeDisplayRef} sx={{ cursor: 'pointer' }}>
-              0.00s
-            </Box>
-          </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        height: '50px',
+      }}
+    >
+      <Box>
+        <Tooltip title="Play">
+          <Button onClick={playPause}>
+            {isPlaying ? (
+              <PauseIcon color="warning" sx={{ fontSize: iconSize }} />
+            ) : (
+              <PlayArrowIcon color="success" sx={{ fontSize: iconSize }} />
+            )}
+          </Button>
         </Tooltip>
-        <Tooltip title="Change playback speed">
-          <PlaybackRateSlider ws={ws} />
+
+        <Tooltip title="Back to start">
+          <Button onClick={backToStart}>
+            <FirstPageIcon sx={{ fontSize: iconSize }}>
+              Back to Start
+            </FirstPageIcon>{' '}
+          </Button>
+        </Tooltip>
+        <Tooltip title="Skip back 10s">
+          <Button onClick={skipBackward}>
+            <FastRewindIcon sx={{ fontSize: iconSize }}>
+              Skip Backward
+            </FastRewindIcon>
+          </Button>
+        </Tooltip>
+        <Tooltip title="Skip forward 10s">
+          <Button onClick={skipForward}>
+            <FastForwardIcon sx={{ fontSize: iconSize }}>
+              Skip Forward
+            </FastForwardIcon>
+          </Button>
         </Tooltip>
       </Box>
+      <Tooltip title="Time display">
+        <Box sx={{ width: '75px' }}>
+          <Box>Time</Box>
+          <Box ref={timeDisplayRef} sx={{ cursor: 'pointer' }}>
+            0.00s
+          </Box>
+        </Box>
+      </Tooltip>
+      <Tooltip title="Change playback speed">
+        <PlaybackRateSlider ws={ws} />
+      </Tooltip>
     </Box>
   )
 }

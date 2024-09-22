@@ -13,8 +13,6 @@ import {
 } from '@mui/material'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { useAtomValue } from 'jotai'
-import { userAtom } from '@/state/user'
 import DarkModeToggle from '../DarkModeToggle'
 import { Logout, Settings } from '@mui/icons-material'
 import { useState } from 'react'

@@ -15,4 +15,5 @@ export interface Song {
   keyChanges?: string[]
   tempoChanges?: any[]
   userId?: string
+  createdAt: string
 }

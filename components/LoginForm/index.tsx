@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useLogin } from '@/hooks/useAuth' // Adjust the import path as necessary
 import { Box, Button, TextField, Typography } from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
 import supabase from '@/lib/supabase'
@@ -10,7 +9,6 @@ import supabase from '@/lib/supabase'
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const loginMutation = useLogin()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +26,7 @@ const LoginForm: React.FC = () => {
         router.push('/')
       }
     })()
-  }, [loginMutation.isSuccess, router])
+  }, [router])
 
   const handleGoogleLogin = () => {
     supabase.auth.signInWithOAuth({

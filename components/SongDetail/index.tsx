@@ -46,7 +46,14 @@ export default function SongDetail() {
         p: 2,
       }}
     >
-      <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          p: 2,
+          flexDirection: { xs: 'column', md: 'row' },
+        }}
+      >
         <Paper
           sx={{
             backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,

@@ -27,7 +27,7 @@ export default function PlaybackRateSlider({ ws }: Props) {
   return (
     <Box>
       <Box sx={{ marginTop: 2 }}>
-        <Typography gutterBottom>Playback Speed</Typography>
+        <Typography>Playback Speed</Typography>
         <Slider
           value={playbackRate}
           onChange={handlePlaybackRateChange}

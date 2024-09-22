@@ -47,6 +47,7 @@ export default function useSongById(songId: string) {
           tracks: data.tracks || [],
           userId: data.user_id,
           keyChanges: processedKeyChanges,
+          createdAt: data.created_at,
           // @ts-ignore
           tempoChanges: keyBy(data.tempo_changes, 'beat') || [],
         })

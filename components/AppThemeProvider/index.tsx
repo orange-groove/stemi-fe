@@ -11,7 +11,6 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { PaletteMode } from '@mui/material'
 import type {} from '@mui/lab/themeAugmentation'
 import '@mui/lab/themeAugmentation'
-import { set } from 'react-hook-form'
 
 const ColorModeContext = createContext({
   toggleColorMode: () => {},

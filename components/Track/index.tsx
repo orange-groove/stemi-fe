@@ -1,6 +1,6 @@
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 interface TrackComponentProps {
   track: { name: string; url: string }
@@ -22,8 +22,10 @@ export default function TrackComponent({
     url: track.url,
     waveColor: 'lightgrey',
     progressColor: 'rgb(100, 0, 100)',
-    height: 40,
-    barHeight: 50,
+    cursorColor: '#FEED59',
+    cursorWidth: 2,
+    barWidth: 2,
+    height: 100,
     normalize: true,
     backend: 'WebAudio',
   })
@@ -58,20 +60,36 @@ export default function TrackComponent({
     <Box
       sx={{
         bgcolor: 'background.paper',
-        borderRadius: 2,
         width: 1,
         display: 'flex',
         alignItems: 'center',
       }}
     >
-      <Typography
-        variant="subtitle1"
-        sx={{ width: '100px', color: 'secondary.main' }}
-      >
-        {track.name}
-      </Typography>
-      <Button onClick={toggleMute}>{isMuted ? 'Unmute' : 'Mute'}</Button>
-      <Box ref={containerRef} onClick={handleClick} sx={{ flexGrow: 1 }} />
+      <Box sx={{ bgcolor: 'background.paper', height: '100px', p: 1 }}>
+        <Typography
+          variant="subtitle1"
+          sx={{ width: '100px', color: 'secondary.main' }}
+        >
+          {track.name}
+        </Typography>
+        <Box
+          onClick={toggleMute}
+          sx={{
+            cursor: 'pointer',
+            color: isMuted ? 'red' : 'primary',
+          }}
+        >
+          M
+        </Box>
+      </Box>
+      <Box
+        ref={containerRef}
+        onClick={handleClick}
+        sx={{
+          flexGrow: 1,
+          borderLeft: '1px solid lightgrey',
+        }}
+      />
     </Box>
   )
 }

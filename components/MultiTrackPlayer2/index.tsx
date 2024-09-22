@@ -85,8 +85,9 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
+        gap: 2,
         bgcolor: 'background.paper',
+        border: '1px solid lightgrey',
         borderRadius: 2,
         width: 1,
         p: 2,
@@ -107,8 +108,10 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              gap: 2,
               width: 1,
+              p: 0,
+              borderBottom: '1px solid lightgrey',
+              borderTop: index === 0 ? '1px solid lightgrey' : 'none',
             }}
           >
             <TrackComponent
