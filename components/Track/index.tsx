@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Box, Typography } from '@mui/material'
+import theme from '@/theme'
 
 interface TrackComponentProps {
   track: { name: string; url: string }
@@ -20,8 +21,8 @@ export default function TrackComponent({
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
-    waveColor: 'lightgrey',
-    progressColor: 'rgb(100, 0, 100)',
+    waveColor: theme.palette.primary.main,
+    progressColor: 'darkgray',
     cursorColor: '#FEED59',
     cursorWidth: 2,
     barWidth: 2,

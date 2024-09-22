@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button, Paper, Typography } from '@mui/material'
-import MultiTrackPlayer from '../MultiTrackPlayer2'
+import MultiTrackPlayer from '../MultiTrackPlayer'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'

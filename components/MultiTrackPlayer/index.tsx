@@ -5,6 +5,7 @@ import TrackComponent from '../Track'
 import { Song } from '@/types'
 import WaveSurfer from 'wavesurfer.js'
 import KeySignatureBar from '../KeySignatureBar'
+import TempoBar from '../TempoBar'
 
 const MultiTrackPlayer = ({ song }: { song: Song }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -127,6 +128,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
         keyChanges={song?.keyChanges}
         tempoChanges={song?.tempoChanges}
       />
+      <TempoBar ws={waveSurferInstances[0]} tempoChanges={song?.tempoChanges} />
     </Box>
   )
 }

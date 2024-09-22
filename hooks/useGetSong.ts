@@ -27,6 +27,7 @@ export default function useSongById(songId: string) {
       } else {
         const numBeats = data.key_changes[data.key_changes.length - 1].beat
         let previousKey = ''
+        let previousTempo = 0
         const processedKeyChanges = Array(numBeats)
           .fill(null)
           .map((keyChange, i) => {
@@ -40,6 +41,19 @@ export default function useSongById(songId: string) {
             return previousKey
           })
 
+        const processedTempoChanges = Array(numBeats)
+          .fill(null)
+          .map((tempoChange, i) => {
+            const tempo = data.tempo_changes.find(
+              (kc: { beat: number }) => kc.beat === i,
+            )
+            if (tempo?.tempo) {
+              previousTempo = tempo.tempo
+              return Math.floor(tempo.tempo)
+            }
+            return Math.floor(previousTempo)
+          })
+
         setSong({
           artist: data.artist,
           id: data.id,
@@ -47,9 +61,8 @@ export default function useSongById(songId: string) {
           tracks: data.tracks || [],
           userId: data.user_id,
           keyChanges: processedKeyChanges,
+          tempoChanges: processedTempoChanges,
           createdAt: data.created_at,
-          // @ts-ignore
-          tempoChanges: keyBy(data.tempo_changes, 'beat') || [],
         })
       }
       setLoading(false)
