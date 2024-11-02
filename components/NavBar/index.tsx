@@ -53,6 +53,7 @@ export default function NavBar() {
           p: 2,
           display: 'flex',
           alignItems: 'space-between',
+          borderBottom: '1px solid lightgray',
         }}
       >
         <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>

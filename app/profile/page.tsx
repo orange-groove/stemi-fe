@@ -16,7 +16,7 @@ const ProfilePage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           minHeight: '100vh',
-          bgcolor: '#f5f5f5',
+          bgcolor: 'background.paper',
           p: 3,
         }}
       >

@@ -1,3 +1,4 @@
+import { pink } from '@mui/material/colors'
 import config from '@/config'
 import { useQuery } from '@tanstack/react-query'
 
@@ -18,9 +19,10 @@ export default function useGetSongInfo(
 
         const jsonResult = await res.json()
 
-        const info = JSON.parse(jsonResult.info).content
+        const info = jsonResult.info.content
+        // const popups = jsonResult.popups.content
 
-        return info
+        return { info }
       } catch (error) {
         console.error('Error:', error)
         return null

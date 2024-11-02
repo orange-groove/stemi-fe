@@ -28,6 +28,7 @@ const SongList = () => {
   const sortSongs = (sort: string) => {
     if (sort === 'date-asc') {
       setSortedSongs(
+        // @ts-ignore
         songs.toSorted(
           (a, b) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
@@ -35,12 +36,14 @@ const SongList = () => {
       )
     } else if (sort === 'date-desc') {
       setSortedSongs(
+        // @ts-ignore
         songs.toSorted(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
       )
     } else if (sort === 'name') {
+      // @ts-ignore
       setSortedSongs(songs.toSorted((a, b) => a.name.localeCompare(b.name)))
     }
   }

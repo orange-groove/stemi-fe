@@ -8,6 +8,7 @@ import useSongFromGenius from '@/hooks/useSongFromGenius'
 import useGetSongInfo from '@/hooks/useGetSongInfo'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
+import InfoPopup from '../InfoPopup'
 
 export default function SongDetail() {
   const params = useParams()
@@ -80,10 +81,11 @@ export default function SongDetail() {
             See Tab (coming soon)
           </Button>
         </Box>
-        <Box>{infoData}</Box>
+        <Box>{infoData?.info}</Box>
       </Box>
 
       {song && <MultiTrackPlayer song={song} />}
+      {/* <InfoPopup popups={infoData?.popups} /> */}
     </Box>
   )
 }
