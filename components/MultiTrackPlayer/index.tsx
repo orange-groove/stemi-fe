@@ -128,7 +128,7 @@ const MultiTrackPlayer = ({ song }: { song: Song }) => {
         keyChanges={song?.keyChanges}
         tempoChanges={song?.tempoChanges}
       />
-      <TempoBar ws={waveSurferInstances[0]} tempoChanges={song?.tempoChanges} />
+      {/* <TempoBar ws={waveSurferInstances[0]} tempoChanges={song?.tempoChanges} /> */}
     </Box>
   )
 }

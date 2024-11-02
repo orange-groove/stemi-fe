@@ -5,7 +5,6 @@ import supabase from '@/lib/supabase'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import { Song as SongType } from '@/types'
-import keyBy from 'lodash/keyBy'
 
 export default function useSongById(songId: string) {
   const [song, setSong] = useState<SongType | null>(null)
@@ -61,7 +60,7 @@ export default function useSongById(songId: string) {
           tracks: data.tracks || [],
           userId: data.user_id,
           keyChanges: processedKeyChanges,
-          tempoChanges: processedTempoChanges,
+          // tempoChanges: processedTempoChanges,
           createdAt: data.created_at,
         })
       }
