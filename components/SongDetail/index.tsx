@@ -8,7 +8,6 @@ import useSongFromGenius from '@/hooks/useSongFromGenius'
 import useGetSongInfo from '@/hooks/useGetSongInfo'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import InfoPopup from '../InfoPopup'
 
 export default function SongDetail() {
   const params = useParams()
@@ -29,7 +28,6 @@ export default function SongDetail() {
   console.log('genius song', geniusSongData)
 
   const handleLyricsClick = () => {
-    // geniusSongData?.result?.url
     window.open(
       geniusSongData?.result?.url,
       'winname',
