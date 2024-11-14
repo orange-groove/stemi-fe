@@ -75,7 +75,7 @@ export default function NavBar() {
           aria-labelledby="list-navigation"
         >
           <Tooltip title="Library">
-            <Box onClick={() => router.push('/songs')}>My Library</Box>
+            <Box onClick={() => router.push('/playlists')}>Playlists</Box>
           </Tooltip>
 
           <Tooltip title="Dark Mode">

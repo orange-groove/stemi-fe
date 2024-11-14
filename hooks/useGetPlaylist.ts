@@ -5,22 +5,22 @@ import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import { useQuery } from '@tanstack/react-query'
 
-export default function useGetSongs(songId: string) {
+export default function useGetPlaylist(playlistId: string) {
   const user = useAtomValue(userAtom)
 
-  const fetchSong = async () => {
+  const fetchPlaylist = async () => {
     const response = await supabase
-      .from('song')
+      .from('playlist')
       .select('*')
-      .eq('id', songId)
+      .eq('id', playlistId)
       .single()
 
     return response.data
   }
 
   return useQuery({
-    queryKey: ['song', songId],
-    queryFn: fetchSong,
-    enabled: !!user?.id && !!songId,
+    queryKey: ['playlist', playlistId],
+    enabled: !!user?.id && !!playlistId,
+    queryFn: fetchPlaylist,
   })
 }

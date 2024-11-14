@@ -13,7 +13,7 @@ export default function SongDetail() {
   const params = useParams()
   const user = useAtomValue(userAtom)
 
-  const { song, loading, error } = useSongById(params.songId as string)
+  const { data: song, isLoading, error } = useSongById(params.songId as string)
   const { data: geniusSongData, isFetching } = useSongFromGenius(
     song?.name,
     song?.artist,

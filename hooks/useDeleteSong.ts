@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import supabase from '@/lib/supabase' // Adjust the import to your supabase client path
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import supabase from '@/lib/supabase'
 import { Track } from '@/types'
 
 const useDeleteSong = () => {
   const [error, setError] = useState<string | null>(null)
-
   const deleteSong = async ({
     songId,
     userId,
@@ -13,10 +12,11 @@ const useDeleteSong = () => {
   }: {
     songId: string
     userId: string
+    playlistId: string
     tracks: Track[]
   }) => {
     try {
-      const bucketName = 'yoke-stems' // Adjust to your bucket name
+      const bucketName = 'yoke-stems'
 
       // Iterate over each track
       for (const track of tracks) {
@@ -75,6 +75,11 @@ const useDeleteSong = () => {
     },
     onError: (err) => {
       console.error('onError called', err)
+    },
+    onSettled: (newData, error, { playlistId }) => {
+      const queryClient = useQueryClient()
+
+      queryClient.invalidateQueries(['songs', playlistId])
     },
   })
 

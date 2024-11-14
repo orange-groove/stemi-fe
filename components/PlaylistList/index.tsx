@@ -1,49 +1,52 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import SongComponent from '@/components/Song'
-import useGetSongs from '@/hooks/useGetSongs'
-import { Song } from '@/types'
-import NewSongModal from '../NewSongModal'
-import { useParams } from 'next/navigation'
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material'
+import Playlist from '@/components/Playlist'
+import { Playlist as PlaylistType, Song } from '@/types'
+import useGetPlaylists from '@/hooks/useGetPlaylists'
+import NewPlaylistModal from '../NewPlaylistModal'
 
-const SongList = () => {
-  const params = useParams()
-  const {
-    data: songs,
-    error,
-    isLoading,
-  } = useGetSongs(params.playlistId as string)
-  const [sortedSongs, setSortedSongs] = useState<Song[]>([])
+const PlaylistList = () => {
+  const { data: playlists, isLoading, error } = useGetPlaylists()
+  const [sortedPlaylists, setSortedPlaylists] = useState<Song[]>([])
   const [sort, setSort] = useState('date-desc')
 
   useEffect(() => {
-    if (songs) {
+    if (playlists) {
       sortSongs(sort)
     }
-  }, [songs])
+  }, [playlists])
 
   const sortSongs = (sort: string) => {
     if (sort === 'date-asc') {
-      setSortedSongs(
+      setSortedPlaylists(
         // @ts-ignore
-        songs.toSorted(
+        playlists?.toSorted(
           (a, b) =>
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
         ),
       )
     } else if (sort === 'date-desc') {
-      setSortedSongs(
+      setSortedPlaylists(
         // @ts-ignore
-        songs.toSorted(
+        playlists?.toSorted(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
       )
     } else if (sort === 'name') {
       // @ts-ignore
-      setSortedSongs(songs.toSorted((a, b) => a.name.localeCompare(b.name)))
+      setSortedPlaylists(
+        playlists?.toSorted((a, b) => a.name.localeCompare(b.name)),
+      )
     }
   }
 
@@ -54,6 +57,8 @@ const SongList = () => {
   return (
     <>
       <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
+        <Typography variant="h4">My Playlists</Typography>
+
         <FormControl>
           <InputLabel id="sort-label">Sort By</InputLabel>
           <Select
@@ -70,7 +75,7 @@ const SongList = () => {
             <MenuItem value="name">Name</MenuItem>
           </Select>
         </FormControl>
-        <NewSongModal />
+        <NewPlaylistModal />
       </Box>
       <Box
         sx={{
@@ -78,12 +83,12 @@ const SongList = () => {
           flexDirection: 'column',
           gap: 2,
           width: '66%',
-          margin: 'auto',
+          margin: '0 auto',
         }}
       >
-        {sortedSongs.map((song: Song) => (
-          <Box key={song?.id}>
-            <SongComponent song={song} />
+        {sortedPlaylists?.map((playlist: PlaylistType) => (
+          <Box key={playlist?.id}>
+            <Playlist playlist={playlist} />
           </Box>
         ))}
       </Box>
@@ -91,4 +96,4 @@ const SongList = () => {
   )
 }
 
-export default SongList
+export default PlaylistList

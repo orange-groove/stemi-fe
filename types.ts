@@ -14,6 +14,14 @@ export interface Song {
   tracks?: Track[]
   keyChanges?: string[]
   tempoChanges?: TempoChange[]
+  userId: string
+  playlistId: string
+  createdAt: string
+}
+
+export interface Playlist {
+  id: string
+  name: string
   userId?: string
   createdAt: string
 }

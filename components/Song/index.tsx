@@ -51,11 +51,15 @@ export default function Song({ song }: { song: SongType }) {
     user?.id &&
       song?.tracks &&
       deleteSong(
-        { songId: song.id, userId: user.id, tracks: song.tracks },
+        {
+          songId: song.id,
+          userId: user.id,
+          playlistId: song.playlistId,
+          tracks: song.tracks,
+        },
         {
           onSuccess: () => {
             console.log('Song and associated files deleted successfully.')
-            setUserSongs((prev) => prev.filter((s: any) => s?.id !== song?.id))
           },
           onError: (err) => {
             console.error('Error deleting song:', err)

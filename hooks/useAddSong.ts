@@ -1,29 +1,32 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import config from '@/config'
 interface AddSongParams {
   name: string
   artist?: string
   file: string
   userId: string
+  playlistId: string
   stems?: string[]
 }
 
 const addSong = async (params: AddSongParams) => {
-  const { name, artist, file, userId: user_id } = params
+  const { name, artist, file, userId, playlistId } = params
 
   const formData = new FormData()
   formData.append('name', name)
   formData.append('artist', artist || '')
   formData.append('file', file)
-  formData.append('user_id', user_id)
 
   // Perform upload logic here
-  const response = await fetch(`${config.baseApiUrl}/user/${user_id}/song`, {
-    method: 'POST',
-    body: formData,
-  })
+  const response = await fetch(
+    `${config.baseApiUrl}/user/${userId}/playlist/${playlistId}/song`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
 
   if (!response.ok) {
     throw new Error('Error uploading song')
@@ -35,8 +38,12 @@ const addSong = async (params: AddSongParams) => {
 }
 
 export default function useAddSong() {
+  const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: addSong,
+    onSettled: (newData, error, { playlistId }) => {
+      queryClient.invalidateQueries(['songs', playlistId])
+    },
   })
 
   return mutation

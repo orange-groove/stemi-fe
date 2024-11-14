@@ -1,0 +1,46 @@
+'use client'
+
+import { Box, Button, Modal } from '@mui/material'
+import { useState } from 'react'
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import PlaylistForm from '../PlaylistForm'
+
+export default function NewPlaylistModal() {
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
+  return (
+    <>
+      <Button
+        onClick={handleOpen}
+        sx={{ color: 'secondary.main', display: 'flex', gap: 1 }}
+      >
+        <AddBoxIcon />
+        Add New Playlist
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-artist"
+      >
+        <Box
+          sx={{
+            position: 'absolute' as 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <PlaylistForm onComplete={handleClose} />
+        </Box>
+      </Modal>
+    </>
+  )
+}

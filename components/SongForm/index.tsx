@@ -19,6 +19,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
 import { userSongsAtom } from '@/state/song'
+import { useParams } from 'next/navigation'
 
 interface Props {
   onComplete: () => void
@@ -40,6 +41,8 @@ const SongForm = ({ onComplete }: Props) => {
     formState: { errors },
   } = useForm()
 
+  const params = useParams()
+
   const addSongMutation = useAddSong()
   const user = useAtomValue(userAtom)
   const setUserSongs = useSetAtom(userSongsAtom)
@@ -52,6 +55,7 @@ const SongForm = ({ onComplete }: Props) => {
         file: data.file as any, // Ensure the file is correctly passed
         stems: data.stems, // Pass the selected stems
         userId: user?.id as any,
+        playlistId: params.playlistId as string,
       },
       {
         onSuccess: (data) => {
