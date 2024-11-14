@@ -42,7 +42,7 @@ export default function useAddSong() {
   const mutation = useMutation({
     mutationFn: addSong,
     onSettled: (newData, error, { playlistId }) => {
-      queryClient.invalidateQueries(['songs', playlistId])
+      queryClient.invalidateQueries({ queryKey: ['songs', playlistId] })
     },
   })
 

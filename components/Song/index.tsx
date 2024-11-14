@@ -13,9 +13,8 @@ import {
 import { useRouter } from 'next/navigation'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { userSongsAtom } from '@/state/song'
 import { Song as SongType } from '@/types'
 import { SyntheticEvent, useState } from 'react'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
@@ -24,7 +23,6 @@ import MenuIcon from '@mui/icons-material/Menu'
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
-  const setUserSongs = useSetAtom(userSongsAtom)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isMenuOpen = Boolean(anchorEl)
@@ -34,7 +32,8 @@ export default function Song({ song }: { song: SongType }) {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
     setAnchorEl(null)
   }
 
@@ -45,9 +44,9 @@ export default function Song({ song }: { song: SongType }) {
 
   const { mutate: deleteSong, isPending, error } = useDeleteSong()
 
-  const handleDelete = (e: SyntheticEvent) => {
+  const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
-    handleMenuClose()
+    handleMenuClose(e)
     user?.id &&
       song?.tracks &&
       deleteSong(
@@ -83,15 +82,19 @@ export default function Song({ song }: { song: SongType }) {
         border: '3px dashed',
         borderColor: 'secondary.main',
         m: 2,
+        ':hover': {
+          cursor: 'pointer',
+          borderColor: 'primary.main',
+        },
       }}
     >
       <Box sx={{ position: 'relative' }}>
         <IconButton
           onClick={handleMenuOpen}
           disabled={isPending}
-          sx={{ position: 'absolute', top: 6, right: 6 }}
+          sx={{ position: 'absolute', top: 6, right: 6, zIndex: 1 }}
         >
-          <MenuIcon sx={{ color: 'secondary.main', fontSize: 60 }} />
+          <MenuIcon sx={{ color: 'secondary.main', fontSize: 40 }} />
         </IconButton>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
           <MenuItem onClick={handleDelete} disabled={isPending}>
@@ -99,7 +102,7 @@ export default function Song({ song }: { song: SongType }) {
               'Deleting...'
             ) : (
               <DeleteForeverIcon
-                sx={{ color: 'secondary.main', fontSize: 60 }}
+                sx={{ color: 'secondary.main', fontSize: 40 }}
               />
             )}
           </MenuItem>

@@ -14,15 +14,50 @@ const useDeletePlaylist = () => {
     userId: string
   }) => {
     try {
-      // Delete the entry from the 'playlist' table
-      const { error: deleteError } = await supabase
+      // Retrieve songs for the playlist to delete them from storage
+      const { data: songs, error: songsFetchError } = await supabase
+        .from('song')
+        .select('id')
+        .eq('playlist_id', playlistId)
+
+      if (songsFetchError) {
+        throw new Error(`Error fetching songs: ${songsFetchError.message}`)
+      }
+
+      // Delete each song's data from the Supabase storage bucket
+      for (const song of songs) {
+        const path = `${playlistId}/${song.id}/`
+        const { error: storageError } = await supabase.storage
+          .from('yoke-stems')
+          .remove([path])
+
+        if (storageError) {
+          throw new Error(
+            `Error deleting bucket data for song ${song.id}: ${storageError.message}`,
+          )
+        }
+      }
+
+      // Delete the songs from the 'song' table
+      const { error: songsDeleteError } = await supabase
+        .from('song')
+        .delete()
+        .eq('playlist_id', playlistId)
+
+      if (songsDeleteError) {
+        throw new Error(`Error deleting songs: ${songsDeleteError.message}`)
+      }
+
+      // Delete the playlist from the 'playlist' table
+      const { error: playlistDeleteError } = await supabase
         .from('playlist')
         .delete()
         .eq('id', playlistId)
-        .eq('user_id', userId)
 
-      if (deleteError) {
-        throw new Error(`Error deleting playlist entry: ${deleteError.message}`)
+      if (playlistDeleteError) {
+        throw new Error(
+          `Error deleting playlist: ${playlistDeleteError.message}`,
+        )
       }
 
       return { success: true }
@@ -41,9 +76,11 @@ const useDeletePlaylist = () => {
     onError: (err) => {
       console.error('onError called', err)
     },
-    onSettled: (newData, error, { playlistId }) => {
-      const user = supabase.auth.getUser()
-      queryClient.invalidateQueries(['playlists', user?.id])
+    onSettled: async (newData, error, { playlistId }) => {
+      const user = await supabase.auth.getUser()
+      queryClient.invalidateQueries({
+        queryKey: ['playlists', user?.data.user?.id],
+      })
     },
   })
 

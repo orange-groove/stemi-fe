@@ -79,7 +79,7 @@ const useDeleteSong = () => {
     onSettled: (newData, error, { playlistId }) => {
       const queryClient = useQueryClient()
 
-      queryClient.invalidateQueries(['songs', playlistId])
+      queryClient.invalidateQueries({ queryKey: ['songs', playlistId] })
     },
   })
 

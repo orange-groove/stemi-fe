@@ -1,14 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { Box, TextField, Typography } from '@mui/material'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
-import { userSongsAtom } from '@/state/song'
 import useAddPlaylist from '@/hooks/useAddPlaylist'
-import { playlistsAtom } from '@/state/playlist'
 
 interface Props {
   onComplete: () => void
@@ -30,7 +28,6 @@ const PlaylistForm = ({ onComplete }: Props) => {
 
   const addPlaylistMutation = useAddPlaylist()
   const user = useAtomValue(userAtom)
-  const setPlaylists = useSetAtom(playlistsAtom)
 
   const onSubmit = (data: FormData) => {
     addPlaylistMutation.mutate(
@@ -43,8 +40,6 @@ const PlaylistForm = ({ onComplete }: Props) => {
           console.log('Success:', data)
           reset()
           onComplete()
-          // @ts-ignore
-          setPlaylists((prev) => [...prev, data.playlist_entry])
         },
         onError: (error) => {
           console.error('Error:', error)

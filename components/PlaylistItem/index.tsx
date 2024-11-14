@@ -9,10 +9,10 @@ import { Playlist as PlaylistType } from '@/types'
 import { SyntheticEvent, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 import useDeletePlaylist from '@/hooks/useDeletePlaylist'
+import supabase from '@/lib/supabase'
 
-export default function Playlist({ playlist }: { playlist: PlaylistType }) {
+export default function PlaylistItem({ playlist }: { playlist: PlaylistType }) {
   const router = useRouter()
-  const user = useAtomValue(userAtom)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isMenuOpen = Boolean(anchorEl)
@@ -29,21 +29,12 @@ export default function Playlist({ playlist }: { playlist: PlaylistType }) {
 
   const { mutate: deletePlaylist, isPending } = useDeletePlaylist()
 
-  const handleDelete = (e: SyntheticEvent) => {
+  const handleDelete = async (e: React.MouseEvent<HTMLElement>) => {
+    const user = await supabase.auth.getUser()
     e.stopPropagation()
     handleMenuClose(e)
-    user?.id &&
-      deletePlaylist(
-        { playlistId: playlist.id, userId: user.id },
-        {
-          onSuccess: () => {
-            console.log('Playlist deleted successfully.')
-          },
-          onError: (err) => {
-            console.error('Error deleting playlist:', err)
-          },
-        },
-      )
+    user?.data?.user?.id &&
+      deletePlaylist({ playlistId: playlist.id, userId: user?.data?.user?.id })
   }
 
   const handleClick = (e: SyntheticEvent) => {

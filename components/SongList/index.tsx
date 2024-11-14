@@ -1,20 +1,23 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Box, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material'
 import SongComponent from '@/components/Song'
-import useGetSongs from '@/hooks/useGetSongs'
-import { Song } from '@/types'
+import type { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
-import { useParams } from 'next/navigation'
 
-const SongList = () => {
-  const params = useParams()
-  const {
-    data: songs,
-    error,
-    isLoading,
-  } = useGetSongs(params.playlistId as string)
+interface Props {
+  songs: Song[]
+}
+
+const SongList = ({ songs }: Props) => {
   const [sortedSongs, setSortedSongs] = useState<Song[]>([])
   const [sort, setSort] = useState('date-desc')
 
@@ -30,7 +33,7 @@ const SongList = () => {
         // @ts-ignore
         songs.toSorted(
           (a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         ),
       )
     } else if (sort === 'date-desc') {
@@ -38,7 +41,7 @@ const SongList = () => {
         // @ts-ignore
         songs.toSorted(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         ),
       )
     } else if (sort === 'name') {
@@ -47,9 +50,16 @@ const SongList = () => {
     }
   }
 
-  if (isLoading) return <div>Loading...</div>
-
-  if (error) return <div>Error: {error.message}</div>
+  if (!songs?.length) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <NewSongModal />
+        <Typography variant="h5" sx={{ mt: 4 }}>
+          No songs found
+        </Typography>
+      </Box>
+    )
+  }
 
   return (
     <>

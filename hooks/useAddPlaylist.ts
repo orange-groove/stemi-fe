@@ -28,8 +28,7 @@ export default function useAddPlaylist() {
   const mutation = useMutation({
     mutationFn: addPlaylist,
     onSettled: (newData, error, { userId }) => {
-      const user = supabase.auth.getUser()
-      queryClient.invalidateQueries(['playlists', userId])
+      queryClient.invalidateQueries({ queryKey: ['playlists', userId] })
     },
   })
 

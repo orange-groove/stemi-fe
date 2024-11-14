@@ -9,7 +9,7 @@ import {
   Select,
   Typography,
 } from '@mui/material'
-import Playlist from '@/components/Playlist'
+import PlaylistItem from '@/components/PlaylistItem'
 import { Playlist as PlaylistType, Song } from '@/types'
 import useGetPlaylists from '@/hooks/useGetPlaylists'
 import NewPlaylistModal from '../NewPlaylistModal'
@@ -45,7 +45,7 @@ const PlaylistList = () => {
     } else if (sort === 'name') {
       // @ts-ignore
       setSortedPlaylists(
-        playlists?.toSorted((a, b) => a.name.localeCompare(b.name)),
+        playlists?.toSorted((a, b) => a.name.localeCompare(b.name)) as any,
       )
     }
   }
@@ -54,11 +54,22 @@ const PlaylistList = () => {
 
   if (error) return <div>Error: {error.message}</div>
 
-  return (
-    <>
-      <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
+  if (!playlists?.length) {
+    return (
+      <Box sx={{ p: 4 }}>
         <Typography variant="h4">My Playlists</Typography>
+        <NewPlaylistModal />
+        <Typography variant="h5" sx={{ mt: 4 }}>
+          No playlists found
+        </Typography>
+      </Box>
+    )
+  }
 
+  return (
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4">My Playlists</Typography>
+      <Box sx={{ my: 4, display: 'flex', gap: 4 }}>
         <FormControl>
           <InputLabel id="sort-label">Sort By</InputLabel>
           <Select
@@ -83,16 +94,15 @@ const PlaylistList = () => {
           flexDirection: 'column',
           gap: 2,
           width: '66%',
-          margin: '0 auto',
         }}
       >
         {sortedPlaylists?.map((playlist: PlaylistType) => (
           <Box key={playlist?.id}>
-            <Playlist playlist={playlist} />
+            <PlaylistItem playlist={playlist} />
           </Box>
         ))}
       </Box>
-    </>
+    </Box>
   )
 }
 
