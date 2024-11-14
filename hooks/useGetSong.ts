@@ -5,7 +5,7 @@ import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import { useQuery } from '@tanstack/react-query'
 
-export default function useGetSongs(songId: string) {
+export default function useGetSong(songId: string) {
   const user = useAtomValue(userAtom)
 
   const fetchSong = async () => {
