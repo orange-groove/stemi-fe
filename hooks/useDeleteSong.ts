@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import supabase from '@/lib/supabase'
-import { Track } from '@/types'
+import { Song, Track } from '@/types'
 
 const useDeleteSong = () => {
   const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+
   const deleteSong = async ({
     songId,
     userId,
     tracks,
+    playlistId,
   }: {
     songId: string
     userId: string
@@ -77,8 +80,6 @@ const useDeleteSong = () => {
       console.error('onError called', err)
     },
     onSettled: (newData, error, { playlistId }) => {
-      const queryClient = useQueryClient()
-
       queryClient.invalidateQueries({ queryKey: ['songs', playlistId] })
     },
   })

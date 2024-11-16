@@ -25,10 +25,8 @@ interface Props {
   onComplete: () => void
 }
 interface FormData {
-  name: string
-  artist: string
   file: FileList
-  stems: string[]
+  stems?: string[]
 }
 const stemOptions = ['vocals', 'bass', 'drums', 'other']
 
@@ -50,8 +48,6 @@ const SongForm = ({ onComplete }: Props) => {
   const onSubmit = (data: FormData) => {
     addSongMutation.mutate(
       {
-        name: data.name,
-        artist: data.artist,
         file: data.file as any, // Ensure the file is correctly passed
         stems: data.stems, // Pass the selected stems
         userId: user?.id as any,
@@ -82,44 +78,10 @@ const SongForm = ({ onComplete }: Props) => {
       sx={{ mt: 3 }}
     >
       <Controller
-        name="name"
-        control={control}
-        defaultValue=""
-        rules={{ required: 'Name is required' }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            error={!!errors.name}
-          />
-        )}
-      />
-
-      <Controller
-        name="artist"
-        control={control}
-        defaultValue=""
-        rules={{ required: 'Description is required' }}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="Artist"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            error={!!errors.artist}
-          />
-        )}
-      />
-
-      <Controller
         name="stems"
         control={control}
         defaultValue={[]}
-        rules={{ required: 'At least one stem must be selected' }}
+        // rules={{ required: 'At least one stem must be selected' }}
         render={({ field }) => (
           <FormControl fullWidth margin="normal">
             <InputLabel>Select Stems to Separate</InputLabel>

@@ -3,8 +3,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import config from '@/config'
 interface AddSongParams {
-  name: string
-  artist?: string
   file: string
   userId: string
   playlistId: string
@@ -12,11 +10,9 @@ interface AddSongParams {
 }
 
 const addSong = async (params: AddSongParams) => {
-  const { name, artist, file, userId, playlistId } = params
+  const { file, userId, playlistId } = params
 
   const formData = new FormData()
-  formData.append('name', name)
-  formData.append('artist', artist || '')
   formData.append('file', file)
 
   // Perform upload logic here

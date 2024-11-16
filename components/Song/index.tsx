@@ -37,11 +37,6 @@ export default function Song({ song }: { song: SongType }) {
     setAnchorEl(null)
   }
 
-  const { data: geniusSongData, isFetching } = useSongFromGenius(
-    song?.name,
-    song?.artist,
-  )
-
   const { mutate: deleteSong, isPending, error } = useDeleteSong()
 
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
@@ -49,22 +44,12 @@ export default function Song({ song }: { song: SongType }) {
     handleMenuClose(e)
     user?.id &&
       song?.tracks &&
-      deleteSong(
-        {
-          songId: song.id,
-          userId: user.id,
-          playlistId: song.playlistId,
-          tracks: song.tracks,
-        },
-        {
-          onSuccess: () => {
-            console.log('Song and associated files deleted successfully.')
-          },
-          onError: (err) => {
-            console.error('Error deleting song:', err)
-          },
-        },
-      )
+      deleteSong({
+        songId: song.id,
+        userId: user.id,
+        playlistId: song.playlist_id,
+        tracks: song.tracks,
+      })
   }
 
   const handleClick = (e: SyntheticEvent) => {
@@ -114,7 +99,7 @@ export default function Song({ song }: { song: SongType }) {
             <Box>
               <Paper
                 sx={{
-                  backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
+                  backgroundImage: `url(${song?.image_url})`,
                   width: '200px',
                   height: '200px',
                   backgroundSize: 'contain',
@@ -122,12 +107,12 @@ export default function Song({ song }: { song: SongType }) {
               />
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
-              <Typography variant="h4">{song?.artist}</Typography>
-              <Typography variant="h5">{song?.name}</Typography>
+              <Typography variant="h4">{song?.title}</Typography>
+              <Typography variant="h5">{song?.artist}</Typography>
               <Typography variant="body1">
                 Created At:{' '}
-                {song.createdAt
-                  ? new Date(song.createdAt).toLocaleString('en-US', {
+                {song.created_at
+                  ? new Date(song.created_at).toLocaleString('en-US', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit',

@@ -15,17 +15,15 @@ export default function SongDetail() {
 
   const { data: song, isLoading, error } = useSongById(params.songId as string)
   const { data: geniusSongData, isFetching } = useSongFromGenius(
-    song?.name,
+    song?.title,
     song?.artist,
   )
 
   const { data: infoData, isFetching: isInfoFetching } = useGetSongInfo(
     user?.id || '',
-    song?.name || '',
+    song?.title || '',
     song?.artist || '',
   )
-
-  console.log('genius song', geniusSongData)
 
   const handleLyricsClick = () => {
     window.open(
@@ -34,6 +32,8 @@ export default function SongDetail() {
       'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350',
     )
   }
+
+  console.log('song', song)
 
   return (
     <Box
@@ -55,7 +55,7 @@ export default function SongDetail() {
       >
         <Paper
           sx={{
-            backgroundImage: `url(${geniusSongData?.result?.header_image_url})`,
+            backgroundImage: `url(${song?.imageUrl})`,
             width: '200px',
             height: '200px',
             backgroundSize: 'contain',
@@ -66,7 +66,7 @@ export default function SongDetail() {
           sx={{ display: 'flex', flexDirection: 'column', p: 2, flexShrink: 0 }}
         >
           <Typography variant="h4">{song?.artist}</Typography>
-          <Typography variant="h5">{song?.name}</Typography>
+          <Typography variant="h5">{song?.title}</Typography>
           <Button onClick={handleLyricsClick} variant="outlined" sx={{ mt: 1 }}>
             See Lyrics
           </Button>

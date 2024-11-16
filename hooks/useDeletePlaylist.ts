@@ -8,7 +8,6 @@ const useDeletePlaylist = () => {
 
   const deletePlaylist = async ({
     playlistId,
-    userId,
   }: {
     playlistId: string
     userId: string
@@ -76,10 +75,9 @@ const useDeletePlaylist = () => {
     onError: (err) => {
       console.error('onError called', err)
     },
-    onSettled: async (newData, error, { playlistId }) => {
-      const user = await supabase.auth.getUser()
+    onSettled: async (newData, error, { userId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['playlists', user?.data.user?.id],
+        queryKey: ['playlists', userId],
       })
     },
   })

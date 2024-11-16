@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { stringSimilarity } from 'string-similarity-js'
 
-export default function useSearchSong(name?: string, artist?: string) {
+export default function useSearchSong(title?: string, artist?: string) {
   return useQuery({
-    enabled: !!name && !!artist,
-    queryKey: ['search-song', name, artist],
+    enabled: !!title && !!artist,
+    queryKey: ['search-song', title, artist],
     queryFn: async () => {
       try {
         const res = await fetch(
-          `https://api.genius.com/search?access_token=${process.env.NEXT_PUBLIC_GENIUS_ACCESS_TOKEN}&q=${encodeURIComponent(`${name}, ${artist}`)}`,
+          `https://api.genius.com/search?access_token=${process.env.NEXT_PUBLIC_GENIUS_ACCESS_TOKEN}&q=${encodeURIComponent(`${title}, ${artist}`)}`,
         )
 
         const jsonResult = await res.json()

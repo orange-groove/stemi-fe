@@ -11,6 +11,10 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import AuthGuard from '@/components/AuthGuard'
+import supabase from '@/lib/supabase'
+import { use } from 'react'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/state/user'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,6 +28,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const user = useAtomValue(userAtom)
+
   return (
     <html lang="en">
       <head>
@@ -41,7 +47,7 @@ export default function RootLayout({
                 width: 1,
               }}
             >
-              <NavBar />
+              {!!user && <NavBar />}
 
               <Box
                 sx={{

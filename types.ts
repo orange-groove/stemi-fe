@@ -9,21 +9,20 @@ export interface FilePayload {
 
 export interface Song {
   id: string
-  name: string
+  title: string
   artist: string
   tracks?: Track[]
-  keyChanges?: string[]
-  tempoChanges?: TempoChange[]
-  userId: string
-  playlistId: string
-  createdAt: string
+  user_id: string
+  playlist_id: string
+  image_url: string
+  created_at: string
 }
 
 export interface Playlist {
   id: string
   name: string
-  userId?: string
-  createdAt: string
+  user_id?: string
+  created_at: string
 }
 
 export interface KeyChange {

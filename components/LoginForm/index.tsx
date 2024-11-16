@@ -66,7 +66,7 @@ const LoginForm: React.FC = () => {
           sx={{
             textAlign: 'center',
             position: 'absolute',
-            backgroundColor: '#fff',
+            backgroundColor: 'background.paper',
             transform: 'translate(-50%, -50%)',
             left: '50%',
             width: '50px',
@@ -100,7 +100,7 @@ const LoginForm: React.FC = () => {
         <Button
           variant="text"
           onClick={() => router.push('/register')}
-          sx={{ color: '#ba000d' }}
+          sx={{ color: 'primary.main' }}
         >
           Register here &rarr;
         </Button>

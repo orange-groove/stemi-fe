@@ -1,20 +1,19 @@
-import { pink } from '@mui/material/colors'
 import config from '@/config'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useGetSongInfo(
   user_id: string,
-  name: string,
+  title: string,
   artist: string,
 ) {
-  console.log('genius data', name, artist)
+  console.log('genius data', title, artist)
   return useQuery({
-    enabled: !!name && !!artist,
-    queryKey: ['song-info-text', name, artist],
+    enabled: !!title && !!artist,
+    queryKey: ['song-info-text', title, artist],
     queryFn: async () => {
       try {
         const res = await fetch(
-          `${config.baseApiUrl}/user/${user_id}/song/info?name=${name}&artist=${artist}`,
+          `${config.baseApiUrl}/user/${user_id}/song/info?name=${title}&artist=${artist}`,
         )
 
         const jsonResult = await res.json()

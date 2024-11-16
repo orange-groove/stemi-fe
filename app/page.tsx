@@ -44,7 +44,7 @@ export default function Home() {
               everything you need to sing and play your heart out.
             </Typography>
             <Button variant="contained" color="secondary" href="/songs">
-              Upload you first song
+              Create a playlist now!
             </Button>
           </Grid>
           <Grid item xs={12} md={6}>
