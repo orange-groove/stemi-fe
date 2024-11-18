@@ -11,7 +11,7 @@ export default function Home() {
         justifyContent: 'center',
         minHeight: '100vh',
         backgroundColor: 'background.paper',
-        backgroundImage: 'url(/mixtape-bg.webp)',
+        backgroundImage: 'url(/home-bg.webp)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: 'white',

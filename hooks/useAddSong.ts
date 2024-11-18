@@ -1,36 +1,22 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import config from '@/config'
+import { createSong } from '@/api/client'
 interface AddSongParams {
-  file: string
-  userId: string
-  playlistId: string
+  file: Blob
+  playlistId: number
   stems?: string[]
 }
 
 const addSong = async (params: AddSongParams) => {
-  const { file, userId, playlistId } = params
+  const { file, playlistId } = params
 
-  const formData = new FormData()
-  formData.append('file', file)
+  const response = await createSong({
+    body: { file },
+    path: { playlist_id: playlistId },
+  })
 
-  // Perform upload logic here
-  const response = await fetch(
-    `${config.baseApiUrl}/user/${userId}/playlist/${playlistId}/song`,
-    {
-      method: 'POST',
-      body: formData,
-    },
-  )
-
-  if (!response.ok) {
-    throw new Error('Error uploading song')
-  }
-
-  const data = await response.json()
-
-  return data
+  return response.data
 }
 
 export default function useAddSong() {

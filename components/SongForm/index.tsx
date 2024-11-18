@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Box,
-  TextField,
   Button,
   Typography,
   FormControl,
@@ -15,10 +14,7 @@ import {
   ListItemText,
 } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { userAtom } from '@/state/user'
 import LoadingButton from '../LoadingButton'
-import { userSongsAtom } from '@/state/song'
 import { useParams } from 'next/navigation'
 
 interface Props {
@@ -42,16 +38,13 @@ const SongForm = ({ onComplete }: Props) => {
   const params = useParams()
 
   const addSongMutation = useAddSong()
-  const user = useAtomValue(userAtom)
-  const setUserSongs = useSetAtom(userSongsAtom)
 
   const onSubmit = (data: FormData) => {
     addSongMutation.mutate(
       {
         file: data.file as any, // Ensure the file is correctly passed
         stems: data.stems, // Pass the selected stems
-        userId: user?.id as any,
-        playlistId: params.playlistId as string,
+        playlistId: Number(params.playlistId),
       },
       {
         onSuccess: (data) => {
@@ -59,8 +52,6 @@ const SongForm = ({ onComplete }: Props) => {
           reset()
           setFileName('')
           onComplete()
-          // @ts-ignore
-          setUserSongs((prev) => [...prev, data.song_entry])
         },
         onError: (error) => {
           console.error('Error:', error)

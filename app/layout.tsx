@@ -3,6 +3,7 @@
 import { Inter } from 'next/font/google'
 import Providers from '@/components/Providers'
 import NavBar from '@/components/NavBar'
+import GlobalSnackbar from '@/components/GlobalSnackbar'
 import { Box } from '@mui/material'
 
 import './globals.css'
@@ -11,10 +12,10 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import AuthGuard from '@/components/AuthGuard'
-import supabase from '@/lib/supabase'
-import { use } from 'react'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
+
+import '@/lib/axios'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -61,6 +62,7 @@ export default function RootLayout({
                   sx={{ bgcolor: 'background.paper', height: 1 }}
                 >
                   {children}
+                  <GlobalSnackbar />
                 </Box>
               </Box>
             </Box>

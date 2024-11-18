@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import supabase from '@/lib/supabase'
+import { createPlaylist } from '@/api/client'
 
 interface AddSongParams {
   name: string
@@ -9,17 +9,11 @@ interface AddSongParams {
 }
 
 const addPlaylist = async (params: AddSongParams) => {
-  const { name, userId: user_id } = params
+  const { name } = params
 
-  const { data, error } = await supabase
-    .from('playlist')
-    .insert([{ name, user_id }])
+  const response = await createPlaylist({ body: { name } })
 
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  return data
+  return response.data
 }
 
 export default function useAddPlaylist() {
@@ -27,8 +21,8 @@ export default function useAddPlaylist() {
 
   const mutation = useMutation({
     mutationFn: addPlaylist,
-    onSettled: (newData, error, { userId }) => {
-      queryClient.invalidateQueries({ queryKey: ['playlists', userId] })
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] })
     },
   })
 

@@ -3,7 +3,7 @@
 import supabase from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
 
-export default function useGetSongs(playlistId: string) {
+export default function useGetSongs(playlistId: number) {
   const fetchSongs = async () => {
     const response = await supabase
       .from('song')

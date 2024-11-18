@@ -1,26 +1,18 @@
 'use client'
 
-import supabase from '@/lib/supabase'
-import { useAtomValue } from 'jotai'
-import { userAtom } from '@/state/user'
 import { useQuery } from '@tanstack/react-query'
+import { getPlaylist } from '@/api/client'
 
-export default function useGetPlaylist(playlistId: string) {
-  const user = useAtomValue(userAtom)
-
+export default function useGetPlaylist(playlistId: number) {
   const fetchPlaylist = async () => {
-    const response = await supabase
-      .from('playlist')
-      .select('*')
-      .eq('id', playlistId)
-      .single()
+    const response = await getPlaylist({ path: { playlist_id: playlistId } })
 
-    return response.data
+    return response.data?.playlist
   }
 
   return useQuery({
     queryKey: ['playlist', playlistId],
-    enabled: !!user?.id && !!playlistId,
+    enabled: !!playlistId,
     queryFn: fetchPlaylist,
   })
 }

@@ -1,22 +1,30 @@
 'use client'
 
 import SongList from '@/components/SongList'
+import useGetPlaylist from '@/hooks/useGetPlaylist'
 import useGetSongs from '@/hooks/useGetSongs'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useParams } from 'next/navigation'
 
 export default function PlaylistDetailPage() {
   const params = useParams()
 
   const {
+    data: playlist,
+    error: playlistError,
+    isLoading: playlistIsLoading,
+  } = useGetPlaylist(Number(params.playlistId))
+
+  const {
     data: songs,
-    error,
-    isLoading,
-  } = useGetSongs(params.playlistId as string)
+    error: songsError,
+    isLoading: songsIsLoading,
+  } = useGetSongs(Number(params.playlistId))
 
-  if (isLoading) return <div>Loading...</div>
+  if (playlistIsLoading || songsIsLoading) return <div>Loading...</div>
 
-  if (error) return <div>Error: {error.message}</div>
+  if (playlistError) return <div>Error: {playlistError.message}</div>
+  if (songsError) return <div>Error: {songsError.message}</div>
 
   return (
     <Box
@@ -26,6 +34,9 @@ export default function PlaylistDetailPage() {
         bgcolor: 'background.paper',
       }}
     >
+      <Typography variant="h4" sx={{ p: 4 }}>
+        Playlist: {playlist?.name}
+      </Typography>
       {songs && <SongList songs={songs} />}
     </Box>
   )
