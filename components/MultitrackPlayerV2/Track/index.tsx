@@ -44,7 +44,7 @@ const TrackComponent = ({
   }, [isReady, wavesurfer, volume, masterVolume])
 
   return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
+    <Box sx={{ display: 'flex', gap: 2, border: '1px solid #ccc' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: 100 }}>
         <Typography variant="body2" sx={{ height: '20px' }}>
           {track.name}
@@ -58,6 +58,7 @@ const TrackComponent = ({
             max={1}
             step={0.01}
             orientation="vertical"
+            size="small"
             sx={{ height: '50px' }}
           />
         </Box>
@@ -69,7 +70,8 @@ const TrackComponent = ({
         sx={{
           width: '100%',
           height: '80px',
-          border: '1px solid #ccc',
+          borderLeft: '1px solid #ccc',
+          bgcolor: 'background.paper',
           cursor: 'pointer',
         }}
         onClick={(e) => {

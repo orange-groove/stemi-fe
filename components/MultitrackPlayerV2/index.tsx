@@ -81,14 +81,18 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
         >
           Restart
         </Button>
-        <Box sx={{ width: '200px', ml: 2 }}>
-          <Typography>Master Volume</Typography>
+        <Box sx={{ ml: 2, textAlign: 'center' }}>
+          <Typography>Master</Typography>
+
           <Slider
             value={masterVolume}
             onChange={(e, value) => handleMasterVolumeChange(value as number)}
             min={0}
             max={1}
             step={0.01}
+            orientation="vertical"
+            size="small"
+            sx={{ height: '50px', mt: 2 }}
           />
         </Box>
       </Box>
@@ -101,7 +105,6 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              mb: 2,
             }}
           >
             <TrackComponent
