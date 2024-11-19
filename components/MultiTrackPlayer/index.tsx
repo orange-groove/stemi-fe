@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Box, List, ListItem } from '@mui/material'
 import TransportBar from '../TransportBar'
-import TrackComponent from '../Track'
+import TrackComponent from '../MultitrackPlayerV2/Track'
 import { Song } from '@/types'
 import WaveSurfer from 'wavesurfer.js'
 import KeySignatureBar from '../KeySignatureBar'
-import TempoBar from '../TempoBar'
 
 const MultiTrackPlayer = ({ song }: { song: Song }) => {
   const [isPlaying, setIsPlaying] = useState(false)

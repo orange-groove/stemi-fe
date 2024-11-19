@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Box, Typography } from '@mui/material'
 import theme from '@/theme'
+import { soundTouchPlugin } from '@/lib/soundTouchPlugin'
 
 interface TrackComponentProps {
   track: { name: string; url: string }
@@ -29,6 +30,9 @@ export default function TrackComponent({
     height: 100,
     normalize: true,
     backend: 'WebAudio',
+    // plugins: [
+    //   soundTouchPlugin(), // Add the custom SoundTouch plugin
+    // ],
   })
 
   useEffect(() => {

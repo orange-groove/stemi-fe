@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button, Paper, Typography } from '@mui/material'
-import MultiTrackPlayer from '../MultiTrackPlayer'
+import MultiTrackPlayer from '../MultitrackPlayerV2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
@@ -32,8 +32,6 @@ export default function SongDetail() {
       'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350',
     )
   }
-
-  console.log('song', song)
 
   return (
     <Box
@@ -82,7 +80,7 @@ export default function SongDetail() {
         <Box>{infoData?.info}</Box>
       </Box>
 
-      {song && <MultiTrackPlayer song={song} />}
+      {song && <MultiTrackPlayer tracks={song.tracks} />}
       {/* <InfoPopup popups={infoData?.popups} /> */}
     </Box>
   )

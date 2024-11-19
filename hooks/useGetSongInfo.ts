@@ -6,7 +6,6 @@ export default function useGetSongInfo(
   title: string,
   artist: string,
 ) {
-  console.log('genius data', title, artist)
   return useQuery({
     enabled: !!title && !!artist,
     queryKey: ['song-info-text', title, artist],
