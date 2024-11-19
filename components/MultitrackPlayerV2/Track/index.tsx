@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Box } from '@mui/material'
+import { Box, Slider, Typography } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 
 interface Track {
@@ -7,16 +7,23 @@ interface Track {
   url: string
 }
 
-// TrackComponent
+interface TrackComponentProps {
+  track: Track
+  onSeek: (time: number) => void
+  registerInstance: (ws: any) => void
+  volume: number
+  masterVolume: number
+  onVolumeChange: (volume: number) => void
+}
+
 const TrackComponent = ({
   track,
   onSeek,
   registerInstance,
-}: {
-  track: Track
-  onSeek: (time: number) => void
-  registerInstance: (ws: any) => void
-}) => {
+  volume,
+  masterVolume,
+  onVolumeChange,
+}: TrackComponentProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
@@ -32,11 +39,30 @@ const TrackComponent = ({
   useEffect(() => {
     if (isReady && wavesurfer) {
       registerInstance(wavesurfer)
+      wavesurfer.setVolume(volume * masterVolume) // Adjust volume relative to master
     }
-  }, [isReady, wavesurfer])
+  }, [isReady, wavesurfer, volume, masterVolume])
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: 100 }}>
+        <Typography variant="body2" sx={{ height: '20px' }}>
+          {track.name}
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ flexGrow: 1 }} />
+          <Slider
+            value={volume}
+            onChange={(e, value) => onVolumeChange(value as number)}
+            min={0}
+            max={1}
+            step={0.01}
+            orientation="vertical"
+            sx={{ height: '50px' }}
+          />
+        </Box>
+      </Box>
+
       {/* Waveform */}
       <Box
         ref={containerRef}

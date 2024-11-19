@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import * as Tone from 'tone'
-import { Box, Button, Typography, List, ListItem } from '@mui/material'
+import { Box, Button, Typography, List, ListItem, Slider } from '@mui/material'
 import TrackComponent from './Track'
 
 interface Track {
@@ -15,6 +15,10 @@ interface MultitrackPlayerProps {
 const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
+  const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
+    new Map(tracks.map((track) => [track.name, 1])),
+  )
+  const [masterVolume, setMasterVolume] = useState(1)
 
   // Initialize Tone.js
   useEffect(() => {
@@ -44,11 +48,24 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     )
   }
 
+  const handleMasterVolumeChange = (volume: number) => {
+    setMasterVolume(volume)
+    waveSurferInstances.current.forEach((ws) => ws.setVolume(volume))
+  }
+
+  const handleTrackVolumeChange = (trackName: string, volume: number) => {
+    setVolumeMap((prev) => new Map(prev).set(trackName, volume))
+    const waveSurfer = waveSurferInstances.current.get(trackName)
+    if (waveSurfer) {
+      waveSurfer.setVolume(volume * masterVolume)
+    }
+  }
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5">Multitrack Player</Typography>
 
-      {/* Transport Controls */}
+      {/* Transport and Master Volume Controls */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button variant="contained" onClick={handlePlayPause}>
           {isPlaying ? 'Pause' : 'Play'}
@@ -64,12 +81,22 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
         >
           Restart
         </Button>
+        <Box sx={{ width: '200px', ml: 2 }}>
+          <Typography>Master Volume</Typography>
+          <Slider
+            value={masterVolume}
+            onChange={(e, value) => handleMasterVolumeChange(value as number)}
+            min={0}
+            max={1}
+            step={0.01}
+          />
+        </Box>
       </Box>
 
       {/* Tracks */}
-      <List>
+      <Box>
         {tracks.map((track) => (
-          <ListItem
+          <Box
             key={track.name}
             sx={{
               display: 'flex',
@@ -77,17 +104,21 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
               mb: 2,
             }}
           >
-            <Typography>{track.name}</Typography>
             <TrackComponent
               track={track}
               onSeek={handleSeek}
               registerInstance={(ws) => {
                 waveSurferInstances.current.set(track.name, ws)
               }}
+              volume={volumeMap.get(track.name) || 1}
+              masterVolume={masterVolume}
+              onVolumeChange={(volume) =>
+                handleTrackVolumeChange(track.name, volume)
+              }
             />
-          </ListItem>
+          </Box>
         ))}
-      </List>
+      </Box>
     </Box>
   )
 }
