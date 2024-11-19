@@ -9,6 +9,7 @@ interface Track {
 
 interface TrackComponentProps {
   track: Track
+  playbackRate: number
   onSeek: (time: number) => void
   registerInstance: (ws: any) => void
   volume: number
@@ -22,6 +23,7 @@ interface TrackComponentProps {
 
 const TrackComponent = ({
   track,
+  playbackRate,
   onSeek,
   registerInstance,
   volume,
@@ -47,9 +49,10 @@ const TrackComponent = ({
   useEffect(() => {
     if (isReady && wavesurfer) {
       registerInstance(wavesurfer)
-      wavesurfer.setVolume(volume * masterVolume) // Adjust volume relative to master
+      wavesurfer.setPlaybackRate(playbackRate)
+      wavesurfer.setVolume(0)
     }
-  }, [isReady, wavesurfer, volume, masterVolume])
+  }, [isReady, wavesurfer, volume, masterVolume, playbackRate])
 
   return (
     <Box
@@ -106,13 +109,6 @@ const TrackComponent = ({
                 width: 14,
                 backgroundColor: '#fff',
                 border: '2px solid currentColor',
-                '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-                  boxShadow: 'inherit',
-                },
-                '&::before': {
-                  display: 'none',
-                },
-                borderRadius: 0,
               },
             }}
           />

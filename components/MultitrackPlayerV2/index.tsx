@@ -14,11 +14,13 @@ interface MultitrackPlayerProps {
 
 const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [masterVolume, setMasterVolume] = useState(1)
+  const [playbackRate, setPlaybackRate] = useState(1)
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
+  const grainPlayers = useRef<Map<string, Tone.GrainPlayer>>(new Map())
   const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
     new Map(tracks.map((track) => [track.name, 1])),
   )
-  const [masterVolume, setMasterVolume] = useState(1)
   const [muteMap, setMuteMap] = useState<Map<string, boolean>>(
     new Map(tracks.map((track) => [track.name, false])),
   )
@@ -26,39 +28,69 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     new Map(tracks.map((track) => [track.name, false])),
   )
 
-  // Initialize Tone.js
+  // Initialize GrainPlayers
   useEffect(() => {
-    Tone.Transport.stop()
-    Tone.Transport.seconds = 0
+    tracks.forEach((track) => {
+      const grainPlayer = new Tone.GrainPlayer({
+        url: track.url,
+        loop: false,
+      }).toDestination()
+
+      grainPlayer.sync().start(0)
+      grainPlayers.current.set(track.name, grainPlayer)
+    })
+
     return () => {
-      Tone.Transport.stop()
+      grainPlayers.current.forEach((player) => player.dispose())
     }
+  }, [tracks])
+
+  // Synchronize WaveSurfer cursor with Tone.Transport
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = Tone.Transport.seconds
+      waveSurferInstances.current.forEach((ws) =>
+        ws.seekTo(currentTime / ws.getDuration()),
+      )
+    }, 100) // Sync every 100ms
+
+    return () => clearInterval(interval)
   }, [])
 
+  // Handle play/pause
   const handlePlayPause = async () => {
     if (isPlaying) {
       Tone.Transport.pause()
-      waveSurferInstances.current.forEach((ws) => ws.pause())
     } else {
       await Tone.start()
       Tone.Transport.start()
-      waveSurferInstances.current.forEach((ws) => ws.play())
     }
     setIsPlaying(!isPlaying)
   }
 
+  // Seek all tracks
   const handleSeek = (newTime: number) => {
     Tone.Transport.seconds = newTime
+    grainPlayers.current.forEach((player) => (player.seek = newTime))
     waveSurferInstances.current.forEach((ws) =>
       ws.seekTo(newTime / ws.getDuration()),
     )
   }
 
+  // Adjust playback rate
+  const handlePlaybackRateChange = (rate: number) => {
+    setPlaybackRate(rate)
+    grainPlayers.current.forEach((player) => (player.playbackRate = rate))
+    Tone.Transport.bpm.value = 120 * rate // Sync Tone.Transport
+  }
+
+  // Adjust master volume
   const handleMasterVolumeChange = (volume: number) => {
     setMasterVolume(volume)
     updateTrackVolumes(volumeMap, muteMap, soloMap, volume)
   }
 
+  // Adjust individual track volume
   const handleTrackVolumeChange = (trackName: string, volume: number) => {
     setVolumeMap((prev) => {
       const newVolumeMap = new Map(prev).set(trackName, volume)
@@ -67,6 +99,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     })
   }
 
+  // Mute a track
   const handleMute = (trackName: string) => {
     setMuteMap((prev) => {
       const newMuteMap = new Map(prev).set(
@@ -78,6 +111,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     })
   }
 
+  // Solo a track
   const handleSolo = (trackName: string) => {
     setSoloMap((prev) => {
       const newSoloMap = new Map(prev).set(
@@ -89,6 +123,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     })
   }
 
+  // Update track volumes
   const updateTrackVolumes = (
     volumeMap: Map<string, number>,
     muteMap: Map<string, boolean>,
@@ -97,7 +132,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   ) => {
     const soloActive = Array.from(soloMap.values()).some((solo) => solo)
 
-    waveSurferInstances.current.forEach((ws, trackName) => {
+    grainPlayers.current.forEach((player, trackName) => {
       const isMuted = muteMap.get(trackName) || false
       const isSoloed = soloMap.get(trackName) || false
 
@@ -112,7 +147,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
           : 0
       }
 
-      ws.setVolume(effectiveVolume)
+      player.volume.value = Tone.gainToDb(effectiveVolume)
     })
   }
 
@@ -120,7 +155,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     <Box sx={{ p: 3 }}>
       <Typography variant="h5">Multitrack Player</Typography>
 
-      {/* Transport and Master Volume Controls */}
+      {/* Transport and Playback Rate Controls */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <Button variant="contained" onClick={handlePlayPause}>
           {isPlaying ? 'Pause' : 'Play'}
@@ -136,67 +171,49 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
         >
           Restart
         </Button>
-        <Box sx={{ ml: 2, textAlign: 'center' }}>
-          <Typography>Master</Typography>
+        <Box sx={{ ml: 2 }}>
+          <Typography>Playback Rate</Typography>
+          <Slider
+            value={playbackRate}
+            onChange={(e, value) => handlePlaybackRateChange(value as number)}
+            min={0.5}
+            max={2}
+            step={0.01}
+          />
+        </Box>
+        <Box sx={{ ml: 2 }}>
+          <Typography>Master Volume</Typography>
           <Slider
             value={masterVolume}
             onChange={(e, value) => handleMasterVolumeChange(value as number)}
             min={0}
             max={1}
             step={0.01}
-            orientation="vertical"
-            size="small"
-            sx={{
-              height: '50px',
-              mt: 2,
-              '& .MuiSlider-thumb': {
-                height: 16,
-                width: 14,
-                backgroundColor: '#fff',
-                border: '2px solid currentColor',
-                '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-                  boxShadow: 'inherit',
-                },
-                '&::before': {
-                  display: 'none',
-                },
-                borderRadius: 0,
-              },
-            }}
           />
         </Box>
       </Box>
 
       {/* Tracks */}
-      <Box sx={{ border: '1px solid #ccc' }}>
+      <Box>
         {tracks.map((track) => (
-          <Box
+          <TrackComponent
             key={track.name}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              '&:not(:last-of-type)': {
-                borderBottom: '1px solid #ccc',
-              },
+            track={track}
+            playbackRate={playbackRate}
+            onSeek={handleSeek}
+            registerInstance={(ws) => {
+              waveSurferInstances.current.set(track.name, ws)
             }}
-          >
-            <TrackComponent
-              track={track}
-              onSeek={handleSeek}
-              registerInstance={(ws) => {
-                waveSurferInstances.current.set(track.name, ws)
-              }}
-              volume={volumeMap.get(track.name) || 1}
-              masterVolume={masterVolume}
-              isMuted={muteMap.get(track.name) || false}
-              isSoloed={soloMap.get(track.name) || false}
-              onVolumeChange={(volume) =>
-                handleTrackVolumeChange(track.name, volume)
-              }
-              onMute={() => handleMute(track.name)}
-              onSolo={() => handleSolo(track.name)}
-            />
-          </Box>
+            volume={volumeMap.get(track.name) || 1}
+            masterVolume={masterVolume}
+            isMuted={muteMap.get(track.name) || false}
+            isSoloed={soloMap.get(track.name) || false}
+            onVolumeChange={(volume) =>
+              handleTrackVolumeChange(track.name, volume)
+            }
+            onMute={() => handleMute(track.name)}
+            onSolo={() => handleSolo(track.name)}
+          />
         ))}
       </Box>
     </Box>
