@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import * as Tone from 'tone'
-import { Box, Button, Typography, Slider } from '@mui/material'
+import { Box, Button, Typography, Slider, Tooltip } from '@mui/material'
 import TrackComponent from './Track'
-
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import PauseIcon from '@mui/icons-material/Pause'
+import FastForwardIcon from '@mui/icons-material/FastForward'
+import FastRewindIcon from '@mui/icons-material/FastRewind'
+import FirstPageIcon from '@mui/icons-material/FirstPage'
 interface Track {
   name: string
   url: string
@@ -123,6 +127,13 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     })
   }
 
+  const handleBackToStartClick = () => {
+    Tone.Transport.stop()
+    Tone.Transport.seconds = 0
+    waveSurferInstances.current.forEach((ws) => ws.seekTo(0))
+    setIsPlaying(false)
+  }
+
   // Update track volumes
   const updateTrackVolumes = (
     volumeMap: Map<string, number>,
@@ -157,20 +168,21 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
 
       {/* Transport and Playback Rate Controls */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant="contained" onClick={handlePlayPause}>
-          {isPlaying ? 'Pause' : 'Play'}
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            Tone.Transport.stop()
-            Tone.Transport.seconds = 0
-            waveSurferInstances.current.forEach((ws) => ws.seekTo(0))
-            setIsPlaying(false)
-          }}
-        >
-          Restart
-        </Button>
+        <Tooltip title="Play">
+          <Button onClick={handlePlayPause}>
+            {isPlaying ? (
+              <PauseIcon color="warning" sx={{ fontSize: 40 }} />
+            ) : (
+              <PlayArrowIcon color="success" sx={{ fontSize: 40 }} />
+            )}
+          </Button>
+        </Tooltip>
+        <Tooltip title="Back to start">
+          <Button onClick={handleBackToStartClick}>
+            <FirstPageIcon sx={{ fontSize: 40 }}>Back to Start</FirstPageIcon>
+          </Button>
+        </Tooltip>
+
         <Box sx={{ ml: 2 }}>
           <Typography>Playback Rate</Typography>
           <Slider
