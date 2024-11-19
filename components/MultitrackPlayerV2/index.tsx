@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import * as Tone from 'tone'
-import { Box, Button, Typography, List, ListItem, Slider } from '@mui/material'
+import { Box, Button, Typography, Slider } from '@mui/material'
 import TrackComponent from './Track'
 
 interface Track {
@@ -19,6 +19,12 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     new Map(tracks.map((track) => [track.name, 1])),
   )
   const [masterVolume, setMasterVolume] = useState(1)
+  const [muteMap, setMuteMap] = useState<Map<string, boolean>>(
+    new Map(tracks.map((track) => [track.name, false])),
+  )
+  const [soloMap, setSoloMap] = useState<Map<string, boolean>>(
+    new Map(tracks.map((track) => [track.name, false])),
+  )
 
   // Initialize Tone.js
   useEffect(() => {
@@ -50,15 +56,64 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
 
   const handleMasterVolumeChange = (volume: number) => {
     setMasterVolume(volume)
-    waveSurferInstances.current.forEach((ws) => ws.setVolume(volume))
+    updateTrackVolumes(volumeMap, muteMap, soloMap, volume)
   }
 
   const handleTrackVolumeChange = (trackName: string, volume: number) => {
-    setVolumeMap((prev) => new Map(prev).set(trackName, volume))
-    const waveSurfer = waveSurferInstances.current.get(trackName)
-    if (waveSurfer) {
-      waveSurfer.setVolume(volume * masterVolume)
-    }
+    setVolumeMap((prev) => {
+      const newVolumeMap = new Map(prev).set(trackName, volume)
+      updateTrackVolumes(newVolumeMap, muteMap, soloMap, masterVolume)
+      return newVolumeMap
+    })
+  }
+
+  const handleMute = (trackName: string) => {
+    setMuteMap((prev) => {
+      const newMuteMap = new Map(prev).set(
+        trackName,
+        !(prev.get(trackName) || false),
+      )
+      updateTrackVolumes(volumeMap, newMuteMap, soloMap, masterVolume)
+      return newMuteMap
+    })
+  }
+
+  const handleSolo = (trackName: string) => {
+    setSoloMap((prev) => {
+      const newSoloMap = new Map(prev).set(
+        trackName,
+        !(prev.get(trackName) || false),
+      )
+      updateTrackVolumes(volumeMap, muteMap, newSoloMap, masterVolume)
+      return newSoloMap
+    })
+  }
+
+  const updateTrackVolumes = (
+    volumeMap: Map<string, number>,
+    muteMap: Map<string, boolean>,
+    soloMap: Map<string, boolean>,
+    masterVolume: number,
+  ) => {
+    const soloActive = Array.from(soloMap.values()).some((solo) => solo)
+
+    waveSurferInstances.current.forEach((ws, trackName) => {
+      const isMuted = muteMap.get(trackName) || false
+      const isSoloed = soloMap.get(trackName) || false
+
+      let effectiveVolume = 0
+      if (soloActive) {
+        effectiveVolume = isSoloed
+          ? volumeMap.get(trackName)! * masterVolume
+          : 0
+      } else {
+        effectiveVolume = !isMuted
+          ? volumeMap.get(trackName)! * masterVolume
+          : 0
+      }
+
+      ws.setVolume(effectiveVolume)
+    })
   }
 
   return (
@@ -83,7 +138,6 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
         </Button>
         <Box sx={{ ml: 2, textAlign: 'center' }}>
           <Typography>Master</Typography>
-
           <Slider
             value={masterVolume}
             onChange={(e, value) => handleMasterVolumeChange(value as number)}
@@ -92,19 +146,38 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
             step={0.01}
             orientation="vertical"
             size="small"
-            sx={{ height: '50px', mt: 2 }}
+            sx={{
+              height: '50px',
+              mt: 2,
+              '& .MuiSlider-thumb': {
+                height: 16,
+                width: 14,
+                backgroundColor: '#fff',
+                border: '2px solid currentColor',
+                '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+                  boxShadow: 'inherit',
+                },
+                '&::before': {
+                  display: 'none',
+                },
+                borderRadius: 0,
+              },
+            }}
           />
         </Box>
       </Box>
 
       {/* Tracks */}
-      <Box>
+      <Box sx={{ border: '1px solid #ccc' }}>
         {tracks.map((track) => (
           <Box
             key={track.name}
             sx={{
               display: 'flex',
               flexDirection: 'column',
+              '&:not(:last-of-type)': {
+                borderBottom: '1px solid #ccc',
+              },
             }}
           >
             <TrackComponent
@@ -115,9 +188,13 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
               }}
               volume={volumeMap.get(track.name) || 1}
               masterVolume={masterVolume}
+              isMuted={muteMap.get(track.name) || false}
+              isSoloed={soloMap.get(track.name) || false}
               onVolumeChange={(volume) =>
                 handleTrackVolumeChange(track.name, volume)
               }
+              onMute={() => handleMute(track.name)}
+              onSolo={() => handleSolo(track.name)}
             />
           </Box>
         ))}
