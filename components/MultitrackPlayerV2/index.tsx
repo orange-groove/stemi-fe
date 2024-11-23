@@ -191,6 +191,15 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
             min={0.5}
             max={2}
             step={0.01}
+            sx={{
+              '& .MuiSlider-thumb': {
+                height: 14,
+                width: 16,
+                backgroundColor: '#fff',
+                border: '2px solid currentColor',
+                borderRadius: 0,
+              },
+            }}
           />
         </Box>
         <Box sx={{ ml: 2 }}>
@@ -201,6 +210,15 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
             min={0}
             max={1}
             step={0.01}
+            sx={{
+              '& .MuiSlider-thumb': {
+                height: 14,
+                width: 16,
+                backgroundColor: '#fff',
+                border: '2px solid currentColor',
+                borderRadius: 0,
+              },
+            }}
           />
         </Box>
       </Box>

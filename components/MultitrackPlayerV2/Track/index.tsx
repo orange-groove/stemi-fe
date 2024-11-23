@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react'
-import { Box, Button, Slider, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Slider,
+  Typography,
+  CircularProgress,
+} from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 
 interface Track {
@@ -109,6 +115,7 @@ const TrackComponent = ({
                 width: 14,
                 backgroundColor: '#fff',
                 border: '2px solid currentColor',
+                borderRadius: 0,
               },
             }}
           />
@@ -133,7 +140,20 @@ const TrackComponent = ({
             onSeek(position)
           }
         }}
-      />
+      >
+        {!isReady && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+      </Box>
     </Box>
   )
 }
