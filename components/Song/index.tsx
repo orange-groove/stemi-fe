@@ -1,5 +1,4 @@
-'use client'
-
+import React, { useState } from 'react'
 import {
   Box,
   IconButton,
@@ -15,20 +14,20 @@ import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { SyntheticEvent, useState } from 'react'
-import useSongFromGenius from '@/hooks/useSongFromGenius'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Song as SongType } from '@/api/client'
+import useUpdateSong from '@/hooks/useUpdateSong'
+import EditableInput from '../EditableInput'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
   const isMenuOpen = Boolean(anchorEl)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    console.log('Menu open triggered') // Added logging
     setAnchorEl(event.currentTarget)
   }
 
@@ -38,6 +37,11 @@ export default function Song({ song }: { song: SongType }) {
   }
 
   const { mutate: deleteSong, isPending, error } = useDeleteSong()
+  const {
+    mutate: updateSong,
+    isPending: isUpdateSongPending,
+    error: isUpdateSongError,
+  } = useUpdateSong()
 
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
@@ -45,9 +49,31 @@ export default function Song({ song }: { song: SongType }) {
     user?.id && deleteSong({ song })
   }
 
-  const handleClick = (e: SyntheticEvent) => {
+  const handleClick = (e: React.SyntheticEvent) => {
     e.stopPropagation()
     router.push(`/songs/${song.id}`)
+  }
+
+  const handleTitleUpdate = (newTitle: string) => {
+    if (newTitle !== song?.title) {
+      updateSong({
+        song: {
+          id: song.id,
+          title: newTitle,
+        },
+      })
+    }
+  }
+
+  const handleArtistUpdate = (newArtist: string) => {
+    if (newArtist !== song?.artist) {
+      updateSong({
+        song: {
+          id: song.id,
+          artist: newArtist,
+        },
+      })
+    }
   }
 
   return (
@@ -93,15 +119,39 @@ export default function Song({ song }: { song: SongType }) {
               <Paper
                 sx={{
                   backgroundImage: `url(${song?.image_url})`,
-                  width: '200px',
-                  height: '200px',
+                  width: '100px',
+                  height: '100px',
                   backgroundSize: 'contain',
                 }}
               />
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
-              <Typography variant="h4">{song?.title}</Typography>
-              <Typography variant="h5">{song?.artist}</Typography>
+              <EditableInput
+                value={song?.title || ''}
+                placeholder="Song Title"
+                onComplete={handleTitleUpdate}
+                disabled={isUpdateSongPending}
+                sx={{
+                  border: 'none',
+                  borderRadius: 1,
+                  px: 1,
+                  fontSize: 'h5.fontSize',
+                  mb: 1,
+                }}
+              />
+              <EditableInput
+                value={song?.artist || ''}
+                placeholder="Song Artist"
+                onComplete={handleArtistUpdate}
+                disabled={isUpdateSongPending}
+                sx={{
+                  border: 'none',
+                  borderRadius: 1,
+                  px: 1,
+                  fontSize: 'h5.fontSize',
+                  mb: 1,
+                }}
+              />
               <Typography variant="body1">
                 Created At:{' '}
                 {song.created_at

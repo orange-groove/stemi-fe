@@ -82,10 +82,5 @@ export const TrackSchema = {
 
 export const UpdateSongRequestSchema = {
     type: 'object',
-    properties: {
-        name: {
-            type: 'string',
-            example: 'Updated Song Name'
-        }
-    }
+    '$ref': '#/components/schemas/Song'
 } as const;

@@ -1,17 +1,15 @@
 'use client'
 
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import MultiTrackPlayer from '../MultitrackPlayerV2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
-import useGetSongInfo from '@/hooks/useGetSongInfo'
-import { useAtomValue } from 'jotai'
-import { userAtom } from '@/state/user'
+import useUpdateSong from '@/hooks/useUpdateSong'
+import EditableInput from '../EditableInput'
 
 export default function SongDetail() {
   const params = useParams()
-  const user = useAtomValue(userAtom)
 
   const { data: song, isLoading, error } = useSongById(params.songId as string)
   const { data: geniusSongData, isFetching } = useSongFromGenius(
@@ -19,11 +17,7 @@ export default function SongDetail() {
     song?.artist,
   )
 
-  const { data: infoData, isFetching: isInfoFetching } = useGetSongInfo(
-    user?.id || '',
-    song?.title || '',
-    song?.artist || '',
-  )
+  const { mutate: updateSong, isPending: isUpdateSongPending } = useUpdateSong()
 
   const handleLyricsClick = () => {
     window.open(
@@ -31,6 +25,28 @@ export default function SongDetail() {
       'winname',
       'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350',
     )
+  }
+
+  const handleArtistUpdate = (newArtist: string) => {
+    if (newArtist !== song?.artist) {
+      updateSong({
+        song: {
+          id: song?.id,
+          artist: newArtist,
+        },
+      })
+    }
+  }
+
+  const handleTitleUpdate = (newTitle: string) => {
+    if (newTitle !== song?.title) {
+      updateSong({
+        song: {
+          id: song?.id,
+          title: newTitle,
+        },
+      })
+    }
   }
 
   return (
@@ -63,21 +79,21 @@ export default function SongDetail() {
         <Box
           sx={{ display: 'flex', flexDirection: 'column', p: 2, flexShrink: 0 }}
         >
-          <Typography variant="h4">{song?.artist}</Typography>
-          <Typography variant="h5">{song?.title}</Typography>
-          <Button onClick={handleLyricsClick} variant="outlined" sx={{ mt: 1 }}>
-            See Lyrics
-          </Button>
-          <Button
-            onClick={handleLyricsClick}
-            variant="outlined"
-            sx={{ mt: 1 }}
-            disabled
-          >
-            See Tab (coming soon)
-          </Button>
+          <EditableInput
+            value={song?.artist || ''}
+            placeholder="Artist Name"
+            onComplete={handleArtistUpdate}
+            disabled={isUpdateSongPending}
+            sx={{ mb: 1, fontSize: '1.5rem', fontWeight: 600 }}
+          />
+          <EditableInput
+            value={song?.title || ''}
+            placeholder="Song Title"
+            onComplete={handleTitleUpdate}
+            disabled={isUpdateSongPending}
+            sx={{ mb: 2, fontSize: '1.25rem', fontWeight: 500 }}
+          />
         </Box>
-        <Box>{infoData?.info}</Box>
       </Box>
 
       {song && <MultiTrackPlayer tracks={song.tracks} />}

@@ -1,11 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteSong, Song } from '@/api/client'
+import { deleteSong, Song, updateSong } from '@/api/client'
 
-const useDeleteSong = () => {
+const useUpdateSong = () => {
   const queryClient = useQueryClient()
 
   const mutationFn = async ({ song }: { song: Song }) => {
-    const response = await deleteSong({ path: { song_id: song.id } })
+    const response = await updateSong({
+      path: { song_id: song.id as string },
+      body: {
+        title: song.title,
+        artist: song.artist,
+      },
+    })
 
     return response.data
   }
@@ -20,4 +26,4 @@ const useDeleteSong = () => {
   })
 }
 
-export default useDeleteSong
+export default useUpdateSong

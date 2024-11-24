@@ -38,14 +38,11 @@ export type Track = {
     url?: string;
 };
 
-export type UpdateSongRequest = {
-    name?: string;
-};
+export type UpdateSongRequest = Song;
 
 export type CreatePlaylistData = {
     body: {
-        playlist?: Playlist;
-        message?: string;
+        name?: string;
     };
 };
 
