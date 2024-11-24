@@ -10,8 +10,8 @@ import {
   Typography,
 } from '@mui/material'
 import SongComponent from '@/components/Song'
-import type { Song } from '@/types'
 import NewSongModal from '../NewSongModal'
+import { Song } from '@/api/client'
 
 interface Props {
   songs: Song[]

@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { Playlist as PlaylistType } from '@/types'
 import { SyntheticEvent, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 import useDeletePlaylist from '@/hooks/useDeletePlaylist'
 import supabase from '@/lib/supabase'
+import { Playlist } from '@/api/client'
 
-export default function PlaylistItem({ playlist }: { playlist: PlaylistType }) {
+export default function PlaylistItem({ playlist }: { playlist: Playlist }) {
   const router = useRouter()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -30,11 +30,10 @@ export default function PlaylistItem({ playlist }: { playlist: PlaylistType }) {
   const { mutate: deletePlaylist, isPending } = useDeletePlaylist()
 
   const handleDelete = async (e: React.MouseEvent<HTMLElement>) => {
-    const user = await supabase.auth.getUser()
     e.stopPropagation()
+    const user = await supabase.auth.getUser()
     handleMenuClose(e)
-    user?.data?.user?.id &&
-      deletePlaylist({ playlistId: playlist.id, userId: user?.data?.user?.id })
+    deletePlaylist({ playlistId: playlist.id, userId: user?.data?.user?.id })
   }
 
   const handleClick = (e: SyntheticEvent) => {
@@ -77,7 +76,10 @@ export default function PlaylistItem({ playlist }: { playlist: PlaylistType }) {
         </MenuItem>
       </Menu>
       <Typography variant="h5">{playlist?.name}</Typography>
-      <Typography variant="h5">3 Songs</Typography>
+      <Typography variant="h5">
+        {playlist?.songs?.length === 0 ? 'No' : playlist?.songs?.length} Song
+        {playlist?.songs?.length > 1 || (playlist?.songs?.length === 0 && 's')}
+      </Typography>
     </Box>
   )
 }

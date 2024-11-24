@@ -1,74 +1,29 @@
+import { mutationFn } from './useAddTrackBySongId'
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import supabase from '@/lib/supabase'
+import { deletePlaylist } from '@/api/client'
 
 const useDeletePlaylist = () => {
   const [error, setError] = useState<string | null>(null)
   const queryClient = useQueryClient()
 
-  const deletePlaylist = async ({
+  const mutationFn = async ({
     playlistId,
   }: {
-    playlistId: string
+    playlistId: number
     userId: string
   }) => {
-    try {
-      // Retrieve songs for the playlist to delete them from storage
-      const { data: songs, error: songsFetchError } = await supabase
-        .from('song')
-        .select('id')
-        .eq('playlist_id', playlistId)
+    const response = await deletePlaylist({
+      path: {
+        playlist_id: playlistId,
+      },
+    })
 
-      if (songsFetchError) {
-        throw new Error(`Error fetching songs: ${songsFetchError.message}`)
-      }
-
-      // Delete each song's data from the Supabase storage bucket
-      for (const song of songs) {
-        const path = `${playlistId}/${song.id}/`
-        const { error: storageError } = await supabase.storage
-          .from('yoke-stems')
-          .remove([path])
-
-        if (storageError) {
-          throw new Error(
-            `Error deleting bucket data for song ${song.id}: ${storageError.message}`,
-          )
-        }
-      }
-
-      // Delete the songs from the 'song' table
-      const { error: songsDeleteError } = await supabase
-        .from('song')
-        .delete()
-        .eq('playlist_id', playlistId)
-
-      if (songsDeleteError) {
-        throw new Error(`Error deleting songs: ${songsDeleteError.message}`)
-      }
-
-      // Delete the playlist from the 'playlist' table
-      const { error: playlistDeleteError } = await supabase
-        .from('playlist')
-        .delete()
-        .eq('id', playlistId)
-
-      if (playlistDeleteError) {
-        throw new Error(
-          `Error deleting playlist: ${playlistDeleteError.message}`,
-        )
-      }
-
-      return { success: true }
-    } catch (err: any) {
-      console.error('Error in deletePlaylist:', err)
-      setError(err.message)
-      return { success: false, error: err.message }
-    }
+    return response.data
   }
 
   const mutation = useMutation({
-    mutationFn: deletePlaylist,
+    mutationFn,
     onSuccess: (data) => {
       console.log('onSuccess called', data)
     },

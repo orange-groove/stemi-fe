@@ -1,17 +1,12 @@
 'use client'
 
-import supabase from '@/lib/supabase'
+import { getSong } from '@/api/client'
 import { useQuery } from '@tanstack/react-query'
 
 export default function useGetSong(songId: string) {
   const fetchSong = async () => {
-    const response = await supabase
-      .from('song')
-      .select('*')
-      .eq('id', songId)
-      .single()
-
-    return response.data
+    const response = await getSong({ path: { song_id: songId } })
+    return response.data?.song
   }
 
   return useQuery({

@@ -19,14 +19,23 @@ export type Playlist = {
     id?: string;
     name?: string;
     user_id?: string;
+    songs?: Array<Song>;
     created_at?: string;
 };
 
 export type Song = {
     id?: string;
-    name?: string;
+    title?: string;
+    artist?: string;
     playlist_id?: string;
+    image_url?: string;
+    tracks?: Array<Track>;
     created_at?: string;
+};
+
+export type Track = {
+    name?: string;
+    url?: string;
 };
 
 export type UpdateSongRequest = {
@@ -179,6 +188,24 @@ export type GetAllSongsResponse = ({
 });
 
 export type GetAllSongsError = ({
+    error?: string;
+});
+
+export type GetSongData = {
+    path: {
+        /**
+         * The ID of the song.
+         */
+        song_id: string;
+    };
+};
+
+export type GetSongResponse = ({
+    song?: Song;
+    message?: string;
+});
+
+export type GetSongError = ({
     error?: string;
 });
 

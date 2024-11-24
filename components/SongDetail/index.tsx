@@ -53,7 +53,7 @@ export default function SongDetail() {
       >
         <Paper
           sx={{
-            backgroundImage: `url(${song?.imageUrl})`,
+            backgroundImage: `url(${song?.image_url})`,
             width: '200px',
             height: '200px',
             backgroundSize: 'contain',

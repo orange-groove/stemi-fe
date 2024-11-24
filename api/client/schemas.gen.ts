@@ -15,6 +15,12 @@ export const PlaylistSchema = {
             type: 'string',
             example: 'user-123'
         },
+        songs: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/Song'
+            }
+        },
         created_at: {
             type: 'string',
             format: 'date-time',
@@ -30,18 +36,46 @@ export const SongSchema = {
             type: 'string',
             example: 'song-123'
         },
-        name: {
+        title: {
             type: 'string',
             example: 'My Song'
+        },
+        artist: {
+            type: 'string',
+            example: 'My Artist'
         },
         playlist_id: {
             type: 'string',
             example: 'playlist-123'
         },
+        image_url: {
+            type: 'string',
+            example: 'https://example.com/image.jpg'
+        },
+        tracks: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/Track'
+            }
+        },
         created_at: {
             type: 'string',
             format: 'date-time',
             example: '2021-01-01T00:00:00Z'
+        }
+    }
+} as const;
+
+export const TrackSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+            example: 'track-123'
+        },
+        url: {
+            type: 'string',
+            example: 'https://example.com/file.mp3'
         }
     }
 } as const;

@@ -1,16 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteSong } from '@/api/client'
+import { deleteSong, Song } from '@/api/client'
 
 const useDeleteSong = () => {
   const queryClient = useQueryClient()
 
-  const mutationFn = async ({
-    songId,
-  }: {
-    songId: string
-    playlistId: string
-  }) => {
-    deleteSong({ path: { song_id: songId } })
+  const mutationFn = async ({ song }: { song: Song }) => {
+    const response = await deleteSong({ path: { song_id: song.id } })
+
+    return response.data
   }
 
   return useMutation({
@@ -21,8 +18,10 @@ const useDeleteSong = () => {
     onError: (err) => {
       console.error('onError called', err)
     },
-    onSettled: (newData, error, { playlistId }) => {
-      queryClient.invalidateQueries({ queryKey: ['songs', playlistId] })
+    onSettled: (newData, error, { song }) => {
+      queryClient.invalidateQueries({
+        queryKey: ['playlist', song.playlist_id],
+      })
     },
   })
 }

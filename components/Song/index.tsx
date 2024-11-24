@@ -15,10 +15,10 @@ import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { Song as SongType } from '@/types'
 import { SyntheticEvent, useState } from 'react'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
 import MenuIcon from '@mui/icons-material/Menu'
+import { Song as SongType } from '@/api/client'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
@@ -42,14 +42,7 @@ export default function Song({ song }: { song: SongType }) {
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
     handleMenuClose(e)
-    user?.id &&
-      song?.tracks &&
-      deleteSong({
-        songId: song.id,
-        userId: user.id,
-        playlistId: song.playlist_id,
-        tracks: song.tracks,
-      })
+    user?.id && deleteSong({ song })
   }
 
   const handleClick = (e: SyntheticEvent) => {
@@ -127,7 +120,7 @@ export default function Song({ song }: { song: SongType }) {
         </ListItem>
       </List>
 
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
     </Box>
   )
 }

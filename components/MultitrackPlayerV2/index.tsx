@@ -7,13 +7,10 @@ import PauseIcon from '@mui/icons-material/Pause'
 import FastForwardIcon from '@mui/icons-material/FastForward'
 import FastRewindIcon from '@mui/icons-material/FastRewind'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
-interface Track {
-  name: string
-  url: string
-}
+import { Track } from '@/api/client'
 
 interface MultitrackPlayerProps {
-  tracks: Track[]
+  tracks?: Track[]
 }
 
 const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
@@ -23,18 +20,18 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
   const grainPlayers = useRef<Map<string, Tone.GrainPlayer>>(new Map())
   const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
-    new Map(tracks.map((track) => [track.name, 1])),
+    new Map(tracks?.map((track) => [track.name, 1])),
   )
   const [muteMap, setMuteMap] = useState<Map<string, boolean>>(
-    new Map(tracks.map((track) => [track.name, false])),
+    new Map(tracks?.map((track) => [track.name, false])),
   )
   const [soloMap, setSoloMap] = useState<Map<string, boolean>>(
-    new Map(tracks.map((track) => [track.name, false])),
+    new Map(tracks?.map((track) => [track.name, false])),
   )
 
   // Initialize GrainPlayers
   useEffect(() => {
-    tracks.forEach((track) => {
+    tracks?.forEach((track) => {
       const grainPlayer = new Tone.GrainPlayer({
         url: track.url,
         loop: false,
@@ -225,7 +222,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
 
       {/* Tracks */}
       <Box>
-        {tracks.map((track) => (
+        {tracks?.map((track) => (
           <TrackComponent
             key={track.name}
             track={track}
