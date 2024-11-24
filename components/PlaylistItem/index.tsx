@@ -75,10 +75,10 @@ export default function PlaylistItem({ playlist }: { playlist: Playlist }) {
           )}
         </MenuItem>
       </Menu>
-      <Typography variant="h5">{playlist?.name}</Typography>
+      <Typography variant="h5">{playlist?.title}</Typography>
       <Typography variant="h5">
         {playlist?.songs?.length === 0 ? 'No' : playlist?.songs?.length} Song
-        {playlist?.songs?.length > 1 || (playlist?.songs?.length === 0 && 's')}
+        {(playlist?.songs?.length > 1 || playlist?.songs?.length === 0) && 's'}
       </Typography>
     </Box>
   )

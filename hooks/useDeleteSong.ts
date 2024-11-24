@@ -14,7 +14,7 @@ const useDeleteSong = () => {
     mutationFn,
     onSettled: (newData, error, { song }) => {
       queryClient.invalidateQueries({
-        queryKey: ['playlist', song.playlist_id],
+        queryKey: ['playlists', song.playlist_id],
       })
     },
   })

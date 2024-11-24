@@ -5,8 +5,10 @@ import {
   Slider,
   Typography,
   CircularProgress,
+  lighten,
 } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
+import theme from '@/theme'
 
 interface Track {
   name: string
@@ -44,8 +46,8 @@ const TrackComponent = ({
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
-    waveColor: '#ccc',
-    progressColor: '#007bff',
+    waveColor: theme.palette.primary.main,
+    progressColor: lighten(theme.palette.primary.main, 0.5),
     cursorColor: '#FFAA00',
     height: 100,
     normalize: true,
@@ -65,12 +67,20 @@ const TrackComponent = ({
       sx={{
         display: 'flex',
         gap: 2,
+        borderBottom: '1px solid #cccccc88',
+        ':last-of-type': { borderBottom: 0 },
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', width: 120, p: 1 }}>
-        <Typography variant="body2" sx={{ height: '20px' }}>
-          {track.name}
-        </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: 120,
+          p: 1,
+          gap: 1,
+        }}
+      >
+        <Typography sx={{ height: '20px' }}>{track.name}</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
           <Button
             variant="contained"
@@ -116,6 +126,13 @@ const TrackComponent = ({
                 backgroundColor: '#fff',
                 border: '2px solid currentColor',
                 borderRadius: 0,
+                ':before': {
+                  content: '"-"',
+                  position: 'absolute',
+                  bottom: '50%',
+                  left: '15%',
+                  color: '#555',
+                },
               },
             }}
           />

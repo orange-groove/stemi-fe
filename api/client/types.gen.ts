@@ -16,8 +16,8 @@ export type ParameterSongId = string;
 export type ParameterUserId = string;
 
 export type Playlist = {
-    id?: string;
-    name?: string;
+    id?: number;
+    title?: string;
     user_id?: string;
     songs?: Array<Song>;
     created_at?: string;
@@ -41,9 +41,7 @@ export type Track = {
 export type UpdateSongRequest = Song;
 
 export type CreatePlaylistData = {
-    body: {
-        name?: string;
-    };
+    body: Playlist;
 };
 
 export type CreatePlaylistResponse = ({
@@ -54,15 +52,6 @@ export type CreatePlaylistResponse = ({
 export type CreatePlaylistError = ({
     error?: string;
 });
-
-export type GetAllPlaylistsData = {
-    query: {
-        /**
-         * The ID of the user.
-         */
-        user_id: string;
-    };
-};
 
 export type GetAllPlaylistsResponse = ({
     playlists?: Array<Playlist>;
@@ -92,10 +81,7 @@ export type GetPlaylistError = ({
 });
 
 export type UpdatePlaylistData = {
-    body: {
-        playlist?: Playlist;
-        message?: string;
-    };
+    body: Playlist;
     path: {
         /**
          * The ID of the playlist.

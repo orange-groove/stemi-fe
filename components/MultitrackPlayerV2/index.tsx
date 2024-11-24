@@ -58,6 +58,19 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     return () => clearInterval(interval)
   }, [])
 
+  // Handle Spacebar for Play/Pause
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault() // Prevent default scrolling behavior
+        handlePlayPause()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isPlaying]) // Dependency on `isPlaying`
+
   // Handle play/pause
   const handlePlayPause = async () => {
     if (isPlaying) {
@@ -161,8 +174,6 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h5">Multitrack Player</Typography>
-
       {/* Transport and Playback Rate Controls */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <Tooltip title="Play">
@@ -221,7 +232,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
       </Box>
 
       {/* Tracks */}
-      <Box>
+      <Box sx={{ border: '1px solid #cccccc88', borderRadius: 1 }}>
         {tracks?.map((track) => (
           <TrackComponent
             key={track.name}

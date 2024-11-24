@@ -4,10 +4,10 @@ export const PlaylistSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string',
-            example: 'playlist-123'
+            type: 'number',
+            example: 123
         },
-        name: {
+        title: {
             type: 'string',
             example: 'My Playlist'
         },

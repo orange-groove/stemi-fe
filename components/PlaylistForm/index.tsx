@@ -12,10 +12,7 @@ interface Props {
   onComplete: () => void
 }
 interface FormData {
-  name: string
-  artist: string
-  file: FileList
-  stems: string[]
+  title: string
 }
 
 const PlaylistForm = ({ onComplete }: Props) => {
@@ -27,13 +24,11 @@ const PlaylistForm = ({ onComplete }: Props) => {
   } = useForm()
 
   const addPlaylistMutation = useAddPlaylist()
-  const user = useAtomValue(userAtom)
 
   const onSubmit = (data: FormData) => {
     addPlaylistMutation.mutate(
       {
-        name: data.name,
-        userId: user?.id as any,
+        title: data.title,
       },
       {
         onSuccess: (data) => {
@@ -57,10 +52,10 @@ const PlaylistForm = ({ onComplete }: Props) => {
       sx={{ mt: 3 }}
     >
       <Controller
-        name="name"
+        name="title"
         control={control}
         defaultValue=""
-        rules={{ required: 'Name is required' }}
+        rules={{ required: 'Title is required' }}
         render={({ field }) => (
           <TextField
             {...field}

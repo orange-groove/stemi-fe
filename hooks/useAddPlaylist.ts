@@ -3,15 +3,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createPlaylist } from '@/api/client'
 
-interface AddSongParams {
-  name: string
-  userId: string
+interface AddPlaylistParams {
+  title: string
 }
 
-const addPlaylist = async (params: AddSongParams) => {
-  const { name } = params
+const addPlaylist = async (params: AddPlaylistParams) => {
+  const { title } = params
 
-  const response = await createPlaylist({ body: { name } })
+  const response = await createPlaylist({ body: { title } })
 
   return response.data
 }

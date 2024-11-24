@@ -11,7 +11,7 @@ export default function useGetPlaylist(playlistId: number) {
   }
 
   return useQuery({
-    queryKey: ['playlist', playlistId],
+    queryKey: ['playlists', playlistId],
     enabled: !!playlistId,
     queryFn: fetchPlaylist,
     staleTime: 0,

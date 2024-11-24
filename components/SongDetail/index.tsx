@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Paper } from '@mui/material'
+import { Box, FormGroup, FormLabel, Paper } from '@mui/material'
 import MultiTrackPlayer from '../MultitrackPlayerV2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
@@ -67,32 +67,46 @@ export default function SongDetail() {
           flexDirection: { xs: 'column', md: 'row' },
         }}
       >
-        <Paper
-          sx={{
-            backgroundImage: `url(${song?.image_url})`,
-            width: '200px',
-            height: '200px',
-            backgroundSize: 'contain',
-            flexShrink: 0,
-          }}
-        />
+        {song?.image_url && (
+          <Paper
+            sx={{
+              backgroundImage: `url(${song?.image_url})`,
+              width: '100px',
+              height: '100px',
+              backgroundSize: 'contain',
+              flexShrink: 0,
+            }}
+          />
+        )}
         <Box
-          sx={{ display: 'flex', flexDirection: 'column', p: 2, flexShrink: 0 }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: 0,
+            justifyContent: 'center',
+          }}
         >
-          <EditableInput
-            value={song?.artist || ''}
-            placeholder="Artist Name"
-            onComplete={handleArtistUpdate}
-            disabled={isUpdateSongPending}
-            sx={{ mb: 1, fontSize: '1.5rem', fontWeight: 600 }}
-          />
-          <EditableInput
-            value={song?.title || ''}
-            placeholder="Song Title"
-            onComplete={handleTitleUpdate}
-            disabled={isUpdateSongPending}
-            sx={{ mb: 2, fontSize: '1.25rem', fontWeight: 500 }}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormLabel>Artist:</FormLabel>
+            <EditableInput
+              value={song?.artist || ''}
+              placeholder="Artist Name"
+              onComplete={handleArtistUpdate}
+              disabled={isUpdateSongPending}
+              sx={{ fontSize: '1.5rem', fontWeight: 600 }}
+            />
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormLabel>Title:</FormLabel>
+            <EditableInput
+              value={song?.title || ''}
+              placeholder="Song Title"
+              onComplete={handleTitleUpdate}
+              disabled={isUpdateSongPending}
+              sx={{ fontSize: '1.25rem', fontWeight: 500 }}
+            />
+          </Box>
         </Box>
       </Box>
 

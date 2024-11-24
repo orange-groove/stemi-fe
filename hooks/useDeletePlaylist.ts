@@ -24,10 +24,8 @@ const useDeletePlaylist = () => {
 
   const mutation = useMutation({
     mutationFn,
-    onSettled: async (newData, error, { userId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['playlists', userId],
-      })
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['playlists'] })
     },
   })
 

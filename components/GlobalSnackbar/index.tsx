@@ -13,12 +13,14 @@ export default function GlobalSnackbar() {
   }
 
   return (
-    <Snackbar
-      open={snackbar.open}
-      autoHideDuration={3000}
-      onClose={handleClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      message={snackbar.message}
-    />
+    snackbar.message && (
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        message={snackbar.message}
+      />
+    )
   )
 }

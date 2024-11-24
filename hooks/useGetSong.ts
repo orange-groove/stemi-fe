@@ -10,7 +10,7 @@ export default function useGetSong(songId: string) {
   }
 
   return useQuery({
-    queryKey: ['song', songId],
+    queryKey: ['songs', songId],
     queryFn: fetchSong,
     enabled: !!songId,
   })
