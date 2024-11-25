@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import WaveSurfer from 'wavesurfer.js'
 import { Box, Slider, SliderProps, Typography } from '@mui/material'
 
 interface Props {
