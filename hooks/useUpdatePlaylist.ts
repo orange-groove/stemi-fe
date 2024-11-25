@@ -4,11 +4,17 @@ import { Playlist, updatePlaylist } from '@/api/client'
 const useUpdatePlaylist = () => {
   const queryClient = useQueryClient()
 
-  const mutationFn = async ({ playlist }: { playlist: Playlist }) => {
+  const mutationFn = async ({
+    playlistId,
+    title,
+  }: {
+    playlistId: number
+    title: string
+  }) => {
     const response = await updatePlaylist({
-      path: { playlist_id: playlist.id as number },
+      path: { playlist_id: playlistId },
       body: {
-        title: playlist.title,
+        title,
       },
     })
 
@@ -17,9 +23,9 @@ const useUpdatePlaylist = () => {
 
   return useMutation({
     mutationFn,
-    onSettled: (newData, error, { playlist }) => {
+    onSettled: (newData, error, { playlistId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['playlist', playlist.id],
+        queryKey: ['playlist', playlistId],
       })
     },
   })

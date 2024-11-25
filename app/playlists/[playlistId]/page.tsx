@@ -2,9 +2,9 @@
 
 import SongList from '@/components/SongList'
 import useGetPlaylist from '@/hooks/useGetPlaylist'
-import { Box } from '@mui/material'
+import { Box, FormGroup, FormLabel } from '@mui/material'
 import { useParams } from 'next/navigation'
-import EditableInput from '@/components/EditableInput'
+import EditableText from '@/components/EditableText'
 import useUpdatePlaylist from '@/hooks/useUpdatePlaylist'
 import useGetSongs from '@/hooks/useGetSongs'
 
@@ -42,23 +42,23 @@ export default function PlaylistDetailPage() {
       sx={{
         height: '100vh',
         width: 1,
-        bgcolor: 'background.paper',
+        bgcolor: 'background.default',
       }}
     >
       <Box sx={{ p: 4 }}>
-        <EditableInput
-          value={playlist?.title || ''}
-          placeholder="Playlist Title"
-          onComplete={handleTitleUpdate}
-          disabled={isUpdatePending}
-          sx={{
-            fontSize: 'h4.fontSize',
-            fontWeight: 'bold',
-            border: 'none',
-            borderRadius: 1,
-            px: 1,
-          }}
-        />
+        <FormGroup>
+          <FormLabel>Title</FormLabel>
+          <EditableText
+            value={playlist?.title || ''}
+            placeholder="Playlist Title"
+            onComplete={handleTitleUpdate}
+            disabled={isUpdatePending}
+            sx={{
+              fontSize: 'h4.fontSize',
+              fontWeight: 'bold',
+            }}
+          />
+        </FormGroup>
       </Box>
       {songs && <SongList songs={songs} />}
     </Box>

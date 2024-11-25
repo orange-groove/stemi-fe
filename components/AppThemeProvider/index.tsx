@@ -47,16 +47,37 @@ const AppThemeProvider = ({ children }: { children: ReactNode }) => {
     () =>
       createTheme({
         palette: {
-          mode: mode as PaletteMode,
-        },
-        components: {
-          MuiTimeline: {
-            styleOverrides: {
-              root: {
-                backgroundColor: 'red',
-              },
-            },
+          mode: mode,
+          primary: {
+            main: '#6933ff', // Purple
           },
+          secondary: {
+            main: '#c400d6', // pink
+          },
+          ...(mode === 'light'
+            ? {
+                background: {
+                  default: '#f0f0f0', // Light grey for main background
+                  paper: '#e8e8e8', // Slightly lighter grey for paper-like components
+                },
+                text: {
+                  primary: '#000000',
+                  secondary: '#555555',
+                },
+              }
+            : {
+                background: {
+                  default: '#111', // Dark grey for main background
+                  paper: '#222', // Slightly lighter dark grey for paper-like components
+                },
+                text: {
+                  primary: '#ffffff',
+                  secondary: '#aaaaaa',
+                },
+              }),
+        },
+        typography: {
+          fontFamily: 'Roboto, Arial, sans-serif',
         },
       }),
 

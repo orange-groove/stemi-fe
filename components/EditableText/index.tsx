@@ -1,13 +1,13 @@
 import React, { useState, KeyboardEvent, ChangeEvent, useEffect } from 'react'
 import { Input, InputProps } from '@mui/material'
 
-interface EditableInputProps extends InputProps {
+interface EditableTextProps extends InputProps {
   value: string
   onComplete: (newValue: string) => void
   onCancel?: () => void // Optional callback for cancel (e.g., on `Escape` key)
 }
 
-const EditableInput: React.FC<EditableInputProps> = ({
+const EditableText: React.FC<EditableTextProps> = ({
   value,
   onComplete,
   onCancel,
@@ -62,7 +62,7 @@ const EditableInput: React.FC<EditableInputProps> = ({
         border: '1px solid',
         borderColor: isEditing ? 'inherit' : 'transparent',
         borderRadius: 1,
-        px: 1,
+        px: 0,
         ...props.sx,
       }}
       disableUnderline
@@ -70,4 +70,4 @@ const EditableInput: React.FC<EditableInputProps> = ({
   )
 }
 
-export default EditableInput
+export default EditableText

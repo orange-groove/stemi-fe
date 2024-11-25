@@ -8,7 +8,7 @@ import {
   lighten,
 } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
-import theme from '@/theme'
+import { useColorMode } from '@/components/AppThemeProvider'
 
 interface Track {
   name: string
@@ -43,11 +43,12 @@ const TrackComponent = ({
   onSolo,
 }: TrackComponentProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const { mode } = useColorMode()
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
-    waveColor: theme.palette.primary.main,
-    progressColor: lighten(theme.palette.primary.main, 0.5),
+    waveColor: '#aaa',
+    progressColor: mode === 'light' ? '#6933ff' : '#6933ff',
     cursorColor: '#FFAA00',
     height: 100,
     normalize: true,
@@ -66,7 +67,6 @@ const TrackComponent = ({
     <Box
       sx={{
         display: 'flex',
-        gap: 2,
         borderBottom: '1px solid #cccccc88',
         ':last-of-type': { borderBottom: 0 },
       }}
@@ -78,6 +78,7 @@ const TrackComponent = ({
           width: 120,
           p: 1,
           gap: 1,
+          bgcolor: 'background.paper',
         }}
       >
         <Typography sx={{ height: '20px' }}>{track.name}</Typography>
@@ -146,7 +147,7 @@ const TrackComponent = ({
           width: '100%',
           height: '100px',
           borderLeft: '1px solid #ccc',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           cursor: 'pointer',
         }}
         onClick={(e) => {

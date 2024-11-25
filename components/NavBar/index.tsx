@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Divider,
+  Drawer,
   IconButton,
   ListItemIcon,
   Menu,
@@ -17,6 +18,9 @@ import DarkModeToggle from '../DarkModeToggle'
 import { Logout, Settings } from '@mui/icons-material'
 import { useState } from 'react'
 import { useUser } from '@/hooks/useAuth'
+import { useAtom } from 'jotai'
+import { playlistDrawerAtom } from '@/state/drawer'
+import PlaylistList from '../PlaylistList'
 
 export default function NavBar() {
   const router = useRouter()
@@ -24,6 +28,8 @@ export default function NavBar() {
   const open = Boolean(anchorEl)
 
   const user = useUser()
+
+  const [isDrawerOpen, setIsDrawerOpen] = useAtom(playlistDrawerAtom)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -57,7 +63,7 @@ export default function NavBar() {
         }}
       >
         <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
-          <Typography variant="h4" color="secondary.main">
+          <Typography variant="h4" color="primary.main">
             stemjam
           </Typography>
         </Box>
@@ -67,7 +73,7 @@ export default function NavBar() {
             justifyContent: 'right',
             alignItems: 'center',
             gap: 2,
-            bgcolor: 'background.paper',
+            bgcolor: 'background.default',
             flexGrow: 1,
             height: 1,
             cursor: 'pointer',
@@ -75,7 +81,7 @@ export default function NavBar() {
           aria-labelledby="list-navigation"
         >
           <Tooltip title="Library">
-            <Box onClick={() => router.push('/playlists')}>Playlists</Box>
+            <Box onClick={() => setIsDrawerOpen(true)}>Playlists</Box>
           </Tooltip>
 
           <Tooltip title="Dark Mode">
@@ -163,6 +169,16 @@ export default function NavBar() {
             Logout
           </MenuItem>
         </Menu>
+        <Drawer
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          anchor="right"
+          PaperProps={{
+            sx: { width: '50%' },
+          }}
+        >
+          <PlaylistList />
+        </Drawer>
       </Box>
     )
   )

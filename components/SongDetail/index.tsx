@@ -1,12 +1,12 @@
 'use client'
 
 import { Box, FormGroup, FormLabel, Paper } from '@mui/material'
-import MultiTrackPlayer from '../MultitrackPlayerV2'
+import MultiTrackPlayer from '../MultitrackPlayer'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
 import useSongFromGenius from '@/hooks/useSongFromGenius'
 import useUpdateSong from '@/hooks/useUpdateSong'
-import EditableInput from '../EditableInput'
+import EditableText from '../EditableText'
 
 export default function SongDetail() {
   const params = useParams()
@@ -52,7 +52,7 @@ export default function SongDetail() {
   return (
     <Box
       sx={{
-        bgcolor: 'background.paper',
+        bgcolor: 'background.default',
         borderRadius: 2,
         width: 1,
         height: 1,
@@ -78,35 +78,28 @@ export default function SongDetail() {
             }}
           />
         )}
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            flexShrink: 0,
-            justifyContent: 'center',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box>
+          <FormGroup>
             <FormLabel>Artist:</FormLabel>
-            <EditableInput
+            <EditableText
               value={song?.artist || ''}
               placeholder="Artist Name"
               onComplete={handleArtistUpdate}
               disabled={isUpdateSongPending}
-              sx={{ fontSize: '1.5rem', fontWeight: 600 }}
+              sx={{ fontSize: 24 }}
             />
-          </Box>
+          </FormGroup>
 
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <FormGroup>
             <FormLabel>Title:</FormLabel>
-            <EditableInput
+            <EditableText
               value={song?.title || ''}
               placeholder="Song Title"
               onComplete={handleTitleUpdate}
               disabled={isUpdateSongPending}
-              sx={{ fontSize: '1.25rem', fontWeight: 500 }}
+              sx={{ fontSize: 24 }}
             />
-          </Box>
+          </FormGroup>
         </Box>
       </Box>
 

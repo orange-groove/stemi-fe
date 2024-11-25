@@ -44,7 +44,7 @@ const SongList = ({ songs }: Props) => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
       )
-    } else if (sort === 'name') {
+    } else if (sort === 'title') {
       // @ts-ignore
       setSortedSongs(songs.toSorted((a, b) => a.title?.localeCompare(b.title)))
     }
@@ -77,7 +77,7 @@ const SongList = ({ songs }: Props) => {
           >
             <MenuItem value="date-asc">Date (asc)</MenuItem>
             <MenuItem value="date-desc">Date (desc)</MenuItem>
-            <MenuItem value="name">Name</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
           </Select>
         </FormControl>
         <NewSongModal />

@@ -42,7 +42,7 @@ export default function RootLayout({
             <Box
               sx={{
                 display: 'flex',
-                bgcolor: 'background.paper',
+                bgcolor: 'background.default',
                 height: 1,
                 flexDirection: 'column',
                 width: 1,
@@ -52,14 +52,14 @@ export default function RootLayout({
 
               <Box
                 sx={{
-                  bgcolor: 'background.paper',
+                  bgcolor: 'background.default',
                   width: 1,
                   height: 1,
                 }}
               >
                 <Box
                   component="main"
-                  sx={{ bgcolor: 'background.paper', height: 1 }}
+                  sx={{ bgcolor: 'background.default', height: 1 }}
                 >
                   {children}
                   <GlobalSnackbar />

@@ -42,10 +42,12 @@ const PlaylistList = () => {
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         ),
       )
-    } else if (sort === 'name') {
+    } else if (sort === 'title') {
       // @ts-ignore
       setSortedPlaylists(
-        playlists?.toSorted((a, b) => a.name.localeCompare(b.name)) as any,
+        playlists?.toSorted((a, b) =>
+          a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
+        ) as any,
       )
     }
   }
@@ -67,7 +69,7 @@ const PlaylistList = () => {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: 4, backgroundColor: 'background.default' }}>
       <Typography variant="h4">My Playlists</Typography>
       <Box sx={{ my: 4, display: 'flex', gap: 4 }}>
         <FormControl>
@@ -83,7 +85,7 @@ const PlaylistList = () => {
           >
             <MenuItem value="date-asc">Date (asc)</MenuItem>
             <MenuItem value="date-desc">Date (desc)</MenuItem>
-            <MenuItem value="name">Name</MenuItem>
+            <MenuItem value="title">Title</MenuItem>
           </Select>
         </FormControl>
         <NewPlaylistModal />
@@ -93,7 +95,7 @@ const PlaylistList = () => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          width: '66%',
+          overflowY: 'scroll',
         }}
       >
         {sortedPlaylists?.map((playlist: PlaylistType) => (

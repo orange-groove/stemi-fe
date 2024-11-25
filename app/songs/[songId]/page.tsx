@@ -7,7 +7,7 @@ export default function SongDetailPage() {
       sx={{
         height: '100vh',
         width: 1,
-        bgcolor: 'background.paper',
+        backgroundColor: 'background.default',
       }}
     >
       <SongDetail />

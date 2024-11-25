@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import {
   Box,
+  FormGroup,
+  FormLabel,
   IconButton,
   List,
   ListItem,
@@ -17,7 +19,7 @@ import { userAtom } from '@/state/user'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Song as SongType } from '@/api/client'
 import useUpdateSong from '@/hooks/useUpdateSong'
-import EditableInput from '../EditableInput'
+import EditableText from '../EditableText'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
@@ -83,12 +85,9 @@ export default function Song({ song }: { song: SongType }) {
         borderRadius: 2,
         width: 1,
         p: [1, 2],
-        border: '3px dashed',
-        borderColor: 'secondary.main',
         m: 2,
         ':hover': {
           cursor: 'pointer',
-          borderColor: 'primary.main',
         },
       }}
     >
@@ -114,44 +113,45 @@ export default function Song({ song }: { song: SongType }) {
       </Box>
       <List>
         <ListItem onClick={handleClick}>
-          <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
-            <Box>
-              <Paper
-                sx={{
-                  backgroundImage: `url(${song?.image_url})`,
-                  width: '100px',
-                  height: '100px',
-                  backgroundSize: 'contain',
-                }}
-              />
-            </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {song?.image_url && (
+              <Box>
+                <Paper
+                  sx={{
+                    backgroundImage: `url(${song?.image_url})`,
+                    width: '100px',
+                    height: '100px',
+                    backgroundSize: 'contain',
+                  }}
+                />
+              </Box>
+            )}
             <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
-              <EditableInput
-                value={song?.title || ''}
-                placeholder="Song Title"
-                onComplete={handleTitleUpdate}
-                disabled={isUpdateSongPending}
-                sx={{
-                  border: 'none',
-                  borderRadius: 1,
-                  px: 1,
-                  fontSize: 'h5.fontSize',
-                  mb: 1,
-                }}
-              />
-              <EditableInput
-                value={song?.artist || ''}
-                placeholder="Song Artist"
-                onComplete={handleArtistUpdate}
-                disabled={isUpdateSongPending}
-                sx={{
-                  border: 'none',
-                  borderRadius: 1,
-                  px: 1,
-                  fontSize: 'h5.fontSize',
-                  mb: 1,
-                }}
-              />
+              <FormGroup>
+                <FormLabel>Title</FormLabel>
+                <EditableText
+                  value={song?.title || ''}
+                  placeholder="Song Title"
+                  onComplete={handleTitleUpdate}
+                  disabled={isUpdateSongPending}
+                  sx={{
+                    fontSize: 'h4.fontSize',
+                  }}
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormLabel>Artist</FormLabel>
+                <EditableText
+                  value={song?.artist || ''}
+                  placeholder="Song Artist"
+                  onComplete={handleArtistUpdate}
+                  disabled={isUpdateSongPending}
+                  sx={{
+                    fontSize: 'h5.fontSize',
+                  }}
+                />
+              </FormGroup>
+
               <Typography variant="body1">
                 Created At:{' '}
                 {song.created_at
