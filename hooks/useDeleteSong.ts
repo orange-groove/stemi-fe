@@ -5,7 +5,7 @@ const useDeleteSong = () => {
   const queryClient = useQueryClient()
 
   const mutationFn = async ({ song }: { song: Song }) => {
-    const response = await deleteSong({ path: { song_id: song.id } })
+    const response = await deleteSong({ path: { song_id: song.id! } })
 
     return response.data
   }

@@ -28,7 +28,7 @@ export default function PlaylistDetailPage() {
 
   const handleTitleUpdate = (newTitle: string) => {
     if (newTitle !== playlist?.title) {
-      updatePlaylist({ playlist: { id: playlist?.id, title: newTitle } })
+      updatePlaylist({ playlistId: playlist?.id as number, title: newTitle })
     }
   }
 

@@ -5,15 +5,10 @@ import {
   Slider,
   Typography,
   CircularProgress,
-  lighten,
 } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 import { useColorMode } from '@/components/AppThemeProvider'
-
-interface Track {
-  name: string
-  url: string
-}
+import { Track } from '@/api/client'
 
 interface TrackComponentProps {
   track: Track

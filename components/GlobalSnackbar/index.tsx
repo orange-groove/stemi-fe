@@ -7,7 +7,7 @@ export default function GlobalSnackbar() {
   const [snackbar, setSnackbar] = useAtom(snackbarAtom)
   const closeSnackbar = useAtom(closeSnackbarAtom)[1]
 
-  const handleClose = (_, reason) => {
+  const handleClose = (e: any, reason: string) => {
     if (reason === 'clickaway') return
     closeSnackbar()
   }

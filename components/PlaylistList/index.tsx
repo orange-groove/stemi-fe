@@ -10,13 +10,13 @@ import {
   Typography,
 } from '@mui/material'
 import PlaylistItem from '@/components/PlaylistItem'
-import { Playlist as PlaylistType, Song } from '@/types'
 import useGetPlaylists from '@/hooks/useGetPlaylists'
 import NewPlaylistModal from '../NewPlaylistModal'
+import { Playlist } from '@/api/client'
 
 const PlaylistList = () => {
   const { data: playlists, isLoading, error } = useGetPlaylists()
-  const [sortedPlaylists, setSortedPlaylists] = useState<Song[]>([])
+  const [sortedPlaylists, setSortedPlaylists] = useState<Playlist[]>([])
   const [sort, setSort] = useState('date-desc')
 
   useEffect(() => {
@@ -31,7 +31,8 @@ const PlaylistList = () => {
         // @ts-ignore
         playlists?.toSorted(
           (a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+            new Date(a.created_at!).getTime() -
+            new Date(b.created_at!).getTime(),
         ),
       )
     } else if (sort === 'date-desc') {
@@ -39,14 +40,15 @@ const PlaylistList = () => {
         // @ts-ignore
         playlists?.toSorted(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+            new Date(b.created_at!).getTime() -
+            new Date(a.created_at!).getTime(),
         ),
       )
     } else if (sort === 'title') {
       // @ts-ignore
       setSortedPlaylists(
         playlists?.toSorted((a, b) =>
-          a.title.toLowerCase().localeCompare(b.title.toLowerCase()),
+          a.title!.toLowerCase().localeCompare(b.title!.toLowerCase()),
         ) as any,
       )
     }
@@ -98,7 +100,7 @@ const PlaylistList = () => {
           overflowY: 'scroll',
         }}
       >
-        {sortedPlaylists?.map((playlist: PlaylistType) => (
+        {sortedPlaylists?.map((playlist: Playlist) => (
           <Box key={playlist?.id}>
             <PlaylistItem playlist={playlist} />
           </Box>

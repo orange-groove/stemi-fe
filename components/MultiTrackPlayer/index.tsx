@@ -4,8 +4,6 @@ import { Box, Button, Typography, Slider, Tooltip } from '@mui/material'
 import TrackComponent from './Track'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
-import FastForwardIcon from '@mui/icons-material/FastForward'
-import FastRewindIcon from '@mui/icons-material/FastRewind'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
 import { Track } from '@/api/client'
 
@@ -20,13 +18,13 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
   const grainPlayers = useRef<Map<string, Tone.GrainPlayer>>(new Map())
   const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
-    new Map(tracks?.map((track) => [track.name, 1])),
+    new Map(tracks?.map((track) => [track.name!, 1])),
   )
   const [muteMap, setMuteMap] = useState<Map<string, boolean>>(
-    new Map(tracks?.map((track) => [track.name, false])),
+    new Map(tracks?.map((track) => [track.name!, false])),
   )
   const [soloMap, setSoloMap] = useState<Map<string, boolean>>(
-    new Map(tracks?.map((track) => [track.name, false])),
+    new Map(tracks?.map((track) => [track.name!, false])),
   )
 
   // Initialize GrainPlayers
@@ -38,7 +36,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
       }).toDestination()
 
       grainPlayer.sync().start(0)
-      grainPlayers.current.set(track.name, grainPlayer)
+      grainPlayers.current.set(track.name!, grainPlayer)
     })
 
     return () => {
@@ -72,6 +70,7 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   // Seek all tracks
   const handleSeek = (newTime: number) => {
     Tone.getContext().transport.seconds = newTime
+    // @ts-ignore
     grainPlayers.current.forEach((player) => (player.seek = newTime))
     waveSurferInstances.current.forEach((ws) =>
       ws.seekTo(newTime / ws.getDuration()),
@@ -227,17 +226,17 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
             playbackRate={playbackRate}
             onSeek={handleSeek}
             registerInstance={(ws) => {
-              waveSurferInstances.current.set(track.name, ws)
+              waveSurferInstances.current.set(track.name!, ws)
             }}
-            volume={volumeMap.get(track.name) || 1}
+            volume={volumeMap.get(track.name!) || 1}
             masterVolume={masterVolume}
-            isMuted={muteMap.get(track.name) || false}
-            isSoloed={soloMap.get(track.name) || false}
+            isMuted={muteMap.get(track.name!) || false}
+            isSoloed={soloMap.get(track.name!) || false}
             onVolumeChange={(volume) =>
-              handleTrackVolumeChange(track.name, volume)
+              handleTrackVolumeChange(track.name!, volume)
             }
-            onMute={() => handleMute(track.name)}
-            onSolo={() => handleSolo(track.name)}
+            onMute={() => handleMute(track.name!)}
+            onSolo={() => handleSolo(track.name!)}
           />
         ))}
       </Box>

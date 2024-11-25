@@ -33,7 +33,8 @@ const SongList = ({ songs }: Props) => {
         // @ts-ignore
         songs.toSorted(
           (a, b) =>
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+            new Date(a.created_at!).getTime() -
+            new Date(b.created_at!).getTime(),
         ),
       )
     } else if (sort === 'date-desc') {
@@ -41,7 +42,8 @@ const SongList = ({ songs }: Props) => {
         // @ts-ignore
         songs.toSorted(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+            new Date(b.created_at!).getTime() -
+            new Date(a.created_at!).getTime(),
         ),
       )
     } else if (sort === 'title') {
