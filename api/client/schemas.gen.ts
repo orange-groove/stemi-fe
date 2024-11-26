@@ -84,3 +84,20 @@ export const UpdateSongRequestSchema = {
     type: 'object',
     '$ref': '#/components/schemas/Song'
 } as const;
+
+export const DownloadStemsRequestSchema = {
+    type: 'object',
+    properties: {
+        stems: {
+            type: 'array',
+            items: {
+                type: 'string'
+            },
+            example: ['vocals', 'drums', 'bass', 'other']
+        },
+        file_type: {
+            type: 'string',
+            example: 'mp3'
+        }
+    }
+} as const;

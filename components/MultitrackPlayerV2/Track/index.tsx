@@ -62,6 +62,7 @@ const TrackComponent = ({
     <Box
       sx={{
         display: 'flex',
+        width: 1,
         borderBottom: '1px solid #cccccc88',
         ':last-of-type': { borderBottom: 0 },
       }}

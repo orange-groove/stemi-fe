@@ -103,7 +103,7 @@ export default function SongDetail() {
         </Box>
       </Box>
 
-      {song && <MultiTrackPlayer tracks={song.tracks} />}
+      {song && <MultiTrackPlayer tracks={song.tracks} songId={song?.id} />}
       {/* <InfoPopup popups={infoData?.popups} /> */}
     </Box>
   )

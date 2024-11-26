@@ -1,17 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react'
 import * as Tone from 'tone'
-import { Box, Button, Typography, Slider, Tooltip } from '@mui/material'
+import {
+  Box,
+  Button,
+  Typography,
+  Slider,
+  Tooltip,
+  Checkbox,
+  Select,
+  MenuItem,
+} from '@mui/material'
 import TrackComponent from './Track'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
 import { Track } from '@/api/client'
+import useDownloadStems from '@/hooks/useDownloadStems'
+import useDownloadMixdown from '@/hooks/useDownloadMixdown'
 
 interface MultitrackPlayerProps {
   tracks?: Track[]
+  songId: number
 }
 
-const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
+const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [masterVolume, setMasterVolume] = useState(1)
   const [playbackRate, setPlaybackRate] = useState(1)
@@ -26,6 +38,12 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
   const [soloMap, setSoloMap] = useState<Map<string, boolean>>(
     new Map(tracks?.map((track) => [track.name!, false])),
   )
+
+  const [selectedTracks, setSelectedTracks] = useState([])
+  const [downloadFileType, setDownloadFileType] = useState('wav')
+
+  const { mutate: downloadStems } = useDownloadStems()
+  const { mutate: downloadMixdown } = useDownloadMixdown()
 
   // Initialize GrainPlayers
   useEffect(() => {
@@ -158,86 +176,173 @@ const MultitrackPlayer = ({ tracks }: MultitrackPlayerProps) => {
     })
   }
 
+  const handleCheckboxChange = (trackName) => {
+    setSelectedTracks(
+      (prevSelectedTracks) =>
+        prevSelectedTracks.includes(trackName)
+          ? prevSelectedTracks.filter((track) => track !== trackName) // Remove if unchecked
+          : [...prevSelectedTracks, trackName], // Add if checked
+    )
+  }
+
+  const handleSelectAllChange = (e, isChecked: boolean) => {
+    if (isChecked) {
+      // Select all track names
+      setSelectedTracks(tracks?.map((track) => track.name))
+    } else {
+      // Deselect all tracks
+      setSelectedTracks([])
+    }
+  }
+
+  const handleDownloadStems = () => {
+    downloadStems({
+      songId,
+      stems:
+        selectedTracks.length === 0
+          ? tracks?.map((track) => track.name)
+          : selectedTracks,
+      fileType: downloadFileType,
+    })
+  }
+
+  const handleDownloadMixdown = () => {
+    downloadMixdown({
+      songId,
+      stems:
+        selectedTracks.length === 0
+          ? tracks?.map((track) => track.name)
+          : selectedTracks,
+      fileType: downloadFileType,
+    })
+  }
+
   return (
     <Box sx={{ p: 3 }}>
-      {/* Transport and Playback Rate Controls */}
-      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Tooltip title="Play">
-          <Button onClick={handlePlayPause}>
-            {isPlaying ? (
-              <PauseIcon color="warning" sx={{ fontSize: 40 }} />
-            ) : (
-              <PlayArrowIcon color="success" sx={{ fontSize: 40 }} />
-            )}
-          </Button>
-        </Tooltip>
-        <Tooltip title="Back to start">
-          <Button onClick={handleBackToStartClick}>
-            <FirstPageIcon sx={{ fontSize: 40 }}>Back to Start</FirstPageIcon>
-          </Button>
-        </Tooltip>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box>
+          <Checkbox
+            sx={{ m: 1 }}
+            onChange={handleSelectAllChange}
+            checked={selectedTracks.length === tracks?.length}
+          />
 
-        <Box sx={{ ml: 2 }}>
-          <Typography>Playback Rate</Typography>
-          <Slider
-            value={playbackRate}
-            onChange={(e, value) => handlePlaybackRateChange(value as number)}
-            min={0.5}
-            max={2}
-            step={0.01}
-            sx={{
-              '& .MuiSlider-thumb': {
-                height: 14,
-                width: 16,
-                backgroundColor: '#fff',
-                border: '2px solid currentColor',
-                borderRadius: 0,
-              },
-            }}
-          />
+          <Button onClick={handleDownloadStems}>Download Stems</Button>
+          <Button onClick={handleDownloadStems}>Download Mixdown</Button>
+          <Select
+            labelId="file-type-select-label"
+            id="file-type-select"
+            value={downloadFileType}
+            label="Age"
+            onChange={(e) => setDownloadFileType(e.target.value)}
+            size="small"
+          >
+            <MenuItem value="wav">WAV</MenuItem>
+            <MenuItem value="mp3">MP3</MenuItem>
+            <MenuItem value="ogg">OGG</MenuItem>
+          </Select>
         </Box>
-        <Box sx={{ ml: 2 }}>
-          <Typography>Master Volume</Typography>
-          <Slider
-            value={masterVolume}
-            onChange={(e, value) => handleMasterVolumeChange(value as number)}
-            min={0}
-            max={1}
-            step={0.01}
-            sx={{
-              '& .MuiSlider-thumb': {
-                height: 14,
-                width: 16,
-                backgroundColor: '#fff',
-                border: '2px solid currentColor',
-                borderRadius: 0,
-              },
-            }}
-          />
+
+        {/* Transport and Playback Rate Controls */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            pr: 1,
+          }}
+        >
+          <Tooltip title="Play">
+            <Button onClick={handlePlayPause}>
+              {isPlaying ? (
+                <PauseIcon color="warning" sx={{ fontSize: 40 }} />
+              ) : (
+                <PlayArrowIcon color="success" sx={{ fontSize: 40 }} />
+              )}
+            </Button>
+          </Tooltip>
+          <Tooltip title="Back to start">
+            <Button onClick={handleBackToStartClick}>
+              <FirstPageIcon sx={{ fontSize: 40 }}>Back to Start</FirstPageIcon>
+            </Button>
+          </Tooltip>
+
+          <Box sx={{ ml: 2 }}>
+            <Typography>Playback Rate</Typography>
+            <Slider
+              value={playbackRate}
+              onChange={(e, value) => handlePlaybackRateChange(value as number)}
+              min={0.5}
+              max={2}
+              step={0.01}
+              sx={{
+                '& .MuiSlider-thumb': {
+                  height: 14,
+                  width: 16,
+                  backgroundColor: '#fff',
+                  border: '2px solid currentColor',
+                  borderRadius: 0,
+                },
+              }}
+            />
+          </Box>
+          <Box sx={{ ml: 2 }}>
+            <Typography>Master Volume</Typography>
+            <Slider
+              value={masterVolume}
+              onChange={(e, value) => handleMasterVolumeChange(value as number)}
+              min={0}
+              max={1}
+              step={0.01}
+              sx={{
+                '& .MuiSlider-thumb': {
+                  height: 14,
+                  width: 16,
+                  backgroundColor: '#fff',
+                  border: '2px solid currentColor',
+                  borderRadius: 0,
+                },
+              }}
+            />
+          </Box>
         </Box>
       </Box>
-
       {/* Tracks */}
       <Box sx={{ border: '1px solid #cccccc88', borderRadius: 1 }}>
         {tracks?.map((track) => (
-          <TrackComponent
+          <Box
             key={track.name}
-            track={track}
-            playbackRate={playbackRate}
-            onSeek={handleSeek}
-            registerInstance={(ws) => {
-              waveSurferInstances.current.set(track.name!, ws)
-            }}
-            volume={volumeMap.get(track.name!) || 1}
-            masterVolume={masterVolume}
-            isMuted={muteMap.get(track.name!) || false}
-            isSoloed={soloMap.get(track.name!) || false}
-            onVolumeChange={(volume) =>
-              handleTrackVolumeChange(track.name!, volume)
-            }
-            onMute={() => handleMute(track.name!)}
-            onSolo={() => handleSolo(track.name!)}
-          />
+            sx={{ display: 'flex', width: '100%', alignItems: 'center' }}
+          >
+            <Checkbox
+              sx={{ m: 1 }}
+              onChange={() => handleCheckboxChange(track.name)}
+              checked={selectedTracks.includes(track.name)}
+            />
+            <TrackComponent
+              track={track}
+              playbackRate={playbackRate}
+              onSeek={handleSeek}
+              registerInstance={(ws) => {
+                waveSurferInstances.current.set(track.name!, ws)
+              }}
+              volume={volumeMap.get(track.name!) || 1}
+              masterVolume={masterVolume}
+              isMuted={muteMap.get(track.name!) || false}
+              isSoloed={soloMap.get(track.name!) || false}
+              onVolumeChange={(volume) =>
+                handleTrackVolumeChange(track.name!, volume)
+              }
+              onMute={() => handleMute(track.name!)}
+              onSolo={() => handleSolo(track.name!)}
+            />
+          </Box>
         ))}
       </Box>
     </Box>
