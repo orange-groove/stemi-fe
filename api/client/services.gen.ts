@@ -149,6 +149,6 @@ export const downloadStems = <ThrowOnError extends boolean = false>(options: Opt
 export const downloadMixdown = <ThrowOnError extends boolean = false>(options: Options<DownloadMixdownData, ThrowOnError>) => {
     return (options?.client ?? client).post<DownloadMixdownResponse, DownloadMixdownError, ThrowOnError>({
         ...options,
-        url: '/song/{song_id}/mixdown'
+        url: '/song/{song_id}/download_mixdown'
     });
 };

@@ -27,6 +27,10 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [masterVolume, setMasterVolume] = useState(1)
   const [playbackRate, setPlaybackRate] = useState(1)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [zoomLevel, setZoomLevel] = useState(100) // Default zoom level (100 pixels/sec)
+
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
   const grainPlayers = useRef<Map<string, Tone.GrainPlayer>>(new Map())
   const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
@@ -45,12 +49,32 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const { mutate: downloadStems } = useDownloadStems()
   const { mutate: downloadMixdown } = useDownloadMixdown()
 
+  // Update currentTime from Tone.Transport
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Tone.getContext().transport.seconds)
+    }, 100)
+
+    return () => clearInterval(interval)
+  }, [])
+
   // Initialize GrainPlayers
   useEffect(() => {
+    const playerDurations: number[] = []
+
     tracks?.forEach((track) => {
       const grainPlayer = new Tone.GrainPlayer({
         url: track.url,
         loop: false,
+        onload: () => {
+          // Calculate and store duration
+          const trackDuration = grainPlayer.buffer?.duration || 0
+          playerDurations.push(trackDuration)
+
+          // Update the overall duration with the longest track
+          const maxDuration = Math.max(...playerDurations)
+          setDuration(maxDuration)
+        },
       }).toDestination()
 
       grainPlayer.sync().start(0)
@@ -88,6 +112,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   // Seek all tracks
   const handleSeek = (newTime: number) => {
     Tone.getContext().transport.seconds = newTime
+    setCurrentTime(newTime)
     // @ts-ignore
     grainPlayers.current.forEach((player) => (player.seek = newTime))
     waveSurferInstances.current.forEach((ws) =>
@@ -217,8 +242,10 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     })
   }
 
+  console.log('zoom', zoomLevel)
+
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', p: 3 }}>
       <Box
         sx={{
           display: 'flex',
@@ -234,7 +261,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
           />
 
           <Button onClick={handleDownloadStems}>Download Stems</Button>
-          <Button onClick={handleDownloadStems}>Download Mixdown</Button>
+          <Button onClick={handleDownloadMixdown}>Download Mixdown</Button>
           <Select
             labelId="file-type-select-label"
             id="file-type-select"
@@ -313,9 +340,8 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
           </Box>
         </Box>
       </Box>
-      {/* Tracks */}
       <Box sx={{ border: '1px solid #cccccc88', borderRadius: 1 }}>
-        {tracks?.map((track) => (
+        {tracks?.map((track, index) => (
           <Box
             key={track.name}
             sx={{ display: 'flex', width: '100%', alignItems: 'center' }}
@@ -323,10 +349,13 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
             <Checkbox
               sx={{ m: 1 }}
               onChange={() => handleCheckboxChange(track.name)}
+              // @ts-ignore
               checked={selectedTracks.includes(track.name)}
             />
             <TrackComponent
+              isFirst={index === 0}
               track={track}
+              zoomLevel={zoomLevel}
               playbackRate={playbackRate}
               onSeek={handleSeek}
               registerInstance={(ws) => {
@@ -344,6 +373,18 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
             />
           </Box>
         ))}
+      </Box>
+      {/* Zoom Slider */}
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+        <Typography>Zoom:</Typography>
+        <Slider
+          value={zoomLevel}
+          min={100}
+          max={2000}
+          step={10}
+          onChange={(e, value) => setZoomLevel(value as number)}
+          sx={{ ml: 2, width: 300 }}
+        />
       </Box>
     </Box>
   )

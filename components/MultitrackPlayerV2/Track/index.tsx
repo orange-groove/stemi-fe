@@ -1,17 +1,20 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import {
   Box,
   Button,
   Slider,
   Typography,
   CircularProgress,
+  useTheme,
 } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
-import { useColorMode } from '@/components/AppThemeProvider'
 import { Track } from '@/api/client'
+import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
 interface TrackComponentProps {
+  isFirst: boolean
   track: Track
+  zoomLevel: number
   playbackRate: number
   onSeek: (time: number) => void
   registerInstance: (ws: any) => void
@@ -25,7 +28,9 @@ interface TrackComponentProps {
 }
 
 const TrackComponent = ({
+  isFirst,
   track,
+  zoomLevel,
   playbackRate,
   onSeek,
   registerInstance,
@@ -37,17 +42,31 @@ const TrackComponent = ({
   onMute,
   onSolo,
 }: TrackComponentProps) => {
+  const theme = useTheme()
+
   const containerRef = useRef<HTMLDivElement>(null)
-  const { mode } = useColorMode()
+
+  const topTimeline = TimelinePlugin.create({
+    height: 20,
+    insertPosition: 'beforebegin',
+    timeInterval: 0.2,
+    primaryLabelInterval: 5,
+    secondaryLabelInterval: 1,
+    style: {
+      color: '#2D5B88',
+    },
+  })
+
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
-    waveColor: '#aaa',
-    progressColor: mode === 'light' ? '#6933ff' : '#6933ff',
+    waveColor: theme.palette.primary.main,
+    progressColor: theme.palette.primary.light,
     cursorColor: '#FFAA00',
     height: 100,
-    normalize: true,
     backend: 'WebAudio',
+    hideScrollbar: true,
+    plugins: useMemo(() => (isFirst ? [topTimeline] : []), []),
   })
 
   useEffect(() => {
@@ -55,8 +74,9 @@ const TrackComponent = ({
       registerInstance(wavesurfer)
       wavesurfer.setPlaybackRate(playbackRate)
       wavesurfer.setVolume(0)
+      wavesurfer.zoom(zoomLevel) // Apply zoom
     }
-  }, [isReady, wavesurfer, volume, masterVolume, playbackRate])
+  }, [isReady, wavesurfer, volume, zoomLevel, masterVolume, playbackRate])
 
   return (
     <Box
@@ -138,6 +158,7 @@ const TrackComponent = ({
 
       {/* Waveform */}
       <Box
+        className="stem-track"
         ref={containerRef}
         sx={{
           width: '100%',

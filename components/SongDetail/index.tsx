@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, FormGroup, FormLabel, Paper } from '@mui/material'
+import { Box, FormGroup, FormLabel, Paper, Typography } from '@mui/material'
 import MultiTrackPlayer from '../MultitrackPlayerV2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
@@ -11,7 +11,7 @@ import EditableText from '../EditableText'
 export default function SongDetail() {
   const params = useParams()
 
-  const { data: song, isLoading, error } = useSongById(params.songId as string)
+  const { data: song, isLoading, error } = useSongById(Number(params.songId))
   const { data: geniusSongData, isFetching } = useSongFromGenius(
     song?.title,
     song?.artist,
@@ -78,9 +78,16 @@ export default function SongDetail() {
             }}
           />
         )}
-        <Box>
-          <FormGroup>
-            <FormLabel>Artist:</FormLabel>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <EditableText
+            value={song?.title || ''}
+            placeholder="Song Title"
+            onComplete={handleTitleUpdate}
+            disabled={isUpdateSongPending}
+            sx={{ fontSize: 24 }}
+          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography>By:</Typography>
             <EditableText
               value={song?.artist || ''}
               placeholder="Artist Name"
@@ -88,18 +95,7 @@ export default function SongDetail() {
               disabled={isUpdateSongPending}
               sx={{ fontSize: 24 }}
             />
-          </FormGroup>
-
-          <FormGroup>
-            <FormLabel>Title:</FormLabel>
-            <EditableText
-              value={song?.title || ''}
-              placeholder="Song Title"
-              onComplete={handleTitleUpdate}
-              disabled={isUpdateSongPending}
-              sx={{ fontSize: 24 }}
-            />
-          </FormGroup>
+          </Box>
         </Box>
       </Box>
 

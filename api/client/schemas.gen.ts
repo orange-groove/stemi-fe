@@ -33,8 +33,8 @@ export const SongSchema = {
     type: 'object',
     properties: {
         id: {
-            type: 'string',
-            example: 'song-123'
+            type: 'number',
+            example: 123
         },
         title: {
             type: 'string',

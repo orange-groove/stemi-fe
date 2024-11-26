@@ -59,9 +59,6 @@ const EditableText: React.FC<EditableTextProps> = ({
       onFocus={() => setIsEditing(true)}
       onClick={(e) => e.stopPropagation()}
       sx={{
-        border: '1px solid',
-        borderColor: isEditing ? 'inherit' : 'transparent',
-        borderRadius: 1,
         px: 0,
         ...props.sx,
       }}

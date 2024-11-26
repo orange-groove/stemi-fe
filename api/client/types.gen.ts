@@ -29,7 +29,7 @@ export type Playlist = {
 };
 
 export type Song = {
-    id?: string;
+    id?: number;
     title?: string;
     artist?: string;
     playlist_id?: string;
