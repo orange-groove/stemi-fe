@@ -9,15 +9,15 @@ import {
   Select,
   Typography,
 } from '@mui/material'
-import SongComponent from '@/components/Song'
+import SongItem from '@/components/SongItem'
 import NewSongModal from '../NewSongModal'
 import { Song } from '@/api/client'
 
-interface Props {
+interface SongsListProps {
   songs: Song[]
 }
 
-const SongList = ({ songs }: Props) => {
+const SongList = ({ songs }: SongsListProps) => {
   const [sortedSongs, setSortedSongs] = useState<Song[]>([])
   const [sort, setSort] = useState('date-desc')
 
@@ -89,13 +89,12 @@ const SongList = ({ songs }: Props) => {
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          width: '66%',
-          margin: 'auto',
+          p: 4,
         }}
       >
         {sortedSongs.map((song: Song) => (
           <Box key={song?.id}>
-            <SongComponent song={song} />
+            <SongItem song={song} />
           </Box>
         ))}
       </Box>

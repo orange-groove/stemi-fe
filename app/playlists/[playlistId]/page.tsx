@@ -1,12 +1,12 @@
 'use client'
 
-import SongList from '@/components/SongList'
 import useGetPlaylist from '@/hooks/useGetPlaylist'
 import { Box, FormGroup, FormLabel } from '@mui/material'
 import { useParams } from 'next/navigation'
 import EditableText from '@/components/EditableText'
+import SongList from '@/components/SongList'
 import useUpdatePlaylist from '@/hooks/useUpdatePlaylist'
-import useGetSongs from '@/hooks/useGetSongs'
+import usePlaylistSongs from '@/hooks/usePlaylistSongs'
 
 export default function PlaylistDetailPage() {
   const params = useParams()
@@ -21,7 +21,7 @@ export default function PlaylistDetailPage() {
     data: songs,
     error: songsError,
     isLoading: songsIsLoading,
-  } = useGetSongs(Number(params.playlistId))
+  } = usePlaylistSongs(playlist?.id as number)
 
   const { mutate: updatePlaylist, isPending: isUpdatePending } =
     useUpdatePlaylist()

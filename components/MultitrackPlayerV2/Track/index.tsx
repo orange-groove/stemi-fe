@@ -4,19 +4,21 @@ import {
   Button,
   Slider,
   Typography,
-  CircularProgress,
   useTheme,
+  Skeleton,
 } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Track } from '@/api/client'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 
+const colors = ['purple', 'blue', 'green', 'orange', 'red']
+
 interface TrackComponentProps {
-  isFirst: boolean
+  index: number
   track: Track
   zoomLevel: number
   playbackRate: number
-  onSeek: (time: number) => void
+  onClick: (relativeX: number) => void
   registerInstance: (ws: any) => void
   volume: number
   masterVolume: number
@@ -25,14 +27,15 @@ interface TrackComponentProps {
   isSoloed: boolean
   onMute: () => void
   onSolo: () => void
+  onScroll: (start: number, end: number, left: number, right: number) => void
 }
 
 const TrackComponent = ({
-  isFirst,
+  index,
   track,
   zoomLevel,
   playbackRate,
-  onSeek,
+  onClick,
   registerInstance,
   volume,
   masterVolume,
@@ -41,6 +44,7 @@ const TrackComponent = ({
   isSoloed,
   onMute,
   onSolo,
+  onScroll,
 }: TrackComponentProps) => {
   const theme = useTheme()
 
@@ -60,13 +64,14 @@ const TrackComponent = ({
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
-    waveColor: theme.palette.primary.main,
-    progressColor: theme.palette.primary.light,
+    waveColor: colors[index % colors.length],
+    progressColor: colors[index % colors.length],
     cursorColor: '#FFAA00',
     height: 100,
     backend: 'WebAudio',
     hideScrollbar: true,
-    plugins: useMemo(() => (isFirst ? [topTimeline] : []), []),
+    autoCenter: false,
+    plugins: useMemo(() => (index === 0 ? [topTimeline] : []), []),
   })
 
   useEffect(() => {
@@ -77,6 +82,38 @@ const TrackComponent = ({
       wavesurfer.zoom(zoomLevel) // Apply zoom
     }
   }, [isReady, wavesurfer, volume, zoomLevel, masterVolume, playbackRate])
+
+  useEffect(() => {
+    wavesurfer?.on('scroll', onScroll)
+
+    return () => {
+      wavesurfer?.un('scroll', onScroll)
+    }
+  }, [wavesurfer, onScroll])
+
+  useEffect(() => {
+    if (isReady && wavesurfer) {
+      // Register the WaveSurfer instance
+      registerInstance(wavesurfer)
+
+      // Add the click event listener
+      wavesurfer.on('click', (relativeX) => {
+        console.log(
+          'Click event on track:',
+          track.name,
+          'RelativeX:',
+          relativeX,
+        )
+        onClick(relativeX) // Notify parent about the click
+      })
+    }
+
+    return () => {
+      if (wavesurfer) {
+        wavesurfer.un('click', onClick) // Cleanup on unmount
+      }
+    }
+  }, [isReady, wavesurfer, registerInstance, onClick])
 
   return (
     <Box
@@ -161,32 +198,20 @@ const TrackComponent = ({
         className="stem-track"
         ref={containerRef}
         sx={{
-          width: '100%',
+          width: 'calc(100vw - 260px)',
           height: '100px',
           borderLeft: '1px solid #ccc',
           bgcolor: 'background.default',
           cursor: 'pointer',
         }}
-        onClick={(e) => {
-          if (wavesurfer) {
-            const rect = e.currentTarget.getBoundingClientRect()
-            const clickX = e.clientX - rect.left
-            const position = (clickX / rect.width) * wavesurfer.getDuration()
-            onSeek(position)
-          }
-        }}
       >
         {!isReady && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-            }}
-          >
-            <CircularProgress />
-          </Box>
+          <Skeleton
+            variant="rectangular"
+            animation="wave"
+            width="100%"
+            height="100%"
+          />
         )}
       </Box>
     </Box>

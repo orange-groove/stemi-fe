@@ -1,19 +1,16 @@
 'use client'
 
-import { getPlaylistSongs } from '@/api/client'
+import { getAllSongs } from '@/api/client'
 import { useQuery } from '@tanstack/react-query'
 
-export default function useGetSong(playlistId: number) {
+export default function useGetSongs() {
   const fetchSong = async () => {
-    const response = await getPlaylistSongs({
-      path: { playlist_id: playlistId },
-    })
+    const response = await getAllSongs()
     return response.data?.songs
   }
 
   return useQuery({
-    queryKey: ['songs', playlistId],
+    queryKey: ['songs'],
     queryFn: fetchSong,
-    enabled: !!playlistId,
   })
 }

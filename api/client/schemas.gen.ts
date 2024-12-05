@@ -58,6 +58,22 @@ export const SongSchema = {
                 '$ref': '#/components/schemas/Track'
             }
         },
+        song_key: {
+            type: 'string',
+            example: 'C'
+        },
+        tempo_changes: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    tempo: {
+                        type: 'number',
+                        example: 120
+                    }
+                }
+            }
+        },
         created_at: {
             type: 'string',
             format: 'date-time',
@@ -67,6 +83,7 @@ export const SongSchema = {
 } as const;
 
 export const TrackSchema = {
+    required: ['name', 'url'],
     type: 'object',
     properties: {
         name: {

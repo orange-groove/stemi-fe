@@ -15,11 +15,6 @@ export type ParameterPlaylistId = number;
  */
 export type ParameterSongId = number;
 
-/**
- * The ID of the user.
- */
-export type ParameterUserId = string;
-
 export type Playlist = {
     id?: number;
     title?: string;
@@ -35,12 +30,16 @@ export type Song = {
     playlist_id?: string;
     image_url?: string;
     tracks?: Array<Track>;
+    song_key?: string;
+    tempo_changes?: Array<{
+        tempo?: number;
+    }>;
     created_at?: string;
 };
 
 export type Track = {
-    name?: string;
-    url?: string;
+    name: string;
+    url: string;
 };
 
 export type UpdateSongRequest = Song;
@@ -129,11 +128,57 @@ export type GetPlaylistSongsData = {
 };
 
 export type GetPlaylistSongsResponse = ({
-    songs?: Array<Song>;
+    songs?: Array<{
+        songs?: Song;
+    }>;
     message?: string;
 });
 
 export type GetPlaylistSongsError = ({
+    error?: string;
+});
+
+export type AddPlaylistSongData = {
+    path: {
+        /**
+         * The ID of the playlist.
+         */
+        playlist_id: number;
+        /**
+         * The ID of the song.
+         */
+        song_id: number;
+    };
+};
+
+export type AddPlaylistSongResponse = ({
+    song?: Song;
+    message?: string;
+});
+
+export type AddPlaylistSongError = ({
+    error?: string;
+});
+
+export type DeletePlaylistSongData = {
+    path: {
+        /**
+         * The ID of the playlist.
+         */
+        playlist_id: number;
+        /**
+         * The ID of the song.
+         */
+        song_id: number;
+    };
+};
+
+export type DeletePlaylistSongResponse = ({
+    song?: Song;
+    message?: string;
+});
+
+export type DeletePlaylistSongError = ({
     error?: string;
 });
 
@@ -143,12 +188,6 @@ export type CreateSongData = {
          * The audio file for the song.
          */
         file?: (Blob | File);
-    };
-    path: {
-        /**
-         * The ID of the playlist.
-         */
-        playlist_id: number;
     };
 };
 
@@ -160,15 +199,6 @@ export type CreateSongResponse = ({
 export type CreateSongError = ({
     error?: string;
 });
-
-export type GetAllSongsData = {
-    query: {
-        /**
-         * The ID of the user.
-         */
-        user_id: string;
-    };
-};
 
 export type GetAllSongsResponse = ({
     songs?: Array<Song>;

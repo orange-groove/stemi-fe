@@ -27,8 +27,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [masterVolume, setMasterVolume] = useState(1)
   const [playbackRate, setPlaybackRate] = useState(1)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
   const [zoomLevel, setZoomLevel] = useState(100) // Default zoom level (100 pixels/sec)
 
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
@@ -49,55 +47,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const { mutate: downloadStems } = useDownloadStems()
   const { mutate: downloadMixdown } = useDownloadMixdown()
 
-  // Update currentTime from Tone.Transport
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(Tone.getContext().transport.seconds)
-    }, 100)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  // Initialize GrainPlayers
-  useEffect(() => {
-    const playerDurations: number[] = []
-
-    tracks?.forEach((track) => {
-      const grainPlayer = new Tone.GrainPlayer({
-        url: track.url,
-        loop: false,
-        onload: () => {
-          // Calculate and store duration
-          const trackDuration = grainPlayer.buffer?.duration || 0
-          playerDurations.push(trackDuration)
-
-          // Update the overall duration with the longest track
-          const maxDuration = Math.max(...playerDurations)
-          setDuration(maxDuration)
-        },
-      }).toDestination()
-
-      grainPlayer.sync().start(0)
-      grainPlayers.current.set(track.name!, grainPlayer)
-    })
-
-    return () => {
-      grainPlayers.current.forEach((player) => player.dispose())
-    }
-  }, [tracks])
-
-  // Synchronize WaveSurfer cursor with Tone.Transport
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentTime = Tone.getContext().transport.seconds
-      waveSurferInstances.current.forEach((ws) =>
-        ws.seekTo(currentTime / ws.getDuration()),
-      )
-    }, 100) // Sync every 100ms
-
-    return () => clearInterval(interval)
-  }, [])
-
   // Handle play/pause
   const handlePlayPause = async () => {
     if (isPlaying) {
@@ -110,14 +59,28 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   }
 
   // Seek all tracks
-  const handleSeek = (newTime: number) => {
-    Tone.getContext().transport.seconds = newTime
-    setCurrentTime(newTime)
-    // @ts-ignore
-    grainPlayers.current.forEach((player) => (player.seek = newTime))
-    waveSurferInstances.current.forEach((ws) =>
-      ws.seekTo(newTime / ws.getDuration()),
-    )
+  const handleClick = (relativeX: number) => {
+    const mainTrack = waveSurferInstances.current.get(tracks[0]?.name)
+    if (!mainTrack) return
+
+    const duration = mainTrack.getDuration()
+    const clickedTime = relativeX * duration
+
+    console.log({ relativeX, duration, clickedTime })
+
+    // Update Tone.Transport to the clicked position
+    const wasPlaying = Tone.Transport.state === 'started'
+    Tone.Transport.seconds = clickedTime
+
+    // Seek all WaveSurfer instances to the clicked position
+    waveSurferInstances.current.forEach((ws) => {
+      ws.seekTo(relativeX)
+    })
+
+    // Restart playback if it was already playing
+    if (wasPlaying) {
+      Tone.Transport.start('+0.01') // Small delay to allow seek to finish
+    }
   }
 
   // Adjust playback rate
@@ -242,7 +205,51 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     })
   }
 
-  console.log('zoom', zoomLevel)
+  // Initialize GrainPlayers
+  useEffect(() => {
+    tracks?.forEach((track) => {
+      const grainPlayer = new Tone.GrainPlayer({
+        url: track.url,
+        loop: false,
+      }).toDestination()
+
+      grainPlayer.sync().start(0)
+      grainPlayers.current.set(track.name!, grainPlayer)
+    })
+
+    return () => {
+      grainPlayers.current.forEach((player) => player.dispose())
+    }
+  }, [tracks])
+
+  // Synchronize WaveSurfer cursor with Tone.Transport
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = Tone.getContext().transport.seconds
+      waveSurferInstances.current.forEach((ws) =>
+        ws.seekTo(currentTime / ws.getDuration()),
+      )
+    }, 100) // Sync every 100ms
+
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    waveSurferInstances.current.forEach((ws) => {
+      ws.zoom(zoomLevel)
+    })
+  }, [])
+
+  const handleScroll = (
+    start: number,
+    end: number,
+    left: number,
+    right: number,
+  ) => {
+    waveSurferInstances.current.forEach((ws) => {
+      ws.setScroll(left)
+    })
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', p: 3 }}>
@@ -353,11 +360,11 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
               checked={selectedTracks.includes(track.name)}
             />
             <TrackComponent
-              isFirst={index === 0}
+              index={index}
               track={track}
               zoomLevel={zoomLevel}
               playbackRate={playbackRate}
-              onSeek={handleSeek}
+              onClick={handleClick}
               registerInstance={(ws) => {
                 waveSurferInstances.current.set(track.name!, ws)
               }}
@@ -370,6 +377,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
               }
               onMute={() => handleMute(track.name!)}
               onSolo={() => handleSolo(track.name!)}
+              onScroll={handleScroll}
             />
           </Box>
         ))}

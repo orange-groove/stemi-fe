@@ -19,8 +19,10 @@ import { Logout, Settings } from '@mui/icons-material'
 import { useState } from 'react'
 import { useUser } from '@/hooks/useAuth'
 import { useAtom } from 'jotai'
-import { playlistDrawerAtom } from '@/state/drawer'
+import { playlistDrawerAtom, songDrawerAtom } from '@/state/drawer'
 import PlaylistList from '../PlaylistList'
+import SongList from '../SongList'
+import useGetSongs from '@/hooks/useGetSongs'
 
 export default function NavBar() {
   const router = useRouter()
@@ -28,8 +30,12 @@ export default function NavBar() {
   const open = Boolean(anchorEl)
 
   const user = useUser()
+  const { data: songs, error, isLoading } = useGetSongs()
 
-  const [isDrawerOpen, setIsDrawerOpen] = useAtom(playlistDrawerAtom)
+  const [isPlaylistDrawerOpen, setIsPlaylistDrawerOpen] =
+    useAtom(playlistDrawerAtom)
+
+  const [isSongDrawerOpen, setIsSongDrawerOpen] = useAtom(songDrawerAtom)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -80,8 +86,11 @@ export default function NavBar() {
           }}
           aria-labelledby="list-navigation"
         >
+          <Tooltip title="Songs">
+            <Box onClick={() => setIsSongDrawerOpen(true)}>Songs</Box>
+          </Tooltip>
           <Tooltip title="Library">
-            <Box onClick={() => setIsDrawerOpen(true)}>Playlists</Box>
+            <Box onClick={() => setIsPlaylistDrawerOpen(true)}>Playlists</Box>
           </Tooltip>
 
           <Tooltip title="Dark Mode">
@@ -170,8 +179,18 @@ export default function NavBar() {
           </MenuItem>
         </Menu>
         <Drawer
-          open={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
+          open={isSongDrawerOpen}
+          onClose={() => setIsSongDrawerOpen(false)}
+          anchor="right"
+          PaperProps={{
+            sx: { width: '50%' },
+          }}
+        >
+          <SongList songs={songs || []} />
+        </Drawer>
+        <Drawer
+          open={isPlaylistDrawerOpen}
+          onClose={() => setIsPlaylistDrawerOpen(false)}
           anchor="right"
           PaperProps={{
             sx: { width: '50%' },

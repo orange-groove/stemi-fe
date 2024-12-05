@@ -22,7 +22,6 @@ interface Props {
 }
 interface FormData {
   file: FileList
-  stems?: string[]
 }
 const stemOptions = ['vocals', 'bass', 'drums', 'other']
 
@@ -35,16 +34,12 @@ const SongForm = ({ onComplete }: Props) => {
     formState: { errors },
   } = useForm()
 
-  const params = useParams()
-
   const addSongMutation = useAddSong()
 
   const onSubmit = (data: FormData) => {
     addSongMutation.mutate(
       {
         file: data.file as any, // Ensure the file is correctly passed
-        stems: data.stems, // Pass the selected stems
-        playlistId: Number(params.playlistId),
       },
       {
         onSuccess: (data) => {
@@ -68,37 +63,6 @@ const SongForm = ({ onComplete }: Props) => {
       noValidate
       sx={{ mt: 3 }}
     >
-      <Controller
-        name="stems"
-        control={control}
-        defaultValue={[]}
-        // rules={{ required: 'At least one stem must be selected' }}
-        render={({ field }) => (
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Select Stems to Separate</InputLabel>
-            <Select
-              {...field}
-              multiple
-              renderValue={(selected) => selected.join(', ')}
-              error={!!errors.stems}
-            >
-              {stemOptions?.map((option) => (
-                <MenuItem key={option} value={option}>
-                  <Checkbox checked={field.value.indexOf(option) > -1} />
-                  <ListItemText primary={option} />
-                </MenuItem>
-              ))}
-            </Select>
-            {errors.stems && (
-              <Typography style={{ color: 'red' }}>
-                {/* @ts-ignore */}
-                {errors.stems.message}
-              </Typography>
-            )}
-          </FormControl>
-        )}
-      />
-
       <Controller
         name="file"
         control={control}

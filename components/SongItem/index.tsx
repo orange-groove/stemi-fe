@@ -15,18 +15,22 @@ import {
 import { useRouter } from 'next/navigation'
 import useDeleteSong from '@/hooks/useDeleteSong'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/state/user'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Song as SongType } from '@/api/client'
 import useUpdateSong from '@/hooks/useUpdateSong'
 import EditableText from '../EditableText'
+import { songAtom } from '@/state/song'
+import { songDrawerAtom } from '@/state/drawer'
 
 export default function Song({ song }: { song: SongType }) {
   const router = useRouter()
   const user = useAtomValue(userAtom)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  const setSongMenuOpen = useSetAtom(songDrawerAtom)
 
   const isMenuOpen = Boolean(anchorEl)
 
@@ -54,6 +58,7 @@ export default function Song({ song }: { song: SongType }) {
 
   const handleClick = (e: React.SyntheticEvent) => {
     e.stopPropagation()
+    setSongMenuOpen(false)
     router.push(`/songs/${song.id}`)
   }
 
@@ -85,8 +90,7 @@ export default function Song({ song }: { song: SongType }) {
         bgcolor: 'background.paper',
         borderRadius: 2,
         width: 1,
-        p: [1, 2],
-        m: 2,
+        p: 1,
         ':hover': {
           cursor: 'pointer',
         },
@@ -127,21 +131,19 @@ export default function Song({ song }: { song: SongType }) {
                 />
               </Box>
             )}
-            <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
               <FormGroup>
-                <FormLabel>Title</FormLabel>
                 <EditableText
                   value={song?.title || ''}
                   placeholder="Song Title"
                   onComplete={handleTitleUpdate}
                   disabled={isUpdateSongPending}
                   sx={{
-                    fontSize: 'h4.fontSize',
+                    fontSize: 18,
                   }}
                 />
               </FormGroup>
               <FormGroup>
-                <FormLabel>Artist</FormLabel>
                 <EditableText
                   value={song?.artist || ''}
                   placeholder="Song Artist"
