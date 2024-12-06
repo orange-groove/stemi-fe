@@ -6,24 +6,16 @@ import {
   Box,
   Button,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
 } from '@mui/material'
 import useAddSong from '@/hooks/useAddSong'
 import LoadingButton from '../LoadingButton'
-import { useParams } from 'next/navigation'
-
+\
 interface Props {
   onComplete: () => void
 }
 interface FormData {
   file: FileList
 }
-const stemOptions = ['vocals', 'bass', 'drums', 'other']
 
 const SongForm = ({ onComplete }: Props) => {
   const [fileName, setFileName] = useState('')

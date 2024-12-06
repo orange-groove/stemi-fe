@@ -47,6 +47,34 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const { mutate: downloadStems } = useDownloadStems()
   const { mutate: downloadMixdown } = useDownloadMixdown()
 
+  // Update track volumes
+  const updateTrackVolumes = (
+    volumeMap: Map<string, number>,
+    muteMap: Map<string, boolean>,
+    soloMap: Map<string, boolean>,
+    masterVolume: number,
+  ) => {
+    const soloActive = Array.from(soloMap.values()).some((solo) => solo)
+
+    grainPlayers.current.forEach((player, trackName) => {
+      const isMuted = muteMap.get(trackName) || false
+      const isSoloed = soloMap.get(trackName) || false
+
+      let effectiveVolume = 0
+      if (soloActive) {
+        effectiveVolume = isSoloed
+          ? volumeMap.get(trackName)! * masterVolume
+          : 0
+      } else {
+        effectiveVolume = !isMuted
+          ? volumeMap.get(trackName)! * masterVolume
+          : 0
+      }
+
+      player.volume.value = Tone.gainToDb(effectiveVolume)
+    })
+  }
+
   // Handle play/pause
   const handlePlayPause = async () => {
     if (isPlaying) {
@@ -59,14 +87,12 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   }
 
   // Seek all tracks
-  const handleClick = (relativeX: number) => {
-    const mainTrack = waveSurferInstances.current.get(tracks[0]?.name)
+  const handleTrackClick = (relativeX: number) => {
+    const mainTrack = waveSurferInstances.current.get(tracks?.[0]?.name!)
     if (!mainTrack) return
 
     const duration = mainTrack.getDuration()
     const clickedTime = relativeX * duration
-
-    console.log({ relativeX, duration, clickedTime })
 
     // Update Tone.Transport to the clicked position
     const wasPlaying = Tone.Transport.state === 'started'
@@ -136,34 +162,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     setIsPlaying(false)
   }
 
-  // Update track volumes
-  const updateTrackVolumes = (
-    volumeMap: Map<string, number>,
-    muteMap: Map<string, boolean>,
-    soloMap: Map<string, boolean>,
-    masterVolume: number,
-  ) => {
-    const soloActive = Array.from(soloMap.values()).some((solo) => solo)
-
-    grainPlayers.current.forEach((player, trackName) => {
-      const isMuted = muteMap.get(trackName) || false
-      const isSoloed = soloMap.get(trackName) || false
-
-      let effectiveVolume = 0
-      if (soloActive) {
-        effectiveVolume = isSoloed
-          ? volumeMap.get(trackName)! * masterVolume
-          : 0
-      } else {
-        effectiveVolume = !isMuted
-          ? volumeMap.get(trackName)! * masterVolume
-          : 0
-      }
-
-      player.volume.value = Tone.gainToDb(effectiveVolume)
-    })
-  }
-
   const handleCheckboxChange = (trackName) => {
     setSelectedTracks(
       (prevSelectedTracks) =>
@@ -205,6 +203,17 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     })
   }
 
+  const handleScroll = (
+    start: number,
+    end: number,
+    left: number,
+    right: number,
+  ) => {
+    waveSurferInstances.current.forEach((ws) => {
+      ws.setScroll(left)
+    })
+  }
+
   // Initialize GrainPlayers
   useEffect(() => {
     tracks?.forEach((track) => {
@@ -224,14 +233,26 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
 
   // Synchronize WaveSurfer cursor with Tone.Transport
   useEffect(() => {
-    const interval = setInterval(() => {
-      const currentTime = Tone.getContext().transport.seconds
-      waveSurferInstances.current.forEach((ws) =>
-        ws.seekTo(currentTime / ws.getDuration()),
-      )
-    }, 100) // Sync every 100ms
+    let isUserScrolling = false // Track manual scrolling
 
-    return () => clearInterval(interval)
+    const handlePositionUpdate = () => {
+      if (!isUserScrolling) {
+        const currentTime = Tone.Transport.seconds
+        waveSurferInstances.current.forEach((ws) => {
+          const relativePosition = currentTime / ws.getDuration()
+          ws.seekTo(relativePosition) // Update WaveSurfer cursor position
+        })
+      }
+    }
+
+    // Use Tone.js events for playback updates
+    Tone.Transport.scheduleRepeat(() => handlePositionUpdate(), 0.1) // Update every 100ms
+
+    return () => {
+      // Cleanup listeners and intervals
+
+      Tone.Transport.cancel() // Remove all scheduled events
+    }
   }, [])
 
   useEffect(() => {
@@ -239,17 +260,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
       ws.zoom(zoomLevel)
     })
   }, [])
-
-  const handleScroll = (
-    start: number,
-    end: number,
-    left: number,
-    right: number,
-  ) => {
-    waveSurferInstances.current.forEach((ws) => {
-      ws.setScroll(left)
-    })
-  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', p: 3 }}>
@@ -364,7 +374,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
               track={track}
               zoomLevel={zoomLevel}
               playbackRate={playbackRate}
-              onClick={handleClick}
+              onClick={handleTrackClick}
               registerInstance={(ws) => {
                 waveSurferInstances.current.set(track.name!, ws)
               }}

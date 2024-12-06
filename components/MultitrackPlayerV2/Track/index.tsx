@@ -1,15 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react'
-import {
-  Box,
-  Button,
-  Slider,
-  Typography,
-  useTheme,
-  Skeleton,
-} from '@mui/material'
+import { Box, Button, Slider, Typography, Skeleton } from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Track } from '@/api/client'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
+import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 
 const colors = ['purple', 'blue', 'green', 'orange', 'red']
 
@@ -46,8 +40,6 @@ const TrackComponent = ({
   onSolo,
   onScroll,
 }: TrackComponentProps) => {
-  const theme = useTheme()
-
   const containerRef = useRef<HTMLDivElement>(null)
 
   const topTimeline = TimelinePlugin.create({
@@ -61,6 +53,8 @@ const TrackComponent = ({
     },
   })
 
+  const regions = RegionsPlugin.create()
+
   const { wavesurfer, isReady } = useWavesurfer({
     container: containerRef,
     url: track.url,
@@ -71,7 +65,10 @@ const TrackComponent = ({
     backend: 'WebAudio',
     hideScrollbar: true,
     autoCenter: false,
-    plugins: useMemo(() => (index === 0 ? [topTimeline] : []), []),
+    plugins: useMemo(
+      () => (index === 0 ? [topTimeline, regions] : [regions]),
+      [index],
+    ),
   })
 
   useEffect(() => {
