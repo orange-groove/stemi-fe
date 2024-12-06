@@ -109,9 +109,8 @@ export default function PlaylistItem({ playlist }: { playlist: Playlist }) {
           sx={{ fontSize: 20 }}
         />
         <Typography>
-          {playlist?.songs?.length === 0 ? 'No' : playlist?.songs?.length} Song
-          {((playlist?.songs?.length as number) > 1 ||
-            playlist?.songs?.length === 0) &&
+          {playlist?.song_count === 0 ? 'No' : playlist.song_count} Song
+          {((playlist.song_count as number) > 1 || playlist.song_count === 0) &&
             's'}
         </Typography>
       </Box>

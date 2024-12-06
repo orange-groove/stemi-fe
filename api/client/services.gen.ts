@@ -97,7 +97,7 @@ export const deletePlaylistSong = <ThrowOnError extends boolean = false>(options
  * Create a song
  * Create a new song for a specific playlist, including a file upload.
  */
-export const createSong = <ThrowOnError extends boolean = false>(options: Options<CreateSongData, ThrowOnError>) => {
+export const createSong = <ThrowOnError extends boolean = false>(options?: Options<CreateSongData, ThrowOnError>) => {
     return (options?.client ?? client).post<CreateSongResponse, CreateSongError, ThrowOnError>({
         ...options,
         ...formDataBodySerializer,

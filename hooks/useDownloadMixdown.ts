@@ -27,6 +27,7 @@ const useDownloadMixdown = () => {
     mutationFn,
     onSuccess: (data) => {
       // Create a Blob and trigger the download
+      // @ts-ignore
       const blob = new Blob([data], { type: 'application/zip' })
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')

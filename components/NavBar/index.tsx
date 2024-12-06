@@ -32,10 +32,10 @@ export default function NavBar() {
   const user = useUser()
   const { data: songs, error, isLoading } = useGetSongs()
 
-  const [isPlaylistDrawerOpen, setIsPlaylistDrawerOpen] =
-    useAtom(playlistDrawerAtom)
+  // const [isPlaylistDrawerOpen, setIsPlaylistDrawerOpen] =
+  //   useAtom(playlistDrawerAtom)
 
-  const [isSongDrawerOpen, setIsSongDrawerOpen] = useAtom(songDrawerAtom)
+  // const [isSongDrawerOpen, setIsSongDrawerOpen] = useAtom(songDrawerAtom)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -64,12 +64,12 @@ export default function NavBar() {
           height: 70,
           p: 2,
           display: 'flex',
-          alignItems: 'space-between',
-          borderBottom: '1px solid lightgray',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
-          <Typography variant="h4" color="primary.main">
+          <Typography variant="h4" color="secondary.main">
             stemjam
           </Typography>
         </Box>
@@ -87,10 +87,10 @@ export default function NavBar() {
           aria-labelledby="list-navigation"
         >
           <Tooltip title="Songs">
-            <Box onClick={() => setIsSongDrawerOpen(true)}>Songs</Box>
+            <Box onClick={() => router.push('/songs')}>Songs</Box>
           </Tooltip>
           <Tooltip title="Library">
-            <Box onClick={() => setIsPlaylistDrawerOpen(true)}>Playlists</Box>
+            <Box onClick={() => router.push('/playlists')}>Playlists</Box>
           </Tooltip>
 
           <Tooltip title="Dark Mode">
@@ -178,12 +178,12 @@ export default function NavBar() {
             Logout
           </MenuItem>
         </Menu>
-        <Drawer
+        {/* <Drawer
           open={isSongDrawerOpen}
           onClose={() => setIsSongDrawerOpen(false)}
           anchor="right"
           PaperProps={{
-            sx: { width: '50%' },
+            sx: { width: ['100%', '50%'] },
           }}
         >
           <SongList songs={songs || []} />
@@ -193,11 +193,11 @@ export default function NavBar() {
           onClose={() => setIsPlaylistDrawerOpen(false)}
           anchor="right"
           PaperProps={{
-            sx: { width: '50%' },
+            sx: { width: ['100%', '50%'] },
           }}
         >
           <PlaylistList />
-        </Drawer>
+        </Drawer> */}
       </Box>
     )
   )

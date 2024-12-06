@@ -4,17 +4,17 @@ import { deleteSong, Song } from '@/api/client'
 const useDeleteSong = () => {
   const queryClient = useQueryClient()
 
-  const mutationFn = async ({ song }: { song: Song }) => {
-    const response = await deleteSong({ path: { song_id: song.id! } })
+  const mutationFn = async (id: number) => {
+    const response = await deleteSong({ path: { song_id: id } })
 
     return response.data
   }
 
   return useMutation({
     mutationFn,
-    onSettled: (newData, error, { song }) => {
+    onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ['playlists', song.playlist_id],
+        queryKey: ['songs'],
       })
     },
   })

@@ -14,8 +14,9 @@ export default function SongsPage() {
   return (
     <Box
       sx={{
-        width: 1,
-        backgroundColor: 'background.default',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
       }}
     >
       {songs && <SongList songs={songs} />}

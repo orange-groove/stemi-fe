@@ -60,12 +60,24 @@ const PlaylistList = () => {
 
   if (!playlists?.length) {
     return (
-      <Box sx={{ p: 4 }}>
-        <Typography variant="h4">My Playlists</Typography>
-        <NewPlaylistModal />
-        <Typography variant="h5" sx={{ mt: 4 }}>
-          No playlists found
-        </Typography>
+      <Box sx={{ p: 4, height: '100%' }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Typography variant="h4" sx={{ fontSize: [24, 32] }}>
+            My Playlists
+          </Typography>
+          <NewPlaylistModal />
+        </Box>
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h5">No playlists found</Typography>
+        </Box>
       </Box>
     )
   }
@@ -73,7 +85,7 @@ const PlaylistList = () => {
   return (
     <Box sx={{ p: 4, backgroundColor: 'background.default' }}>
       <Typography variant="h4">My Playlists</Typography>
-      <Box sx={{ my: 4, display: 'flex', gap: 4 }}>
+      <Box sx={{ my: 4, display: 'flex', gap: 4, alignItems: 'center' }}>
         <FormControl>
           <InputLabel id="sort-label">Sort By</InputLabel>
           <Select

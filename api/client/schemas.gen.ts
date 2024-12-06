@@ -15,11 +15,9 @@ export const PlaylistSchema = {
             type: 'string',
             example: 'user-123'
         },
-        songs: {
-            type: 'array',
-            items: {
-                '$ref': '#/components/schemas/Song'
-            }
+        song_count: {
+            type: 'number',
+            example: 5
         },
         created_at: {
             type: 'string',

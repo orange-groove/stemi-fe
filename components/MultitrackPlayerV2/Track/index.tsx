@@ -5,7 +5,7 @@ import { Track } from '@/api/client'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 
-const colors = ['purple', 'blue', 'green', 'orange', 'red']
+const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
 
 interface TrackComponentProps {
   index: number

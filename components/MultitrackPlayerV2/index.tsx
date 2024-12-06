@@ -162,18 +162,21 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     setIsPlaying(false)
   }
 
-  const handleCheckboxChange = (trackName) => {
+  const handleCheckboxChange = (trackName: any) => {
     setSelectedTracks(
+      // @ts-ignore
       (prevSelectedTracks) =>
+        // @ts-ignore
         prevSelectedTracks.includes(trackName)
           ? prevSelectedTracks.filter((track) => track !== trackName) // Remove if unchecked
           : [...prevSelectedTracks, trackName], // Add if checked
     )
   }
 
-  const handleSelectAllChange = (e, isChecked: boolean) => {
+  const handleSelectAllChange = (e: any, isChecked: boolean) => {
     if (isChecked) {
       // Select all track names
+      // @ts-ignore
       setSelectedTracks(tracks?.map((track) => track.name))
     } else {
       // Deselect all tracks
@@ -184,6 +187,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const handleDownloadStems = () => {
     downloadStems({
       songId,
+      // @ts-ignore
       stems:
         selectedTracks.length === 0
           ? tracks?.map((track) => track.name)
@@ -195,6 +199,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const handleDownloadMixdown = () => {
     downloadMixdown({
       songId,
+      // @ts-ignore
       stems:
         selectedTracks.length === 0
           ? tracks?.map((track) => track.name)

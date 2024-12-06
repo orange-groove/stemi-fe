@@ -1,12 +1,8 @@
 import React, { useState } from 'react'
 import {
   Box,
-  Button,
   FormGroup,
-  FormLabel,
   IconButton,
-  List,
-  ListItem,
   Menu,
   MenuItem,
   Paper,
@@ -21,7 +17,6 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Song as SongType } from '@/api/client'
 import useUpdateSong from '@/hooks/useUpdateSong'
 import EditableText from '../EditableText'
-import { songAtom } from '@/state/song'
 import { songDrawerAtom } from '@/state/drawer'
 
 export default function Song({ song }: { song: SongType }) {
@@ -53,7 +48,7 @@ export default function Song({ song }: { song: SongType }) {
   const handleDelete = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
     handleMenuClose(e)
-    user?.id && deleteSong({ song })
+    user?.id && deleteSong(song.id!)
   }
 
   const handleClick = (e: React.SyntheticEvent) => {
@@ -89,10 +84,12 @@ export default function Song({ song }: { song: SongType }) {
       sx={{
         bgcolor: 'background.paper',
         borderRadius: 2,
+        border: '1px solid transparent',
         width: 1,
         p: 1,
         ':hover': {
           cursor: 'pointer',
+          border: '1px solid #ccc',
         },
       }}
     >
@@ -100,78 +97,76 @@ export default function Song({ song }: { song: SongType }) {
         <IconButton
           onClick={handleMenuOpen}
           disabled={isPending}
-          sx={{ position: 'absolute', top: 6, right: 6, zIndex: 1 }}
+          sx={{ position: 'absolute', top: 2, right: 2, zIndex: 1 }}
         >
-          <MenuIcon sx={{ color: 'secondary.main', fontSize: 40 }} />
+          <MenuIcon sx={{ color: '#aaa' }} />
         </IconButton>
         <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
           <MenuItem onClick={handleDelete} disabled={isPending}>
             {isPending ? (
               'Deleting...'
             ) : (
-              <DeleteForeverIcon
-                sx={{ color: 'secondary.main', fontSize: 40 }}
-              />
+              <>
+                <DeleteForeverIcon sx={{ color: 'error.dark' }} /> Delete
+              </>
             )}
           </MenuItem>
         </Menu>
       </Box>
-      <List>
-        <ListItem onClick={handleClick}>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            {song?.image_url && (
-              <Box>
-                <Paper
-                  sx={{
-                    backgroundImage: `url(${song?.image_url})`,
-                    width: '100px',
-                    height: '100px',
-                    backgroundSize: 'contain',
-                  }}
-                />
-              </Box>
-            )}
-            <Box sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
-              <FormGroup>
-                <EditableText
-                  value={song?.title || ''}
-                  placeholder="Song Title"
-                  onComplete={handleTitleUpdate}
-                  disabled={isUpdateSongPending}
-                  sx={{
-                    fontSize: 18,
-                  }}
-                />
-              </FormGroup>
-              <FormGroup>
-                <EditableText
-                  value={song?.artist || ''}
-                  placeholder="Song Artist"
-                  onComplete={handleArtistUpdate}
-                  disabled={isUpdateSongPending}
-                  sx={{
-                    fontSize: 'h5.fontSize',
-                  }}
-                />
-              </FormGroup>
-
-              <Typography variant="body1">
-                Created At:{' '}
-                {song.created_at
-                  ? new Date(song.created_at).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      hour12: true,
-                    })
-                  : 'N/A'}
-              </Typography>
+      <Box onClick={handleClick}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          {song?.image_url && (
+            <Box>
+              <Paper
+                sx={{
+                  backgroundImage: `url(${song?.image_url})`,
+                  width: '100px',
+                  height: '100px',
+                  backgroundSize: 'contain',
+                }}
+              />
             </Box>
+          )}
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <FormGroup>
+              <EditableText
+                value={song?.title || ''}
+                placeholder="Song Title"
+                onComplete={handleTitleUpdate}
+                disabled={isUpdateSongPending}
+                sx={{
+                  fontSize: 18,
+                }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <EditableText
+                value={song?.artist || ''}
+                placeholder="Song Artist"
+                onComplete={handleArtistUpdate}
+                disabled={isUpdateSongPending}
+                sx={{
+                  fontSize: 'h5.fontSize',
+                }}
+              />
+            </FormGroup>
+
+            <Typography variant="body1">
+              Created At:{' '}
+              {song.created_at
+                ? new Date(song.created_at).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                  })
+                : 'N/A'}
+            </Typography>
           </Box>
-        </ListItem>
-      </List>
+        </Box>
+      </Box>
 
       {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
     </Box>

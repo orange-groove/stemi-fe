@@ -15,7 +15,7 @@ const LoginForm: React.FC = () => {
     e.preventDefault()
     const user = await supabase.auth.signInWithPassword({ email, password })
     if (user.data.user) {
-      router.push('/')
+      router.push('/songs')
     }
   }
 
@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
     ;(async () => {
       const user = await supabase.auth.getUser()
       if (user.data.user) {
-        router.push('/')
+        router.push('/songs')
       }
     })()
   }, [router])

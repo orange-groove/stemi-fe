@@ -19,7 +19,7 @@ export type Playlist = {
     id?: number;
     title?: string;
     user_id?: string;
-    songs?: Array<Song>;
+    song_count?: number;
     created_at?: string;
 };
 
@@ -183,11 +183,15 @@ export type DeletePlaylistSongError = ({
 });
 
 export type CreateSongData = {
-    body: {
+    body?: {
         /**
          * The audio file for the song.
          */
         file?: (Blob | File);
+        /**
+         * The YouTube URL for the song.
+         */
+        youtube_url?: string;
     };
 };
 

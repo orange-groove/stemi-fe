@@ -3,15 +3,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createSong } from '@/api/client'
 interface AddSongParams {
-  file: Blob
-  stems?: string[]
+  file?: File
+  youtube_url?: string
 }
 
 const addSong = async (params: AddSongParams) => {
-  const { file } = params
+  const { file, youtube_url } = params
 
   const response = await createSong({
-    body: { file },
+    body: { file, youtube_url },
   })
 
   return response.data

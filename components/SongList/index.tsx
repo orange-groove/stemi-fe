@@ -14,7 +14,7 @@ import NewSongModal from '../NewSongModal'
 import { Song } from '@/api/client'
 
 interface SongsListProps {
-  songs: Song[]
+  songs?: Song[]
 }
 
 const SongList = ({ songs }: SongsListProps) => {
@@ -54,18 +54,32 @@ const SongList = ({ songs }: SongsListProps) => {
 
   if (!songs?.length) {
     return (
-      <Box sx={{ p: 4 }}>
-        <NewSongModal />
-        <Typography variant="h5" sx={{ mt: 4 }}>
-          No songs found
-        </Typography>
+      <Box sx={{ p: 4, height: '100%' }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Typography variant="h4" sx={{ fontSize: [24, 32] }}>
+            My Songs
+          </Typography>
+          <NewSongModal />
+        </Box>
+
+        <Box
+          sx={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h5">No songs found</Typography>
+        </Box>
       </Box>
     )
   }
 
   return (
     <>
-      <Box sx={{ m: 4, display: 'flex', gap: 4 }}>
+      <Box sx={{ m: 2, display: 'flex', gap: 2 }}>
         <FormControl>
           <InputLabel id="sort-label">Sort By</InputLabel>
           <Select

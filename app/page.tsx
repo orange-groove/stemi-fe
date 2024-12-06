@@ -29,74 +29,7 @@ export default function Home() {
       }}
     >
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-        <Grid container spacing={4} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Typography variant="h2" component="h1" gutterBottom>
-              Welcome to Stemjam!
-            </Typography>
-            <Typography variant="h5" component="h2" gutterBottom>
-              Your Ultimate Karaoke and Practice Companion
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Unleash your inner star with Stemjams, the perfect platform for
-              karaoke lovers and aspiring musicians. Whether you&apos;re
-              practicing for a performance or just having fun, our tool provides
-              everything you need to sing and play your heart out.
-            </Typography>
-            <Button variant="contained" color="secondary" href="/songs">
-              Create a playlist now!
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                padding: 3,
-                borderRadius: 2,
-              }}
-            >
-              <Typography variant="h6" component="h3" gutterBottom>
-                Key Features:
-              </Typography>
-              <Box>
-                <ul>
-                  <li>
-                    Karaoke Mode: Sing along to your favorite tracks with
-                    on-screen lyrics and vocal removal.
-                  </li>
-                  <li>
-                    Instrument Isolation: Isolate and practice drums, guitar,
-                    bass, and other instruments from the original song.
-                  </li>
-                  <li>
-                    Practice Tools: Record your sessions, get feedback, and
-                    track your progress over time.
-                  </li>
-                  <li>
-                    Custom Playlists: Create and manage playlists for your
-                    practice sessions and karaoke parties.
-                  </li>
-                  <li>
-                    User-Friendly Interface: Intuitive design makes it easy to
-                    find and sing or play your favorite songs.
-                  </li>
-                  <li>
-                    Original Tracks: Use the original songs instead of generic
-                    MIDI files for a more authentic experience.
-                  </li>
-                  <li>
-                    Secure Cloud Storage: Save your recordings and access them
-                    from anywhere.
-                  </li>
-                </ul>
-              </Box>
-              <Typography variant="body1" paragraph>
-                Start your musical journey today and take your performances to
-                the next level.
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+        Landing page
       </Container>
     </Box>
   )

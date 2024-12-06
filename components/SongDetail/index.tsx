@@ -1,10 +1,9 @@
 'use client'
 
-import { Box, FormGroup, FormLabel, Paper, Typography } from '@mui/material'
+import { Box, Paper, Typography } from '@mui/material'
 import MultiTrackPlayer from '../MultitrackPlayerV2'
 import useSongById from '@/hooks/useGetSong'
 import { useParams } from 'next/navigation'
-import useSongFromGenius from '@/hooks/useSongFromGenius'
 import useUpdateSong from '@/hooks/useUpdateSong'
 import EditableText from '../EditableText'
 
@@ -12,20 +11,8 @@ export default function SongDetail() {
   const params = useParams()
 
   const { data: song, isLoading, error } = useSongById(Number(params.songId))
-  const { data: geniusSongData, isFetching } = useSongFromGenius(
-    song?.title,
-    song?.artist,
-  )
 
   const { mutate: updateSong, isPending: isUpdateSongPending } = useUpdateSong()
-
-  const handleLyricsClick = () => {
-    window.open(
-      geniusSongData?.result?.url,
-      'winname',
-      'directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no,width=400,height=350',
-    )
-  }
 
   const handleArtistUpdate = (newArtist: string) => {
     if (newArtist !== song?.artist) {
@@ -47,6 +34,26 @@ export default function SongDetail() {
         },
       })
     }
+  }
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>
+  }
+
+  if (!song && !isLoading) {
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Typography fontSize={28}>Song not found</Typography>
+      </Box>
+    )
   }
 
   return (
@@ -99,8 +106,7 @@ export default function SongDetail() {
         </Box>
       </Box>
 
-      {song && <MultiTrackPlayer tracks={song.tracks} songId={song?.id} />}
-      {/* <InfoPopup popups={infoData?.popups} /> */}
+      {song && <MultiTrackPlayer tracks={song?.tracks} songId={song.id!} />}
     </Box>
   )
 }

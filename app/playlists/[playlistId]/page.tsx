@@ -60,6 +60,7 @@ export default function PlaylistDetailPage() {
           />
         </FormGroup>
       </Box>
+      {/* @ts-ignore */}
       {songs && <SongList songs={songs} />}
     </Box>
   )

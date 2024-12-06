@@ -2,19 +2,18 @@
 
 import React, { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import {
-  Box,
-  Button,
-  Typography,
-} from '@mui/material'
+import { Box, Typography, TextField } from '@mui/material'
+import { useDropzone } from 'react-dropzone'
 import useAddSong from '@/hooks/useAddSong'
 import LoadingButton from '../LoadingButton'
-\
+
 interface Props {
   onComplete: () => void
 }
+
 interface FormData {
-  file: FileList
+  file?: File
+  youtube_url?: string
 }
 
 const SongForm = ({ onComplete }: Props) => {
@@ -23,19 +22,40 @@ const SongForm = ({ onComplete }: Props) => {
     handleSubmit,
     control,
     reset,
+    setValue,
+    watch,
     formState: { errors },
-  } = useForm()
+  } = useForm<FormData>()
 
   const addSongMutation = useAddSong()
+  const selectedYoutubeUrl = watch('youtube_url')
+
+  const onDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]
+      setValue('file', file)
+      setFileName(file.name)
+      setValue('youtube_url', '') // Clear URL input when a file is selected
+    }
+  }
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'audio/mpeg': ['.mp3'],
+      'audio/wav': ['.wav'],
+    },
+    maxFiles: 1,
+  })
 
   const onSubmit = (data: FormData) => {
     addSongMutation.mutate(
       {
-        file: data.file as any, // Ensure the file is correctly passed
+        file: data.file,
+        youtube_url: data.youtube_url,
       },
       {
-        onSuccess: (data) => {
-          console.log('Success:', data)
+        onSuccess: () => {
           reset()
           setFileName('')
           onComplete()
@@ -53,42 +73,59 @@ const SongForm = ({ onComplete }: Props) => {
       // @ts-ignore
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      sx={{ mt: 3 }}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        alignItems: 'center',
+      }}
     >
+      <Box
+        {...getRootProps()}
+        sx={{
+          p: 3,
+          border: '2px dashed gray',
+          borderRadius: '50%',
+          height: 200,
+          width: 200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          mb: 2,
+          bgcolor: isDragActive ? 'rgba(0, 0, 0, 0.05)' : 'background.default',
+          cursor: 'pointer',
+        }}
+      >
+        <input {...getInputProps()} />
+        <Typography>
+          {fileName
+            ? `Selected file: ${fileName}`
+            : 'Drag and drop an audio file here or click to select'}
+        </Typography>
+      </Box>
       <Controller
-        name="file"
+        name="youtube_url"
         control={control}
-        rules={{ required: 'File is required' }}
         render={({ field }) => (
-          <>
-            <Button
-              variant="contained"
-              component="label"
-              fullWidth
-              sx={{ mt: 2, mb: 2 }}
-            >
-              Upload File
-              <input
-                type="file"
-                hidden
-                accept="audio/*"
-                onChange={(e) => {
-                  // @ts-ignore
-                  field.onChange(e.target.files[0])
-                  // @ts-ignore
-                  setFileName(e.target.files[0]?.name || '')
-                }}
-              />
-            </Button>
-            {fileName && <Typography>Selected file: {fileName}</Typography>}
-          </>
+          <TextField
+            {...field}
+            fullWidth
+            label="YouTube URL"
+            variant="outlined"
+            placeholder="Paste YouTube URL here"
+            onChange={(e) => {
+              field.onChange(e.target.value)
+              setValue('file', undefined) // Clear file input when a URL is entered
+              setFileName('')
+            }}
+            sx={{ mb: 2, backgroundColor: 'white' }}
+          />
         )}
       />
       {errors.file && (
-        // @ts-ignore
         <Typography style={{ color: 'red' }}>{errors.file.message}</Typography>
       )}
-
       <LoadingButton
         type="submit"
         isLoading={addSongMutation.isPending}
@@ -96,8 +133,9 @@ const SongForm = ({ onComplete }: Props) => {
         fullWidth
         variant="contained"
         color="primary"
+        disabled={!fileName && !selectedYoutubeUrl}
       >
-        Upload Song
+        Submit Song
       </LoadingButton>
     </Box>
   )
