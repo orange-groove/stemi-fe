@@ -10,7 +10,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material'
-import TrackComponent from './Track'
+import TrackComponent from './components/Track'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
@@ -162,21 +162,18 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     setIsPlaying(false)
   }
 
-  const handleCheckboxChange = (trackName: any) => {
+  const handleCheckboxChange = (trackName) => {
     setSelectedTracks(
-      // @ts-ignore
       (prevSelectedTracks) =>
-        // @ts-ignore
         prevSelectedTracks.includes(trackName)
           ? prevSelectedTracks.filter((track) => track !== trackName) // Remove if unchecked
           : [...prevSelectedTracks, trackName], // Add if checked
     )
   }
 
-  const handleSelectAllChange = (e: any, isChecked: boolean) => {
+  const handleSelectAllChange = (e, isChecked: boolean) => {
     if (isChecked) {
       // Select all track names
-      // @ts-ignore
       setSelectedTracks(tracks?.map((track) => track.name))
     } else {
       // Deselect all tracks
@@ -187,7 +184,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const handleDownloadStems = () => {
     downloadStems({
       songId,
-      // @ts-ignore
       stems:
         selectedTracks.length === 0
           ? tracks?.map((track) => track.name)
@@ -199,7 +195,6 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const handleDownloadMixdown = () => {
     downloadMixdown({
       songId,
-      // @ts-ignore
       stems:
         selectedTracks.length === 0
           ? tracks?.map((track) => track.name)
@@ -322,7 +317,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
             </Button>
           </Tooltip>
 
-          <Box sx={{ ml: 2 }}>
+          {/* <Box sx={{ ml: 2 }}>
             <Typography>Playback Rate</Typography>
             <Slider
               value={playbackRate}
@@ -340,7 +335,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
                 },
               }}
             />
-          </Box>
+          </Box> */}
           <Box sx={{ ml: 2 }}>
             <Typography>Master Volume</Typography>
             <Slider
