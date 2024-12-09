@@ -134,7 +134,7 @@ export default function Home() {
         <Box sx={{ width: '100%' }}>
           {previewSong && (
             <MultitrackPlayer
-              songId={previewSong.id}
+              songId={previewSong.id!}
               tracks={previewSong?.tracks}
             />
           )}
