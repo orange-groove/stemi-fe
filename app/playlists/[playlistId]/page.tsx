@@ -40,7 +40,6 @@ export default function PlaylistDetailPage() {
   return (
     <Box
       sx={{
-        height: '100vh',
         width: 1,
         bgcolor: 'background.default',
       }}

@@ -52,7 +52,7 @@ const AppThemeProvider = ({ children }: { children: ReactNode }) => {
             main: '#6933ff', // Purple
           },
           secondary: {
-            main: '#c400d6', // pink
+            main: '#B0007C', // pink
           },
           ...(mode === 'light'
             ? {
@@ -67,7 +67,7 @@ const AppThemeProvider = ({ children }: { children: ReactNode }) => {
               }
             : {
                 background: {
-                  default: '#111', // Dark grey for main background
+                  default: '#000', // Dark grey for main background
                   paper: '#222', // Slightly lighter dark grey for paper-like components
                 },
                 text: {

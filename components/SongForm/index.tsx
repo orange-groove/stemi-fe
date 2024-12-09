@@ -6,6 +6,8 @@ import { Box, Typography, TextField } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
 import useAddSong from '@/hooks/useAddSong'
 import LoadingButton from '../LoadingButton'
+import config from '@/config'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   onComplete: () => void
@@ -29,6 +31,7 @@ const SongForm = ({ onComplete }: Props) => {
 
   const addSongMutation = useAddSong()
   const selectedYoutubeUrl = watch('youtube_url')
+  const router = useRouter()
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -36,6 +39,7 @@ const SongForm = ({ onComplete }: Props) => {
       setValue('file', file)
       setFileName(file.name)
       setValue('youtube_url', '') // Clear URL input when a file is selected
+      addSong({ file })
     }
   }
 
@@ -49,16 +53,21 @@ const SongForm = ({ onComplete }: Props) => {
   })
 
   const onSubmit = (data: FormData) => {
+    addSong(data)
+  }
+
+  const addSong = async (data: FormData) => {
     addSongMutation.mutate(
       {
         file: data.file,
         youtube_url: data.youtube_url,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           reset()
           setFileName('')
           onComplete()
+          router.push(`/songs/${data?.song?.id}`)
         },
         onError: (error) => {
           console.error('Error:', error)
@@ -104,25 +113,27 @@ const SongForm = ({ onComplete }: Props) => {
             : 'Drag and drop an audio file here or click to select'}
         </Typography>
       </Box>
-      <Controller
-        name="youtube_url"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="YouTube URL"
-            variant="outlined"
-            placeholder="Paste YouTube URL here"
-            onChange={(e) => {
-              field.onChange(e.target.value)
-              setValue('file', undefined) // Clear file input when a URL is entered
-              setFileName('')
-            }}
-            sx={{ mb: 2, backgroundColor: 'white' }}
-          />
-        )}
-      />
+      {config.godMode === true && (
+        <Controller
+          name="youtube_url"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              fullWidth
+              label="YouTube URL"
+              variant="outlined"
+              placeholder="Paste YouTube URL here"
+              onChange={(e) => {
+                field.onChange(e.target.value)
+                setValue('file', undefined) // Clear file input when a URL is entered
+                setFileName('')
+              }}
+              sx={{ mb: 2, backgroundColor: 'white' }}
+            />
+          )}
+        />
+      )}
       {errors.file && (
         <Typography style={{ color: 'red' }}>{errors.file.message}</Typography>
       )}

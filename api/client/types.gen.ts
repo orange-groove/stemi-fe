@@ -268,6 +268,15 @@ export type DeleteSongError = ({
     error?: string;
 });
 
+export type GetSampleSongResponse = ({
+    song?: Song;
+    message?: string;
+});
+
+export type GetSampleSongError = ({
+    error?: string;
+});
+
 export type DownloadStemsData = {
     body: DownloadStemsRequest;
     path: {

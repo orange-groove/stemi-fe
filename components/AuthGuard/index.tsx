@@ -18,7 +18,7 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         setUser(session?.user)
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
-        router.push('/login')
+        router.push('/')
       } else if (event === 'PASSWORD_RECOVERY') {
         // handle password recovery event
       } else if (event === 'TOKEN_REFRESHED') {
@@ -36,7 +36,7 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const { data, error } = await supabase.auth.getUser()
 
       if (error) {
-        router.push('/login')
+        router.push('/')
       } else {
         setUser(data.user)
       }
