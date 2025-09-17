@@ -3,10 +3,11 @@
 import React from 'react'
 import { Avatar, Box, Typography, Paper } from '@mui/material'
 import { blue } from '@mui/material/colors'
-import { useUser } from '@/hooks/useAuth'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/state/user'
 
 const ProfilePage = () => {
-  const user = useUser()
+  const user = useAtomValue(userAtom)
 
   return (
     user && (

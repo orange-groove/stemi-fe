@@ -1,7 +1,6 @@
 'use client'
 
-import MultitrackPlayer from '@/components/MultitrackPlayerV2'
-import useGetSampleSong from '@/hooks/useGetSampleSong'
+import SessionSongProcessor from '@/components/SessionSongProcessor'
 import { Download, Memory, UploadFile } from '@mui/icons-material'
 import { Box, Typography, Container, List, ListItem } from '@mui/material'
 
@@ -27,8 +26,6 @@ function StepIcon({ icon }: { icon: number }) {
 }
 
 export default function Home() {
-  const { data: previewSong } = useGetSampleSong()
-
   return (
     <Box>
       {/* Hero Section */}
@@ -62,7 +59,7 @@ export default function Home() {
         {/* Content (Title and Mock Image) */}
         <Box sx={{ position: 'relative', zIndex: 2 }}>
           <Typography variant="h1" sx={{ mb: 4, fontWeight: 300 }}>
-            Stemjam.ai
+            stemi
           </Typography>
 
           <Typography variant="h3" sx={{ mb: 4, fontWeight: 300 }}>
@@ -117,7 +114,7 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* Multitrack Player Section */}
+      {/* Session Song Processor Section */}
       <Box
         component="section"
         sx={{
@@ -129,15 +126,10 @@ export default function Home() {
           gap: 4,
         }}
       >
-        <Typography variant="h3">Multitrack Stem Preview</Typography>
-        <Typography variant="h4">Try it out</Typography>
+        <Typography variant="h3">Try the New Session-Based Flow</Typography>
+        <Typography variant="h4">Upload, Preview, and Download</Typography>
         <Box sx={{ width: '100%' }}>
-          {previewSong && (
-            <MultitrackPlayer
-              songId={previewSong.id!}
-              tracks={previewSong?.tracks}
-            />
-          )}
+          <SessionSongProcessor />
         </Box>
       </Box>
 
@@ -171,14 +163,6 @@ export default function Home() {
             <ListItem>
               Download selected stems and use them for karaoke, practice or
               import them into your favorite DAW.
-            </ListItem>
-            <ListItem>
-              Pro users get additional storage and ability to create playlists.
-            </ListItem>
-            <ListItem>
-              Playlists allow for quick playback of your songs using the
-              settings of your song project. Volume, mutes, and playback rate
-              are all preserved.
             </ListItem>
           </List>
         </Container>
@@ -221,7 +205,6 @@ export default function Home() {
             <Typography>1 Song Upload</Typography>
             <Typography>1 Song Project</Typography>
             <Typography>1 Song Download</Typography>
-            <Typography>1 Playlist</Typography>
           </Box>
           <Box
             sx={{
@@ -239,7 +222,6 @@ export default function Home() {
             <Typography>Unlimited Song Uploads</Typography>
             <Typography>Unlimited Song Projects</Typography>
             <Typography>Unlimited Song Downloads</Typography>
-            <Typography>Unlimited Playlists</Typography>
           </Box>
         </Container>
       </Box>

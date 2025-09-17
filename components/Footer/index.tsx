@@ -15,7 +15,7 @@ export default function Footer({ sx, ...props }: { sx?: any }) {
       >
         <Box>
           <Box sx={{ textAlign: 'center' }}>
-            <Box sx={{ fontSize: 20, fontWeight: 'bold' }}>stemjam.ai</Box>
+            <Box sx={{ fontSize: 20, fontWeight: 'bold' }}>stemi</Box>
             <Typography
               sx={{
                 fontSize: 14,

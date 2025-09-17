@@ -1,15 +1,5 @@
 'use client'
 
-import supabase from '@/lib/supabase'
-import { useEffect, useState } from 'react'
-
-export function useUser() {
-  const [user, setUser] = useState<any>(null)
-  useEffect(() => {
-    ;(async () => {
-      const u = await supabase.auth.getUser()
-      setUser(u.data.user)
-    })()
-  }, [])
-  return user
-}
+// This file is kept for potential future auth-related hooks
+// The useUser hook has been replaced with userAtom from state/user.ts
+// which properly listens to Supabase auth state changes

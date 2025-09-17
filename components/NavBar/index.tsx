@@ -16,14 +16,15 @@ import { useRouter } from 'next/navigation'
 import DarkModeToggle from '../DarkModeToggle'
 import { Logout } from '@mui/icons-material'
 import { useState } from 'react'
-import { useUser } from '@/hooks/useAuth'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/state/user'
 
 export default function NavBar() {
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
-  const user = useUser()
+  const user = useAtomValue(userAtom)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -57,7 +58,7 @@ export default function NavBar() {
     >
       <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
         <Typography variant="h4" color="secondary.main">
-          stemjam
+          stemi
         </Typography>
       </Box>
       <Box
@@ -75,9 +76,8 @@ export default function NavBar() {
       >
         {user && (
           <>
-            <Typography onClick={() => router.push('/songs')}>Songs</Typography>
-            <Typography onClick={() => router.push('/playlists')}>
-              Playlists
+            <Typography onClick={() => router.push('/stems')}>
+              Separate Stems
             </Typography>
           </>
         )}
@@ -166,26 +166,6 @@ export default function NavBar() {
           Logout
         </MenuItem>
       </Menu>
-      {/* <Drawer
-          open={isSongDrawerOpen}
-          onClose={() => setIsSongDrawerOpen(false)}
-          anchor="right"
-          PaperProps={{
-            sx: { width: ['100%', '50%'] },
-          }}
-        >
-          <SongList songs={songs || []} />
-        </Drawer>
-        <Drawer
-          open={isPlaylistDrawerOpen}
-          onClose={() => setIsPlaylistDrawerOpen(false)}
-          anchor="right"
-          PaperProps={{
-            sx: { width: ['100%', '50%'] },
-          }}
-        >
-          <PlaylistList />
-        </Drawer> */}
     </Box>
   )
 }

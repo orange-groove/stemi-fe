@@ -15,15 +15,17 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
 import FirstPageIcon from '@mui/icons-material/FirstPage'
 import { Track } from '@/api/client'
-import useDownloadStems from '@/hooks/useDownloadStems'
-import useDownloadMixdown from '@/hooks/useDownloadMixdown'
-
 interface MultitrackPlayerProps {
   tracks?: Track[]
-  songId: number
+  hideDownloadButtons?: boolean
+  onTracksSelected?: (selectedTracks: string[]) => void
 }
 
-const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
+const MultitrackPlayer = ({
+  tracks,
+  hideDownloadButtons = false,
+  onTracksSelected,
+}: MultitrackPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [masterVolume, setMasterVolume] = useState(1)
   const [playbackRate, setPlaybackRate] = useState(1)
@@ -41,11 +43,8 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     new Map(tracks?.map((track) => [track.name!, false])),
   )
 
-  const [selectedTracks, setSelectedTracks] = useState([])
+  const [selectedTracks, setSelectedTracks] = useState<string[]>([])
   const [downloadFileType, setDownloadFileType] = useState('wav')
-
-  const { mutate: downloadStems } = useDownloadStems()
-  const { mutate: downloadMixdown } = useDownloadMixdown()
 
   // Update track volumes
   const updateTrackVolumes = (
@@ -165,11 +164,15 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   const handleCheckboxChange = (trackName: string) => {
     setSelectedTracks(
       // @ts-ignore
-      (prevSelectedTracks) =>
-        // @ts-ignore
-        prevSelectedTracks.includes(trackName)
+      (prevSelectedTracks) => {
+        const newSelectedTracks = prevSelectedTracks.includes(trackName)
           ? prevSelectedTracks.filter((track) => track !== trackName) // Remove if unchecked
-          : [...prevSelectedTracks, trackName], // Add if checked
+          : [...prevSelectedTracks, trackName] // Add if checked
+
+        // Notify parent component of selection change
+        onTracksSelected?.(newSelectedTracks)
+        return newSelectedTracks
+      },
     )
   }
 
@@ -177,35 +180,26 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
     if (isChecked) {
       // Select all track names
       // @ts-ignore
-      setSelectedTracks(tracks?.map((track) => track.name))
+      const allTracks = tracks?.map((track) => track.name) || []
+      setSelectedTracks(allTracks)
+      onTracksSelected?.(allTracks)
     } else {
       // Deselect all tracks
       setSelectedTracks([])
+      onTracksSelected?.([])
     }
   }
 
   const handleDownloadStems = () => {
-    downloadStems({
-      songId,
-      // @ts-ignore
-      stems:
-        selectedTracks.length === 0
-          ? tracks?.map((track) => track.name)
-          : selectedTracks,
-      fileType: downloadFileType,
-    })
+    // This function is only used when not in session mode
+    // In session mode, downloads are handled by the parent component
+    console.log('Download stems not implemented in session mode')
   }
 
   const handleDownloadMixdown = () => {
-    downloadMixdown({
-      songId,
-      // @ts-ignore
-      stems:
-        selectedTracks.length === 0
-          ? tracks?.map((track) => track.name)
-          : selectedTracks,
-      fileType: downloadFileType,
-    })
+    // This function is only used when not in session mode
+    // In session mode, downloads are handled by the parent component
+    console.log('Download mixdown not implemented in session mode')
   }
 
   const handleScroll = (
@@ -267,36 +261,23 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
   }, [])
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', p: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
         }}
       >
-        <Box>
-          <Checkbox
-            sx={{ m: 1 }}
-            onChange={handleSelectAllChange}
-            checked={selectedTracks.length === tracks?.length}
-          />
-
-          <Button onClick={handleDownloadStems}>Download Stems</Button>
-          <Button onClick={handleDownloadMixdown}>Download Mixdown</Button>
-          <Select
-            labelId="file-type-select-label"
-            id="file-type-select"
-            value={downloadFileType}
-            label="Age"
-            onChange={(e) => setDownloadFileType(e.target.value)}
-            size="small"
-          >
-            <MenuItem value="wav">WAV</MenuItem>
-            <MenuItem value="mp3">MP3</MenuItem>
-            <MenuItem value="ogg">OGG</MenuItem>
-          </Select>
-        </Box>
+        {!hideDownloadButtons && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Checkbox
+              sx={{ m: 1 }}
+              onChange={handleSelectAllChange}
+              checked={selectedTracks.length === tracks?.length}
+            />
+            <Typography>Select All</Typography>
+          </Box>
+        )}
 
         {/* Transport and Playback Rate Controls */}
         <Box
@@ -305,6 +286,7 @@ const MultitrackPlayer = ({ tracks, songId }: MultitrackPlayerProps) => {
             alignItems: 'center',
             gap: 1,
             pr: 1,
+            ml: 4,
           }}
         >
           <Tooltip title="Play">
