@@ -1,6 +1,7 @@
 'use client'
 
 import SessionSongProcessor from '@/components/SessionSongProcessor'
+import { Suspense } from 'react'
 import { Download, Memory, UploadFile } from '@mui/icons-material'
 import { Box, Typography, Container, List, ListItem } from '@mui/material'
 
@@ -129,7 +130,9 @@ export default function Home() {
         <Typography variant="h3">Try the New Session-Based Flow</Typography>
         <Typography variant="h4">Upload, Preview, and Download</Typography>
         <Box sx={{ width: '100%' }}>
-          <SessionSongProcessor />
+          <Suspense fallback={<div>Loading...</div>}>
+            <SessionSongProcessor />
+          </Suspense>
         </Box>
       </Box>
 

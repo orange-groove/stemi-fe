@@ -2,6 +2,7 @@
 
 import SessionSongProcessor from '@/components/SessionSongProcessor'
 import { Box } from '@mui/material'
+import { Suspense } from 'react'
 
 export default function StemsPage() {
   return (
@@ -13,7 +14,9 @@ export default function StemsPage() {
         p: 4,
       }}
     >
-      <SessionSongProcessor />
+      <Suspense fallback={<div>Loading...</div>}>
+        <SessionSongProcessor />
+      </Suspense>
     </Box>
   )
 }
