@@ -14,7 +14,7 @@ export default function LoginPage() {
       }}
     >
       <Typography sx={{ mb: 8, fontSize: [50, 100, 200] }}>
-        stemjam.ai
+        stemi
       </Typography>
       <LoginForm />
     </Box>

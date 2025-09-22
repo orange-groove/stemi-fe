@@ -65,6 +65,8 @@ const SessionSongProcessor = () => {
   // Create tracks with blob URLs when preview data changes
   useEffect(() => {
     const createTracksWithBlobs = async () => {
+      // If tracks were already seeded from process response (stem_urls), skip refetching
+      if (tracks.length > 0) return
       if (preview?.available_stems && sessionId) {
         setTracksLoading(true)
         try {
@@ -112,7 +114,7 @@ const SessionSongProcessor = () => {
     }
 
     createTracksWithBlobs()
-  }, [preview?.available_stems, sessionId])
+  }, [preview?.available_stems, sessionId, tracks.length])
 
   // Cleanup blob URLs when component unmounts or tracks change
   useEffect(() => {
@@ -133,8 +135,20 @@ const SessionSongProcessor = () => {
           { file },
           {
             onSuccess: (data) => {
+              // Set session id
               setSessionId(data?.session_id || null)
               setSelectedTracks([])
+
+              // If backend returns direct stem URLs, seed tracks immediately
+              if (data?.stem_urls) {
+                const seeded = Object.entries(data.stem_urls).map(
+                  ([name, url]) => ({
+                    name,
+                    url: url as string,
+                  }),
+                )
+                setTracks(seeded)
+              }
             },
             onError: (error) => {
               console.error('Error processing song:', error)

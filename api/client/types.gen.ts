@@ -319,6 +319,13 @@ export type ProcessSongData = {
 export type ProcessSongResponse = {
   session_id?: string
   message?: string
+  cleanup_url?: string
+  preview_url?: string
+  download_endpoints?: {
+    mixdown?: string
+    stems?: string
+  }
+  stem_urls?: Record<string, string>
 }
 
 export type ProcessSongError = {

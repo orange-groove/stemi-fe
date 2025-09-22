@@ -12,7 +12,7 @@ export default function RegisterPage() {
       }}
     >
       <Typography sx={{ mb: 8, fontSize: [50, 100, 200] }}>
-        stemjam.ai
+        stemi
       </Typography>
       <RegisterForm />
     </Box>
