@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import supabase from '@/lib/supabase'
 import { useSetAtom } from 'jotai'
@@ -9,13 +9,18 @@ import { userAtom } from '@/state/user'
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter()
   const setUser = useSetAtom(userAtom)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') {
-        // handle initial session
+        // ensure navbar reflects session on first load
+        setUser(session?.user ?? null)
+        if (session?.user) router.replace('/stems')
       } else if (event === 'SIGNED_IN') {
-        setUser(session?.user)
+        setUser(session?.user ?? null)
+        // send user to the stems flow after auth
+        router.replace('/stems')
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
         router.push('/')
@@ -26,23 +31,21 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       } else if (event === 'USER_UPDATED') {
         // handle user updated event
       }
+      setReady(true)
     })
 
     return () => data.subscription.unsubscribe()
-  }, [setUser])
+  }, [setUser, router])
 
   useEffect(() => {
     ;(async () => {
-      const { data, error } = await supabase.auth.getUser()
-
-      if (error) {
-        router.push('/')
-      } else {
-        setUser(data.user)
-      }
+      const { data } = await supabase.auth.getSession()
+      setUser(data.session?.user ?? null)
+      setReady(true)
     })()
-  }, [router, setUser])
+  }, [setUser])
 
+  if (!ready) return null
   return <>{children}</>
 }
 

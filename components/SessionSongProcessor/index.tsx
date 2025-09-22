@@ -308,16 +308,6 @@ const SessionSongProcessor = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Button
-        variant="outlined"
-        color="error"
-        startIcon={<Delete />}
-        onClick={handleFinish}
-        disabled={deleteSessionMutation.isPending}
-      >
-        Finish
-      </Button>
-
       {preview?.available_stems && (
         <>
           <Box sx={{ mb: 4 }}>
