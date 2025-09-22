@@ -280,7 +280,7 @@ const SessionSongProcessor = () => {
             Session Not Found
           </Typography>
           <Typography variant="body2" sx={{ mb: 2 }}>
-            The session ID "{sessionId}" could not be found or has expired. This
+            The session ID {sessionId} could not be found or has expired. This
             could happen if:
           </Typography>
           <ul style={{ margin: 0, paddingLeft: '20px' }}>
