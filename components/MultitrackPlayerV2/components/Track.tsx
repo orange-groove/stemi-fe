@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useRef } from 'react'
-import { Box, Button, Slider, Typography, Skeleton } from '@mui/material'
+import {
+  Box,
+  Button,
+  Slider,
+  Typography,
+  Skeleton,
+  capitalize,
+} from '@mui/material'
 import { useWavesurfer } from '@wavesurfer/react'
 import { Track } from '@/api/client'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js'
@@ -131,7 +138,9 @@ const TrackComponent = ({
           bgcolor: 'background.paper',
         }}
       >
-        <Typography sx={{ height: '20px' }}>{track.name}</Typography>
+        <Typography sx={{ height: '20px' }}>
+          {capitalize(track.name)}
+        </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
           <Button
             variant="contained"

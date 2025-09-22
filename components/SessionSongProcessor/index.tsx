@@ -50,7 +50,7 @@ const SessionSongProcessor = () => {
       newUrl.searchParams.set('sessionId', sessionId)
       router.replace(newUrl.pathname + newUrl.search)
     }
-  }, [sessionId, searchParams, router])
+  }, [sessionId, router])
 
   const processSongMutation = useProcessSong()
   const {
@@ -208,8 +208,33 @@ const SessionSongProcessor = () => {
   // Tracks are now created in useEffect with authorization tokens
 
   if (!sessionId) {
+    if (processSongMutation.isPending) {
+      return (
+        <Box
+          sx={{
+            p: 6,
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size={96} thickness={4} />
+          <Typography sx={{ mt: 2 }}>Processing stems...</Typography>
+        </Box>
+      )
+    }
+
     return (
-      <Box sx={{ p: 4, textAlign: 'center' }}>
+      <Box
+        sx={{
+          p: 4,
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Typography variant="h4" sx={{ mb: 4 }}>
           Upload a Song to Get Started
         </Typography>
@@ -218,41 +243,37 @@ const SessionSongProcessor = () => {
           {...getRootProps()}
           sx={{
             border: '2px dashed #ccc',
-            borderRadius: 2,
+            borderRadius: '50%',
+            width: ['200px', '400px'],
+            height: ['200px', '400px'],
             p: 4,
             cursor: 'pointer',
             backgroundColor: isDragActive ? '#f5f5f5' : 'transparent',
             '&:hover': {
               backgroundColor: '#f5f5f5',
             },
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           <input {...getInputProps()} />
-          <UploadFile sx={{ fontSize: 60, mb: 2, color: 'primary.main' }} />
-          <Typography variant="h6">
+          <UploadFile
+            sx={{ fontSize: ['40px', '60px'], mb: 2, color: 'primary.main' }}
+          />
+          <Typography fontSize={['16px', '24px']}>
             {isDragActive
               ? 'Drop the audio file here...'
               : 'Drag & drop an audio file here, or click to select'}
           </Typography>
-          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+          <Typography
+            fontSize={['12px', '16px']}
+            sx={{ mt: 1, color: 'text.secondary' }}
+          >
             Supports MP3 and WAV files
           </Typography>
         </Box>
-
-        {processSongMutation.isPending && (
-          <Box
-            sx={{
-              mt: 2,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
-            <CircularProgress size={20} />
-            <Typography>Processing song...</Typography>
-          </Box>
-        )}
 
         {processSongMutation.error && (
           <Alert severity="error" sx={{ mt: 2 }}>

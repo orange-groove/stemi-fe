@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import * as Tone from 'tone'
 import {
   Box,
@@ -7,8 +7,6 @@ import {
   Slider,
   Tooltip,
   Checkbox,
-  Select,
-  MenuItem,
 } from '@mui/material'
 import TrackComponent from './components/Track'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
@@ -33,15 +31,37 @@ const MultitrackPlayer = ({
 
   const waveSurferInstances = useRef<Map<string, any>>(new Map())
   const grainPlayers = useRef<Map<string, Tone.GrainPlayer>>(new Map())
-  const [volumeMap, setVolumeMap] = useState<Map<string, number>>(
-    new Map(tracks?.map((track) => [track.name!, 1])),
-  )
-  const [muteMap, setMuteMap] = useState<Map<string, boolean>>(
-    new Map(tracks?.map((track) => [track.name!, false])),
-  )
-  const [soloMap, setSoloMap] = useState<Map<string, boolean>>(
-    new Map(tracks?.map((track) => [track.name!, false])),
-  )
+  const [volumeMap, setVolumeMap] = useState<Map<string, number>>(new Map())
+  const [muteMap, setMuteMap] = useState<Map<string, boolean>>(new Map())
+  const [soloMap, setSoloMap] = useState<Map<string, boolean>>(new Map())
+
+  // Sorted display order: vocals, guitar, bass, piano, drums, other
+  const displayTracks = useMemo(() => {
+    if (!tracks) return []
+    const order = ['vocals', 'guitar', 'bass', 'piano', 'drums']
+    const getPriority = (name?: string | null) => {
+      const lower = (name || '').toLowerCase()
+      const idx = order.findIndex((key) => lower.includes(key))
+      return idx >= 0 ? idx : order.length
+    }
+    return [...tracks].sort((a, b) => getPriority(a.name) - getPriority(b.name))
+  }, [tracks])
+
+  // Initialize control maps when displayTracks change
+  useEffect(() => {
+    const initialVolume = new Map<string, number>()
+    const initialMute = new Map<string, boolean>()
+    const initialSolo = new Map<string, boolean>()
+    displayTracks.forEach((t) => {
+      if (!t.name) return
+      initialVolume.set(t.name, 1)
+      initialMute.set(t.name, false)
+      initialSolo.set(t.name, false)
+    })
+    setVolumeMap(initialVolume)
+    setMuteMap(initialMute)
+    setSoloMap(initialSolo)
+  }, [displayTracks])
 
   const [selectedTracks, setSelectedTracks] = useState<string[]>([])
   const [downloadFileType, setDownloadFileType] = useState('wav')
@@ -87,7 +107,7 @@ const MultitrackPlayer = ({
 
   // Seek all tracks
   const handleTrackClick = (relativeX: number) => {
-    const mainTrack = waveSurferInstances.current.get(tracks?.[0]?.name!)
+    const mainTrack = waveSurferInstances.current.get(displayTracks?.[0]?.name!)
     if (!mainTrack) return
 
     const duration = mainTrack.getDuration()
@@ -180,7 +200,7 @@ const MultitrackPlayer = ({
     if (isChecked) {
       // Select all track names
       // @ts-ignore
-      const allTracks = tracks?.map((track) => track.name) || []
+      const allTracks = displayTracks?.map((track) => track.name) || []
       setSelectedTracks(allTracks)
       onTracksSelected?.(allTracks)
     } else {
@@ -188,18 +208,6 @@ const MultitrackPlayer = ({
       setSelectedTracks([])
       onTracksSelected?.([])
     }
-  }
-
-  const handleDownloadStems = () => {
-    // This function is only used when not in session mode
-    // In session mode, downloads are handled by the parent component
-    console.log('Download stems not implemented in session mode')
-  }
-
-  const handleDownloadMixdown = () => {
-    // This function is only used when not in session mode
-    // In session mode, downloads are handled by the parent component
-    console.log('Download mixdown not implemented in session mode')
   }
 
   const handleScroll = (
@@ -215,7 +223,7 @@ const MultitrackPlayer = ({
 
   // Initialize GrainPlayers
   useEffect(() => {
-    tracks?.forEach((track) => {
+    displayTracks?.forEach((track) => {
       const grainPlayer = new Tone.GrainPlayer({
         url: track.url,
         loop: false,
@@ -228,7 +236,7 @@ const MultitrackPlayer = ({
     return () => {
       grainPlayers.current.forEach((player) => player.dispose())
     }
-  }, [tracks])
+  }, [displayTracks])
 
   // Synchronize WaveSurfer cursor with Tone.Transport
   useEffect(() => {
@@ -273,7 +281,7 @@ const MultitrackPlayer = ({
             <Checkbox
               sx={{ m: 1 }}
               onChange={handleSelectAllChange}
-              checked={selectedTracks.length === tracks?.length}
+              checked={selectedTracks.length === displayTracks?.length}
             />
             <Typography>Select All</Typography>
           </Box>
@@ -345,7 +353,7 @@ const MultitrackPlayer = ({
         </Box>
       </Box>
       <Box sx={{ border: '1px solid #cccccc88', borderRadius: 1 }}>
-        {tracks?.map((track, index) => (
+        {displayTracks?.map((track, index) => (
           <Box
             key={track.name}
             sx={{ display: 'flex', width: '100%', alignItems: 'center' }}
