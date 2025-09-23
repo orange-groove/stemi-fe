@@ -12,6 +12,8 @@ import {
   Stack,
 } from '@mui/material'
 import config from '@/config'
+import { client as apiClient } from '@/api/client/services.gen'
+import '@/lib/axios'
 
 export default function SubscribePage() {
   const user = useAtomValue(userAtom)
@@ -35,20 +37,11 @@ export default function SubscribePage() {
         'Calling checkout at:',
         `${config.baseApiUrl}/billing/checkout`,
       )
-      const res = await fetch(`${config.baseApiUrl}/billing/checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          success_url: `${window.location.origin}/stems?checkout=success`,
-          cancel_url: `${window.location.origin}/stems?checkout=cancel`,
-        }),
+      const res = await apiClient.instance.post('/billing/checkout', {
+        success_url: `${window.location.origin}/stems?checkout=success`,
+        cancel_url: `${window.location.origin}/stems?checkout=cancel`,
       })
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}))
-        throw new Error(j?.error || 'Failed to start checkout')
-      }
-      const { url } = await res.json()
+      const { url } = res.data
       // Redirect in the same window, not a new tab
       window.location.assign(url)
     } catch (e: any) {
@@ -66,20 +59,11 @@ export default function SubscribePage() {
     setPortalLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${config.baseApiUrl}/billing/portal`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          return_url: `${window.location.origin}/profile`,
-        }),
+      const res = await apiClient.instance.post('/billing/portal', {
+        return_url: `${window.location.origin}/profile`,
       })
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}))
-        throw new Error(j?.error || 'Failed to open billing portal')
-      }
-      const { url } = await res.json()
-      window.location.href = url
+      const { url } = res.data
+      window.location.assign(url)
     } catch (e: any) {
       setError(e?.message ?? 'Something went wrong')
     } finally {
