@@ -1,9 +1,7 @@
 'use client'
 
-import SessionSongProcessor from '@/components/SessionSongProcessor'
-import { Suspense } from 'react'
 import { Download, Memory, UploadFile } from '@mui/icons-material'
-import { Box, Typography, Container, List, ListItem } from '@mui/material'
+import { Box, Typography, Container } from '@mui/material'
 
 const steps = [
   'Upload a Song',
@@ -59,7 +57,10 @@ export default function Home() {
         />
         {/* Content (Title and Mock Image) */}
         <Box sx={{ position: 'relative', zIndex: 2 }}>
-          <Typography variant="h1" sx={{ mb: 4, fontWeight: 300 }}>
+          <Typography
+            variant="h1"
+            sx={{ mb: 4, fontWeight: 300, color: 'secondary.main' }}
+          >
             stemi
           </Typography>
 
@@ -131,30 +132,41 @@ export default function Home() {
         sx={{
           mt: 8,
           py: 8,
+          height: '500px',
           background:
             'linear-gradient(0deg, rgba(176,0,124,1) 0%, rgba(0,0,0,1) 100%)',
           color: 'white',
         }}
       >
-        <Typography variant="h3" sx={{ textAlign: 'center', mb: 2 }}>
+        <Typography variant="h3" sx={{ textAlign: 'center', mb: 2, mt: 8 }}>
           Features
         </Typography>
-        <Container>
-          <List sx={{ fontSize: '20px', textAlign: 'center' }}>
-            <ListItem>
-              Upload any song to separate it into isolated stem tracks (vocals,
-              guitar, drums, bass, piano, other)
-            </ListItem>
-            <ListItem>
-              Preview your separated stems in our multitrack player
-            </ListItem>
-            <ListItem>Adjust playback speed and volume for each stem</ListItem>
-            <ListItem>
-              Download individual stems as MP3, WAV, or OGG files
-            </ListItem>
-            <ListItem>Download a custom mixdown of selected stems</ListItem>
-          </List>
-        </Container>
+        <Box
+          sx={{
+            textAlign: 'center',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
+          <Typography fontSize="20px">
+            Upload any song to separate it into isolated stem tracks (vocals,
+            guitar, drums, bass, piano, other)
+          </Typography>
+          <Typography fontSize="20px">
+            Preview your separated stems in our multitrack player
+          </Typography>
+          <Typography fontSize="20px">
+            Adjust playback speed and volume for each stem
+          </Typography>
+          <Typography fontSize="20px">
+            Download individual stems as MP3, WAV, or OGG files
+          </Typography>
+          <Typography fontSize="20px">
+            Download a custom mixdown of selected stems
+          </Typography>
+        </Box>
       </Box>
 
       {/* Pricing Section */}
@@ -185,17 +197,31 @@ export default function Home() {
               border: '2px solid',
               borderColor: 'secondary.main',
               borderRadius: '10px',
+              color: 'white',
               p: 4,
               width: '400px',
               textAlign: 'center',
               backgroundColor: 'secondary.light',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <Typography variant="h5">$5/month</Typography>
-            <Typography sx={{ mt: 2 }}>Unlimited stem separation</Typography>
-            <Typography>High-quality AI processing</Typography>
-            <Typography>Multiple download formats</Typography>
-            <Typography>Custom mixdown creation</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                alignItems: 'start',
+              }}
+            >
+              <Typography sx={{ mt: 2 }}>Unlimited stem separation</Typography>
+              <Typography>High-quality AI processing</Typography>
+              <Typography>Multiple download formats</Typography>
+              <Typography>Custom mixdown creation</Typography>
+            </Box>
           </Box>
         </Container>
       </Box>
