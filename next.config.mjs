@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-  },
+  // Remove experimental features that are causing build issues
 
   // Image optimization
   images: {
