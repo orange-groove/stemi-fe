@@ -10,22 +10,26 @@ apiClient.setConfig({
   baseURL: config.baseApiUrl,
 })
 
-apiClient.instance.interceptors.request.use(async (config) => {
-  const session = await supabase.auth.getSession()
-  const accessToken = session.data.session?.access_token
-
-  if (accessToken) {
-    config.headers['Authorization'] = `Bearer ${accessToken}`
-  }
-  return config
-})
-
-// Request Interceptor
+// Request Interceptor - handles auth and errors
 apiClient.instance.interceptors.request.use(
-  (config) => {
-    // You can add custom headers here if needed
-    // Example: config.headers['Authorization'] = 'Bearer your-token';
-    return config
+  async (config) => {
+    try {
+      // Add authorization header
+      const session = await supabase.auth.getSession()
+      const accessToken = session.data.session?.access_token
+
+      if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`
+      }
+
+      return config
+    } catch (error) {
+      store.set(pushSnackbarAtom, {
+        message: 'Request failed to initialize.',
+        type: 'error',
+      })
+      return Promise.reject(error)
+    }
   },
   (error) => {
     store.set(pushSnackbarAtom, {
