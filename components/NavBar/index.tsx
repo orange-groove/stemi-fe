@@ -53,6 +53,7 @@ export default function NavBar() {
         p: 2,
         display: 'flex',
         justifyContent: 'space-between',
+        gap: 2,
         alignItems: 'center',
       }}
     >
@@ -76,9 +77,7 @@ export default function NavBar() {
       >
         {user && (
           <>
-            <Typography onClick={() => router.push('/stems')}>
-              Separate Stems
-            </Typography>
+            <Typography onClick={() => router.push('/stems')}>Stems</Typography>
           </>
         )}
         <Typography onClick={() => router.push('/#pricing')}>
@@ -98,7 +97,6 @@ export default function NavBar() {
             <IconButton
               onClick={handleClick}
               size="small"
-              sx={{ ml: 2 }}
               aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
@@ -127,44 +125,25 @@ export default function NavBar() {
                 },
               },
             },
-            paper: {
-              elevation: 0,
-              sx: {
-                overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                mt: 1.5,
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                '&::before': {
-                  content: '""',
-                  display: 'block',
-                  position: 'absolute',
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: 'background.paper',
-                  transform: 'translateY(-50%) rotate(45deg)',
-                  zIndex: 0,
-                },
-              },
-            },
           }}
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
           <MenuItem onClick={handleProfileClick}>
-            <Avatar /> Profile
+            <ListItemIcon>
+              <Avatar
+                alt={user?.user_metadata.name}
+                src={user?.user_metadata.avatar_url}
+                sx={{ width: 24, height: 24 }}
+              />
+            </ListItemIcon>
+            Profile
           </MenuItem>
 
-          <Divider />
+          <Divider sx={{ my: 0.5 }} />
           <MenuItem onClick={handleSignOut}>
             <ListItemIcon>
-              <Logout fontSize="small" />
+              <Logout sx={{ fontSize: 24 }} />
             </ListItemIcon>
             Logout
           </MenuItem>

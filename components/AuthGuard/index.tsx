@@ -16,11 +16,18 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       if (event === 'INITIAL_SESSION') {
         // ensure navbar reflects session on first load
         setUser(session?.user ?? null)
-        if (session?.user) router.replace('/stems')
+        if (session?.user) {
+          // If already on /stems, do not redirect (preserves query like sessionId)
+          if (!window.location.pathname.startsWith('/stems')) {
+            router.replace('/stems')
+          }
+        }
       } else if (event === 'SIGNED_IN') {
         setUser(session?.user ?? null)
-        // send user to the stems flow after auth
-        router.replace('/stems')
+        // send user to the stems flow after auth, but preserve query on /stems
+        if (!window.location.pathname.startsWith('/stems')) {
+          router.replace('/stems')
+        }
       } else if (event === 'SIGNED_OUT') {
         setUser(null)
         router.push('/')

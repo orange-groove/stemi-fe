@@ -7,8 +7,6 @@ import {
   Box,
   Button,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Select,
   MenuItem,
   FormControl,
@@ -43,10 +41,13 @@ const SessionSongProcessor = () => {
     }
   }, [searchParams])
 
-  // Update URL when session ID is set from processing
+  // Ensure URL always reflects current sessionId
   useEffect(() => {
-    if (sessionId && !searchParams.get('sessionId')) {
-      const newUrl = new URL(window.location.href)
+    if (!sessionId) return
+
+    const newUrl = new URL(window.location.href)
+    const current = newUrl.searchParams.get('sessionId')
+    if (current !== sessionId) {
       newUrl.searchParams.set('sessionId', sessionId)
       router.replace(newUrl.pathname + newUrl.search)
     }
@@ -196,6 +197,10 @@ const SessionSongProcessor = () => {
           onSuccess: () => {
             setSessionId(null)
             setSelectedTracks([])
+            // Clear the URL parameter when session is deleted
+            const newUrl = new URL(window.location.href)
+            newUrl.searchParams.delete('sessionId')
+            router.replace(newUrl.pathname + newUrl.search)
           },
           onError: (error) => {
             console.error('Error deleting session:', error)
@@ -295,7 +300,7 @@ const SessionSongProcessor = () => {
 
   if (previewError) {
     return (
-      <Box sx={{ p: 4 }}>
+      <Box sx={{ p: [0, 4] }}>
         <Alert severity="error" sx={{ mb: 2 }}>
           <Typography variant="h6" sx={{ mb: 1 }}>
             Session Not Found
@@ -328,11 +333,19 @@ const SessionSongProcessor = () => {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: [0, 4] }}>
       {preview?.available_stems && (
         <>
           <Box sx={{ mb: 4 }}>
-            <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Box
+              sx={{
+                mb: 2,
+                display: 'flex',
+                gap: 2,
+                alignItems: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
               <FormControl size="small" sx={{ minWidth: 120 }}>
                 <InputLabel>File Type</InputLabel>
                 <Select
@@ -346,24 +359,26 @@ const SessionSongProcessor = () => {
                 </Select>
               </FormControl>
 
-              <Button
-                variant="contained"
-                startIcon={<Download />}
-                onClick={handleDownloadStems}
-                disabled={downloadStemsMutation.isPending}
-              >
-                Download Selected Stems
-              </Button>
+              <Box sx={{ display: 'flex', gap: 2, px: 2 }}>
+                <Button
+                  variant="contained"
+                  startIcon={<Download />}
+                  onClick={handleDownloadStems}
+                  disabled={downloadStemsMutation.isPending}
+                >
+                  Download Stems
+                </Button>
 
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<Download />}
-                onClick={handleDownloadMixdown}
-                disabled={downloadMixdownMutation.isPending}
-              >
-                Download Mixdown
-              </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<Download />}
+                  onClick={handleDownloadMixdown}
+                  disabled={downloadMixdownMutation.isPending}
+                >
+                  Download Mixdown
+                </Button>
+              </Box>
             </Box>
           </Box>
 

@@ -11,7 +11,7 @@ export default function StemsPage() {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        p: 4,
+        p: [0, 4],
       }}
     >
       <Suspense fallback={<div>Loading...</div>}>

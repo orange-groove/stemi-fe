@@ -332,7 +332,7 @@ const MultitrackPlayer = ({
             />
           </Box> */}
           <Box sx={{ ml: 2 }}>
-            <Typography>Master Volume</Typography>
+            <Typography lineHeight={1}>Volume</Typography>
             <Slider
               value={masterVolume}
               onChange={(e, value) => handleMasterVolumeChange(value as number)}
@@ -340,6 +340,8 @@ const MultitrackPlayer = ({
               max={1}
               step={0.01}
               sx={{
+                p: [0, 1],
+                width: ['75px', '150px'],
                 '& .MuiSlider-thumb': {
                   height: 14,
                   width: 16,
@@ -359,7 +361,7 @@ const MultitrackPlayer = ({
             sx={{ display: 'flex', width: '100%', alignItems: 'center' }}
           >
             <Checkbox
-              sx={{ m: 1 }}
+              sx={{ m: [0, 1] }}
               onChange={() => handleCheckboxChange(track.name)}
               // @ts-ignore
               checked={selectedTracks.includes(track.name)}
@@ -388,7 +390,7 @@ const MultitrackPlayer = ({
         ))}
       </Box>
       {/* Zoom Slider */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, ml: [2, 0] }}>
         <Typography>Zoom:</Typography>
         <Slider
           value={zoomLevel}

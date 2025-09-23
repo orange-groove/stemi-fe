@@ -124,6 +124,7 @@ const TrackComponent = ({
       sx={{
         display: 'flex',
         width: 1,
+        height: ['75px', '120px'],
         borderBottom: '1px solid #cccccc88',
         ':last-of-type': { borderBottom: 0 },
       }}
@@ -133,12 +134,12 @@ const TrackComponent = ({
           display: 'flex',
           flexDirection: 'column',
           width: 120,
-          p: 1,
-          gap: 1,
+          p: [0.5, 1],
+          gap: [0.5, 1],
           bgcolor: 'background.paper',
         }}
       >
-        <Typography sx={{ height: '20px' }}>
+        <Typography sx={{ height: '20px', fontSize: ['12px', '16px'] }}>
           {capitalize(track.name)}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
@@ -149,9 +150,9 @@ const TrackComponent = ({
             sx={{
               bgcolor: isMuted ? 'red' : 'grey',
               '&:hover': { bgcolor: isMuted ? 'darkred' : 'darkgrey' },
-              width: '30px',
-              height: '30px',
-              minWidth: '30px',
+              width: ['20px', '30px'],
+              height: ['20px', '30px'],
+              minWidth: ['20px', '30px'],
             }}
           >
             M
@@ -163,9 +164,9 @@ const TrackComponent = ({
             sx={{
               bgcolor: isSoloed ? 'yellow' : 'grey',
               '&:hover': { bgcolor: isSoloed ? 'gold' : 'darkgrey' },
-              width: '30px',
-              height: '30px',
-              minWidth: '30px',
+              width: ['20px', '30px'],
+              height: ['20px', '30px'],
+              minWidth: ['20px', '30px'],
             }}
           >
             S
@@ -204,7 +205,7 @@ const TrackComponent = ({
         className="stem-track"
         ref={containerRef}
         sx={{
-          width: 'calc(100vw - 260px)',
+          width: ['100%', 'calc(100vw - 260px)'],
           height: '100px',
           borderLeft: '1px solid #ccc',
           bgcolor: 'background.default',
