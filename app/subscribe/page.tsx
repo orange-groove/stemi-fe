@@ -37,10 +37,13 @@ export default function SubscribePage() {
         'Calling checkout at:',
         `${config.baseApiUrl}/billing/checkout`,
       )
-      const res = await apiClient.instance.post('/billing/checkout', {
-        success_url: `${window.location.origin}/stems?checkout=success`,
-        cancel_url: `${window.location.origin}/stems?checkout=cancel`,
-      })
+      const res = await apiClient.instance.post(
+        `${config.baseApiUrl}/billing/checkout`,
+        {
+          success_url: `${window.location.origin}/stems?checkout=success`,
+          cancel_url: `${window.location.origin}/stems?checkout=cancel`,
+        },
+      )
       const { url } = res.data
       // Redirect in the same window, not a new tab
       window.location.assign(url)
@@ -59,9 +62,12 @@ export default function SubscribePage() {
     setPortalLoading(true)
     setError(null)
     try {
-      const res = await apiClient.instance.post('/billing/portal', {
-        return_url: `${window.location.origin}/profile`,
-      })
+      const res = await apiClient.instance.post(
+        `${config.baseApiUrl}/billing/portal`,
+        {
+          return_url: `${window.location.origin}/profile`,
+        },
+      )
       const { url } = res.data
       window.location.assign(url)
     } catch (e: any) {
