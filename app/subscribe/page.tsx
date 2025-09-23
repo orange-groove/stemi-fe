@@ -1,17 +1,8 @@
-import { Metadata } from 'next'
+'use client'
+
 import { useState, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-
-export const metadata: Metadata = {
-  title: 'Subscribe to Stemi - Professional Stem Separation',
-  description:
-    'Get unlimited access to professional stem separation. Subscribe to Stemi for high-quality AI-powered audio processing and stem isolation.',
-  robots: {
-    index: false,
-    follow: false,
-  },
-}
 import {
   Button,
   Container,
