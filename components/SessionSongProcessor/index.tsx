@@ -15,6 +15,7 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { UploadFile, Download, Delete } from '@mui/icons-material'
+import supabase from '@/lib/supabase'
 import useProcessSong from '@/hooks/useProcessSong'
 import useGetSessionPreview from '@/hooks/useGetSessionPreview'
 import useDownloadSessionStems from '@/hooks/useDownloadSessionStems'
@@ -23,8 +24,11 @@ import useDeleteSession from '@/hooks/useDeleteSession'
 import MultitrackPlayer from '@/components/MultitrackPlayerV2'
 import { client as apiClient, getSessionStem } from '@/api/client/services.gen'
 import config from '@/config'
+import '@/lib/axios'
 
 const SessionSongProcessor = () => {
+  const [entitled, setEntitled] = useState<boolean | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const searchParams = useSearchParams()
   const router = useRouter()
   const [sessionId, setSessionId] = useState<string | null>(null)
@@ -33,13 +37,89 @@ const SessionSongProcessor = () => {
   const [tracksLoading, setTracksLoading] = useState(false)
   const [selectedTracks, setSelectedTracks] = useState<string[]>([])
 
-  // Check for session ID in URL on component mount
+  // Check subscription entitlement and session ID from URL on mount
   useEffect(() => {
+    ;(async () => {
+      const { data } = await supabase.auth.getUser()
+      const user = data.user
+      if (!user) {
+        setEntitled(false)
+      } else {
+        const { data: ent } = await supabase
+          .from('entitlements')
+          .select('active, status, current_period_end')
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        // Check if subscription is active and not expired
+        const isActive =
+          ent?.active &&
+          (ent?.status === 'active' || ent?.status === 'trialing') &&
+          (!ent?.current_period_end ||
+            new Date(ent.current_period_end) > new Date())
+
+        setEntitled(!!isActive)
+      }
+    })()
+
     const urlSessionId = searchParams.get('sessionId')
     if (urlSessionId) {
       setSessionId(urlSessionId)
     }
   }, [searchParams])
+
+  // Refresh entitlement when returning from checkout
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('checkout') === 'success') {
+      // Refresh entitlement after successful checkout
+      ;(async () => {
+        const { data } = await supabase.auth.getUser()
+        const user = data.user
+        if (user) {
+          const { data: ent } = await supabase
+            .from('entitlements')
+            .select('active, status, current_period_end')
+            .eq('user_id', user.id)
+            .maybeSingle()
+
+          const isActive =
+            ent?.active &&
+            (ent?.status === 'active' || ent?.status === 'trialing') &&
+            (!ent?.current_period_end ||
+              new Date(ent.current_period_end) > new Date())
+
+          setEntitled(!!isActive)
+        }
+      })()
+
+      // Clean up URL
+      const newUrl = new URL(window.location.href)
+      newUrl.searchParams.delete('checkout')
+      router.replace(newUrl.pathname + newUrl.search)
+    }
+  }, [router])
+
+  const startCheckout = async () => {
+    setCheckoutLoading(true)
+    try {
+      const successUrl = `${window.location.origin}/stems?checkout=success`
+      const cancelUrl = `${window.location.origin}/stems?checkout=cancel`
+      const res = await apiClient.instance.post(
+        config.baseApiUrl + '/billing/checkout',
+        {
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+        },
+      )
+      const { url } = res.data
+      window.location.href = url
+    } catch (e) {
+      console.error('Failed to start checkout', e)
+    } finally {
+      setCheckoutLoading(false)
+    }
+  }
 
   // Ensure URL always reflects current sessionId
   useEffect(() => {
@@ -211,6 +291,25 @@ const SessionSongProcessor = () => {
   }
 
   // Tracks are now created in useEffect with authorization tokens
+
+  if (entitled === false) {
+    return (
+      <Box sx={{ p: 4, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ mb: 2 }}>
+          Access requires a subscription
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={startCheckout}
+          disabled={checkoutLoading}
+        >
+          Upgrade
+        </Button>
+      </Box>
+    )
+  }
+
+  if (entitled === null) return null
 
   if (!sessionId) {
     if (processSongMutation.isPending) {
