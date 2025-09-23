@@ -1,10 +1,6 @@
 import config from '@/config'
 import { client as apiClient } from '../api/client/services.gen'
 import supabase from './supabase'
-import { pushSnackbarAtom } from '@/state/snackbar'
-import { getDefaultStore } from 'jotai'
-
-const store = getDefaultStore()
 
 // Set baseURL on the instance directly
 apiClient.instance.defaults.baseURL = config.baseApiUrl
@@ -28,18 +24,12 @@ apiClient.instance.interceptors.request.use(
 
       return config
     } catch (error) {
-      store.set(pushSnackbarAtom, {
-        message: 'Request failed to initialize.',
-        type: 'error',
-      })
+      console.error('Request failed to initialize:', error)
       return Promise.reject(error)
     }
   },
   (error) => {
-    store.set(pushSnackbarAtom, {
-      message: 'Request failed to initialize.',
-      type: 'error',
-    })
+    console.error('Request failed to initialize:', error)
     return Promise.reject(error)
   },
 )
@@ -47,11 +37,6 @@ apiClient.instance.interceptors.request.use(
 // Response Interceptor
 apiClient.instance.interceptors.response.use(
   (response) => {
-    // Set a success message for specific responses if desired
-    store.set(pushSnackbarAtom, {
-      message: response.data.message,
-      type: 'success',
-    })
     return response
   },
   (error) => {
@@ -59,12 +44,7 @@ apiClient.instance.interceptors.response.use(
     const errorMessage =
       error.response?.data?.message || error.message || 'An error occurred.'
 
-    // Set a global error message
-    store.set(pushSnackbarAtom, {
-      message: `Error: ${errorMessage}`,
-      type: 'error',
-    })
-
+    console.error('API Error:', errorMessage)
     return Promise.reject(error)
   },
 )
