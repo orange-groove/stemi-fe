@@ -18,6 +18,8 @@ import { GoogleAnalytics } from '@/components/Analytics'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: {
     default: 'Stemi - Professional Stem Separation Tool',
