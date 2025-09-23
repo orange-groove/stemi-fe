@@ -47,25 +47,6 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     })()
   }, [setUser])
 
-  useEffect(() => {
-    if (!ready) return
-    // unauthenticated users handled by existing redirects
-    if (!user) return
-    // Still loading entitlement
-    if (loading) return
-    // If user is signed in but not active, redirect to subscribe
-    // But don't redirect if already on subscribe page or stems page
-    if (!entitlement?.active) {
-      const currentPath = window.location.pathname
-      if (
-        !currentPath.startsWith('/subscribe') &&
-        !currentPath.startsWith('/stems')
-      ) {
-        router.replace('/subscribe')
-      }
-    }
-  }, [ready, user, entitlement?.active, loading, router])
-
   if (!ready) return null
   return <>{children}</>
 }

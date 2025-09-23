@@ -1,6 +1,7 @@
 'use client'
 
 import SessionSongProcessor from '@/components/SessionSongProcessor'
+import PaymentGuard from '@/components/PaymentGuard'
 import { Box } from '@mui/material'
 import { Suspense } from 'react'
 
@@ -14,9 +15,11 @@ export default function StemsPage() {
         p: [0, 4],
       }}
     >
-      <Suspense fallback={<div>Loading...</div>}>
-        <SessionSongProcessor />
-      </Suspense>
+      <PaymentGuard>
+        <Suspense fallback={<div>Loading...</div>}>
+          <SessionSongProcessor />
+        </Suspense>
+      </PaymentGuard>
     </Box>
   )
 }
