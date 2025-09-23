@@ -1,3 +1,5 @@
+'use client'
+
 import { Box, Typography } from '@mui/material'
 import LoginForm from '@/components/LoginForm'
 
@@ -13,9 +15,7 @@ export default function LoginPage() {
         height: '100vh',
       }}
     >
-      <Typography sx={{ mb: 8, fontSize: [50, 100, 200] }}>
-        stemi
-      </Typography>
+      <Typography sx={{ mb: 8, fontSize: [50, 100, 200] }}>stemi</Typography>
       <LoginForm />
     </Box>
   )

@@ -1,3 +1,5 @@
+'use client'
+
 import ContactForm from '@/components/ContactForm'
 import { Box } from '@mui/material'
 
