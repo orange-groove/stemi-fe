@@ -47,6 +47,21 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     })()
   }, [setUser])
 
+  useEffect(() => {
+    if (!ready) return
+
+    // If user is not authenticated, redirect to home page if on protected routes
+    if (!user) {
+      const currentPath = window.location.pathname
+      if (
+        currentPath.startsWith('/stems') ||
+        currentPath.startsWith('/subscribe')
+      ) {
+        router.replace('/')
+      }
+    }
+  }, [ready, user, router])
+
   if (!ready) return null
   return <>{children}</>
 }
