@@ -76,7 +76,7 @@ export default function SubscribePage() {
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
       <Card>
-        <CardContent>
+        <CardContent sx={{ textAlign: 'center' }}>
           <Typography variant="h4" gutterBottom>
             Subscribe
           </Typography>
@@ -92,18 +92,11 @@ export default function SubscribePage() {
             <Button
               variant="contained"
               size="large"
+              fullWidth
               disabled={loading}
               onClick={startCheckout}
             >
               {loading ? 'Redirecting…' : 'Subscribe for $5/mo'}
-            </Button>
-            <Button
-              variant="text"
-              size="large"
-              disabled={portalLoading}
-              onClick={openBillingPortal}
-            >
-              {portalLoading ? 'Opening…' : 'Manage billing'}
             </Button>
           </Stack>
         </CardContent>
