@@ -66,6 +66,9 @@ export default function Home() {
           <Typography variant="h3" sx={{ mb: 4, fontWeight: 300 }}>
             Online Stem Separation Tool
           </Typography>
+          <Typography variant="h5" sx={{ mb: 4, fontWeight: 300 }}>
+            Separate any song into individual stems with AI-powered precision
+          </Typography>
           <Box
             component="img"
             src="/device-mock.png"
@@ -90,8 +93,15 @@ export default function Home() {
           gap: 4,
         }}
       >
-        <Typography variant="h3">Separate stems in 3 easy steps:</Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
+        <Typography variant="h3">How it works:</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 6,
+            flexDirection: ['column', 'row'],
+          }}
+        >
           {steps.map((label, index) => (
             <Box
               key={label}
@@ -115,27 +125,6 @@ export default function Home() {
         </Box>
       </Box>
 
-      {/* Session Song Processor Section */}
-      <Box
-        component="section"
-        sx={{
-          mt: 8,
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 4,
-        }}
-      >
-        <Typography variant="h3">Try the New Session-Based Flow</Typography>
-        <Typography variant="h4">Upload, Preview, and Download</Typography>
-        <Box sx={{ width: '100%' }}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SessionSongProcessor />
-          </Suspense>
-        </Box>
-      </Box>
-
       {/* Features Section */}
       <Box
         component="section"
@@ -153,20 +142,17 @@ export default function Home() {
         <Container>
           <List sx={{ fontSize: '20px', textAlign: 'center' }}>
             <ListItem>
-              Upload any song to separate it into isolated stem tracks.
-            </ListItem>
-            <ListItem>Preview your stems in our multitrack player.</ListItem>
-            <ListItem>Slow down or speed up your playback rate.</ListItem>
-            <ListItem>
-              Adjust track volumes as well as master volume of your mix.
+              Upload any song to separate it into isolated stem tracks (vocals,
+              guitar, drums, bass, piano, other)
             </ListItem>
             <ListItem>
-              Download “mixdown” of unmuted/soloed tracks as .mp3 or .wav file.
+              Preview your separated stems in our multitrack player
             </ListItem>
+            <ListItem>Adjust playback speed and volume for each stem</ListItem>
             <ListItem>
-              Download selected stems and use them for karaoke, practice or
-              import them into your favorite DAW.
+              Download individual stems as MP3, WAV, or OGG files
             </ListItem>
+            <ListItem>Download a custom mixdown of selected stems</ListItem>
           </List>
         </Container>
       </Box>
@@ -196,35 +182,20 @@ export default function Home() {
         >
           <Box
             sx={{
-              border: '1px solid black',
+              border: '2px solid',
+              borderColor: 'secondary.main',
               borderRadius: '10px',
               p: 4,
-              width: '300px',
+              width: '400px',
               textAlign: 'center',
+              backgroundColor: 'secondary.light',
             }}
           >
-            <Typography variant="h4">Free</Typography>
-            <Typography variant="h5">Price: $0</Typography>
-            <Typography>1 Song Upload</Typography>
-            <Typography>1 Song Project</Typography>
-            <Typography>1 Song Download</Typography>
-          </Box>
-          <Box
-            sx={{
-              border: '1px solid black',
-              borderRadius: '10px',
-              p: 4,
-              width: '300px',
-              textAlign: 'center',
-            }}
-          >
-            <Typography variant="h4" color="secondary.main">
-              Pro
-            </Typography>
-            <Typography variant="h5">Price: $5/month</Typography>
-            <Typography>Unlimited Song Uploads</Typography>
-            <Typography>Unlimited Song Projects</Typography>
-            <Typography>Unlimited Song Downloads</Typography>
+            <Typography variant="h5">$5/month</Typography>
+            <Typography sx={{ mt: 2 }}>Unlimited stem separation</Typography>
+            <Typography>High-quality AI processing</Typography>
+            <Typography>Multiple download formats</Typography>
+            <Typography>Custom mixdown creation</Typography>
           </Box>
         </Container>
       </Box>
