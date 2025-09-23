@@ -81,7 +81,7 @@ export default function SubscribePage() {
             Subscribe
           </Typography>
           <Typography variant="body1" gutterBottom>
-            Unlock full access for $5/month. Cancel anytime.
+            Unlock full access for <strong>$5/month</strong>. Cancel anytime.
           </Typography>
           {error && (
             <Typography color="error" sx={{ mt: 2 }}>
@@ -96,7 +96,7 @@ export default function SubscribePage() {
               disabled={loading}
               onClick={startCheckout}
             >
-              {loading ? 'Redirecting…' : 'Subscribe for $5/mo'}
+              {loading ? 'Redirecting…' : 'Subscribe'}
             </Button>
           </Stack>
         </CardContent>
