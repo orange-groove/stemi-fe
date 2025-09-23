@@ -6,6 +6,10 @@ import { getDefaultStore } from 'jotai'
 
 const store = getDefaultStore()
 
+// Set baseURL on the instance directly
+apiClient.instance.defaults.baseURL = config.baseApiUrl
+
+// Also try setting it via setConfig
 apiClient.setConfig({
   baseURL: config.baseApiUrl,
 })

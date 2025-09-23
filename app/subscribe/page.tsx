@@ -33,10 +33,6 @@ export default function SubscribePage() {
     setLoading(true)
     setError(null)
     try {
-      console.log(
-        'Calling checkout at:',
-        `${config.baseApiUrl}/billing/checkout`,
-      )
       const res = await apiClient.instance.post(
         `${config.baseApiUrl}/billing/checkout`,
         {
