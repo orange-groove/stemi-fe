@@ -49,7 +49,8 @@ export default function SubscribePage() {
         throw new Error(j?.error || 'Failed to start checkout')
       }
       const { url } = await res.json()
-      window.location.href = url
+      // Redirect in the same window, not a new tab
+      window.location.assign(url)
     } catch (e: any) {
       setError(e?.message ?? 'Something went wrong')
     } finally {

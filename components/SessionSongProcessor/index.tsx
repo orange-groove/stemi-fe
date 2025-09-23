@@ -113,7 +113,8 @@ const SessionSongProcessor = () => {
         },
       )
       const { url } = res.data
-      window.location.href = url
+      // Redirect in the same window, not a new tab
+      window.location.assign(url)
     } catch (e) {
       console.error('Failed to start checkout', e)
     } finally {
