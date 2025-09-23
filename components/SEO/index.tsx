@@ -1,4 +1,6 @@
-import Head from 'next/head'
+'use client'
+
+import { useEffect } from 'react'
 
 interface SEOProps {
   title?: string
@@ -60,37 +62,70 @@ export default function SEO({
     ? image
     : `https://www.stemi.app${image}`
 
-  return (
-    <Head>
-      {/* Basic Meta Tags */}
-      <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      {keywords.length > 0 && (
-        <meta name="keywords" content={keywords.join(', ')} />
-      )}
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
 
-      {/* Robots */}
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    // Update document title
+    document.title = fullTitle
 
-      {/* Open Graph */}
-      <meta property="og:type" content={type} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={fullUrl} />
-      <meta property="og:image" content={fullImage} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="Stemi" />
+    // Update or create meta tags
+    const updateMetaTag = (name: string, content: string, property = false) => {
+      const selector = property
+        ? `meta[property="${name}"]`
+        : `meta[name="${name}"]`
+      let meta = document.querySelector(selector) as HTMLMetaElement
 
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={fullImage} />
-      <meta name="twitter:creator" content="@stemi" />
+      if (!meta) {
+        meta = document.createElement('meta')
+        if (property) {
+          meta.setAttribute('property', name)
+        } else {
+          meta.setAttribute('name', name)
+        }
+        document.head.appendChild(meta)
+      }
+      meta.setAttribute('content', content)
+    }
 
-      {/* Canonical URL */}
-      <link rel="canonical" href={fullUrl} />
-    </Head>
-  )
+    // Update meta tags
+    updateMetaTag('description', description)
+    if (keywords.length > 0) {
+      updateMetaTag('keywords', keywords.join(', '))
+    }
+
+    if (noIndex) {
+      updateMetaTag('robots', 'noindex, nofollow')
+    }
+
+    // Open Graph tags
+    updateMetaTag('og:type', type, true)
+    updateMetaTag('og:title', fullTitle, true)
+    updateMetaTag('og:description', description, true)
+    updateMetaTag('og:url', fullUrl, true)
+    updateMetaTag('og:image', fullImage, true)
+    updateMetaTag('og:image:width', '1200', true)
+    updateMetaTag('og:image:height', '630', true)
+    updateMetaTag('og:site_name', 'Stemi', true)
+
+    // Twitter Card tags
+    updateMetaTag('twitter:card', 'summary_large_image')
+    updateMetaTag('twitter:title', fullTitle)
+    updateMetaTag('twitter:description', description)
+    updateMetaTag('twitter:image', fullImage)
+    updateMetaTag('twitter:creator', '@stemi')
+
+    // Canonical URL
+    let canonical = document.querySelector(
+      'link[rel="canonical"]',
+    ) as HTMLLinkElement
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.setAttribute('rel', 'canonical')
+      document.head.appendChild(canonical)
+    }
+    canonical.setAttribute('href', fullUrl)
+  }, [fullTitle, description, keywords, fullUrl, fullImage, noIndex, type])
+
+  return null
 }
