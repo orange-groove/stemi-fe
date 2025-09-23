@@ -3,6 +3,17 @@
 import { useEffect } from 'react'
 import Script from 'next/script'
 
+// Declare gtag function for TypeScript
+declare global {
+  interface Window {
+    gtag: (
+      command: 'config' | 'event' | 'js' | 'set',
+      targetId: string,
+      config?: Record<string, any>,
+    ) => void
+  }
+}
+
 // Google Analytics 4
 export function GoogleAnalytics({
   GA_TRACKING_ID,
