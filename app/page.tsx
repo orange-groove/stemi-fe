@@ -208,37 +208,98 @@ export default function Home() {
               justifyContent: 'center',
               gap: 4,
               mt: 4,
+              flexDirection: { xs: 'column', md: 'row' },
             }}
           >
+            {/* Free Tier */}
             <Box
               sx={{
                 borderRadius: '10px',
                 color: 'white',
                 p: 4,
-                width: '400px',
+                width: { xs: '100%', md: '400px' },
+                textAlign: 'center',
+                backgroundColor: 'grey.600',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid',
+                borderColor: 'grey.400',
+              }}
+            >
+              <Typography variant="h5" sx={{ mb: 1 }}>
+                FREE
+              </Typography>
+              <Typography variant="h4" sx={{ mb: 2 }}>
+                $0/month
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                  alignItems: 'start',
+                }}
+              >
+                <Typography>✓ 3 song separations per month</Typography>
+                <Typography>✓ High-quality processing</Typography>
+                <Typography>✓ Download individual stems</Typography>
+              </Box>
+            </Box>
+
+            {/* Premium Tier */}
+            <Box
+              sx={{
+                borderRadius: '10px',
+                color: 'white',
+                p: 4,
+                width: { xs: '100%', md: '400px' },
                 textAlign: 'center',
                 backgroundColor: 'primary.main',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                border: '2px solid',
+                borderColor: 'primary.dark',
+                position: 'relative',
               }}
             >
-              <Typography variant="h4">$5/month</Typography>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: -12,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  backgroundColor: 'secondary.main',
+                  color: 'white',
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 1,
+                  fontSize: '0.75rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                POPULAR
+              </Box>
+              <Typography variant="h4" sx={{ mb: 2, mt: 1 }}>
+                $5/month
+              </Typography>
               <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 2,
+                  gap: 1,
                   alignItems: 'start',
                 }}
               >
-                <Typography sx={{ mt: 2 }}>
-                  Up to 100 song separations per month
+                <Typography>✓ 100 song separations per month</Typography>
+                <Typography>
+                  ✓ Preview stems in our multitrack player
                 </Typography>
-                <Typography>High-quality AI processing</Typography>
-                <Typography>Multiple download formats</Typography>
-                <Typography>Custom mixdown creation</Typography>
+                <Typography>✓ Download individual stems</Typography>
+                <Typography>✓ Cancel anytime</Typography>
               </Box>
             </Box>
           </Container>
