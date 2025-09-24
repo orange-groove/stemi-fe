@@ -40,7 +40,28 @@ apiClient.instance.interceptors.response.use(
     return response
   },
   (error) => {
-    // Extract error details
+    // Handle 429 - Usage limit exceeded
+    if (error.response?.status === 429) {
+      const errorData = error.response.data
+      const usageError = new Error(errorData.message || 'Usage limit exceeded')
+      // Add usage info to error for handling in components
+      ;(usageError as any).isUsageLimit = true
+      ;(usageError as any).isPremium = errorData.is_premium
+      ;(usageError as any).currentUsage = errorData.current_usage
+      ;(usageError as any).monthlyLimit = errorData.monthly_limit
+      return Promise.reject(usageError)
+    }
+
+    // Handle 401 - Unauthorized
+    if (error.response?.status === 401) {
+      supabase.auth.signOut()
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
+      return Promise.reject(error)
+    }
+
+    // Extract error details for other errors
     const errorMessage =
       error.response?.data?.message || error.message || 'An error occurred.'
 

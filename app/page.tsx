@@ -214,21 +214,19 @@ export default function Home() {
           >
             <Box
               sx={{
-                border: '2px solid',
-                borderColor: 'secondary.main',
                 borderRadius: '10px',
                 color: 'white',
                 p: 4,
                 width: '400px',
                 textAlign: 'center',
-                backgroundColor: 'secondary.light',
+                backgroundColor: 'secondary.main',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Typography variant="h5">$5/month</Typography>
+              <Typography variant="h4">$5/month</Typography>
               <Box
                 sx={{
                   display: 'flex',

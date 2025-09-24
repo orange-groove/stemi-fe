@@ -6,6 +6,8 @@ import { Box } from '@mui/material'
 import { Suspense } from 'react'
 
 export default function StemsPage() {
+  console.log('StemsPage component rendering')
+
   return (
     <Box
       sx={{

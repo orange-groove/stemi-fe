@@ -22,14 +22,27 @@ import useDownloadSessionStems from '@/hooks/useDownloadSessionStems'
 import useDownloadSessionMixdown from '@/hooks/useDownloadSessionMixdown'
 import useDeleteSession from '@/hooks/useDeleteSession'
 import MultitrackPlayer from '@/components/MultitrackPlayerV2'
+import UsageCounter from '@/components/UsageCounter'
+import UpgradeModal from '@/components/UpgradeModal'
 import { client as apiClient, getSessionStem } from '@/api/client/services.gen'
 import config from '@/config'
+import { useUsage } from '@/hooks/useUsage'
 import '@/lib/axios'
 
 const SessionSongProcessor = () => {
+  console.log('SessionSongProcessor component rendering')
+
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false)
+  const [upgradeMessage, setUpgradeMessage] = useState('')
   const searchParams = useSearchParams()
   const router = useRouter()
+  const { usage, refetch: refetchUsage } = useUsage()
+
+  // Debug usage data
+  useEffect(() => {
+    console.log('SessionSongProcessor - Usage data:', usage)
+  }, [usage])
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [fileType, setFileType] = useState('mp3')
   const [tracks, setTracks] = useState<Array<{ name: string; url: string }>>([])
@@ -168,6 +181,23 @@ const SessionSongProcessor = () => {
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0]
+
+        // Check usage before processing
+        if (usage && !usage.can_process) {
+          if (!usage.is_premium) {
+            setUpgradeMessage(
+              `You've used ${usage.current_usage}/${usage.monthly_limit} free songs. Upgrade for more!`,
+            )
+            setUpgradeModalOpen(true)
+          } else {
+            setUpgradeMessage(
+              `Monthly limit reached (${usage.monthly_limit}). Resets next month.`,
+            )
+            setUpgradeModalOpen(true)
+          }
+          return
+        }
+
         processSongMutation.mutate(
           { file },
           {
@@ -186,9 +216,23 @@ const SessionSongProcessor = () => {
                 )
                 setTracks(seeded)
               }
+
+              // Refresh usage after successful processing
+              refetchUsage()
             },
-            onError: (error) => {
+            onError: (error: any) => {
               console.error('Error processing song:', error)
+
+              // Handle usage limit errors
+              if (error.isUsageLimit) {
+                if (!error.isPremium) {
+                  setUpgradeMessage(error.message)
+                  setUpgradeModalOpen(true)
+                } else {
+                  setUpgradeMessage(error.message)
+                  setUpgradeModalOpen(true)
+                }
+              }
             },
           },
         )
@@ -288,10 +332,12 @@ const SessionSongProcessor = () => {
             width: ['200px', '400px'],
             height: ['200px', '400px'],
             p: 4,
-            cursor: 'pointer',
+            cursor: usage && !usage.can_process ? 'not-allowed' : 'pointer',
             backgroundColor: isDragActive ? '#f5f5f5' : 'transparent',
+            opacity: usage && !usage.can_process ? 0.5 : 1,
             '&:hover': {
-              backgroundColor: '#f5f5f5',
+              backgroundColor:
+                usage && !usage.can_process ? 'transparent' : '#f5f5f5',
             },
             justifyContent: 'center',
             alignItems: 'center',
@@ -304,15 +350,23 @@ const SessionSongProcessor = () => {
             sx={{ fontSize: ['40px', '60px'], mb: 2, color: 'primary.main' }}
           />
           <Typography fontSize={['16px', '24px']}>
-            {isDragActive
-              ? 'Drop the audio file here...'
-              : 'Drag & drop an audio file here, or click to select'}
+            {usage && !usage.can_process
+              ? usage.is_premium
+                ? 'Monthly limit reached'
+                : 'Upgrade to upload more'
+              : isDragActive
+                ? 'Drop the audio file here...'
+                : 'Drag & drop an audio file here, or click to select'}
           </Typography>
           <Typography
             fontSize={['12px', '16px']}
             sx={{ mt: 1, color: 'text.secondary' }}
           >
-            Supports MP3 and WAV files
+            {usage && !usage.can_process
+              ? usage.is_premium
+                ? 'Resets next month'
+                : `${usage.current_usage}/${usage.monthly_limit} free songs used`
+              : 'Supports MP3 and WAV files'}
           </Typography>
         </Box>
 
@@ -370,6 +424,7 @@ const SessionSongProcessor = () => {
 
   return (
     <Box sx={{ p: [0, 4] }}>
+      <UsageCounter />
       {preview?.available_stems && (
         <>
           <Box sx={{ mb: 4 }}>
@@ -441,6 +496,14 @@ const SessionSongProcessor = () => {
           </Box>
         </>
       )}
+
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        message={upgradeMessage}
+        currentUsage={usage?.current_usage}
+        monthlyLimit={usage?.monthly_limit}
+      />
     </Box>
   )
 }

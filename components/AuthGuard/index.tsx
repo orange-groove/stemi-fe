@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation'
 import supabase from '@/lib/supabase'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
-import { useEntitlement } from '@/hooks/useEntitlement'
 
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  console.log('AuthGuard rendering')
   const router = useRouter()
   const setUser = useSetAtom(userAtom)
   const user = useAtomValue(userAtom)
   const [ready, setReady] = useState(false)
-  const { entitlement, loading } = useEntitlement()
+
+  console.log('AuthGuard - User:', user?.id, 'Ready:', ready)
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
