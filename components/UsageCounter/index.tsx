@@ -8,7 +8,15 @@ export default function UsageCounter() {
   const { usage, loading } = useUsage()
   const router = useRouter()
 
+  console.log('UsageCounter - Usage:', usage, 'Loading:', loading)
+
   if (loading || !usage) {
+    console.log(
+      'UsageCounter - Not rendering, loading:',
+      loading,
+      'usage:',
+      usage,
+    )
     return null
   }
 

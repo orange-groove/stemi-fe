@@ -320,6 +320,7 @@ const SessionSongProcessor = () => {
           alignItems: 'center',
         }}
       >
+        <UsageCounter />
         <Typography variant="h4" sx={{ mb: 4 }}>
           Upload a Song to Get Started
         </Typography>
@@ -424,7 +425,6 @@ const SessionSongProcessor = () => {
 
   return (
     <Box sx={{ p: [0, 4] }}>
-      <UsageCounter />
       {preview?.available_stems && (
         <>
           <Box sx={{ mb: 4 }}>
