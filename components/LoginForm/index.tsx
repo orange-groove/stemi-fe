@@ -2,13 +2,22 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box, Button, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Alert,
+  Snackbar,
+} from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
 import supabase from '@/lib/supabase'
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
+  const [showSnackbar, setShowSnackbar] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +43,30 @@ const LoginForm: React.FC = () => {
     })
   }
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setResetMessage('Please enter your email address first')
+      setShowSnackbar(true)
+      return
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+
+      if (error) {
+        setResetMessage('Error sending reset email: ' + error.message)
+      } else {
+        setResetMessage('Password reset email sent! Check your inbox.')
+      }
+      setShowSnackbar(true)
+    } catch (err) {
+      setResetMessage('Error sending reset email')
+      setShowSnackbar(true)
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <TextField
@@ -49,6 +82,16 @@ const LoginForm: React.FC = () => {
         sx={{ mb: 1, width: 1 }}
         onChange={(e) => setPassword(e.target.value)}
       />
+      <Box sx={{ textAlign: 'right', mb: 2 }}>
+        <Button
+          variant="text"
+          size="small"
+          onClick={handleForgotPassword}
+          sx={{ color: 'primary.main', textTransform: 'none' }}
+        >
+          Forgot Password?
+        </Button>
+      </Box>
       <Box sx={{ textAlign: 'center', mt: 2 }}>
         <Button variant="contained" type="submit">
           Login
@@ -105,6 +148,21 @@ const LoginForm: React.FC = () => {
           Register here &rarr;
         </Button>
       </Box>
+
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setShowSnackbar(false)}
+          severity={resetMessage.includes('Error') ? 'error' : 'success'}
+          sx={{ width: '100%' }}
+        >
+          {resetMessage}
+        </Alert>
+      </Snackbar>
     </form>
   )
 }
