@@ -155,7 +155,7 @@ const ProfilePage = () => {
           <DialogTitle>Cancel Membership</DialogTitle>
           <DialogContent>
             <Typography>
-              Are you sure you want to cancel your membership? You'll lose
+              Are you sure you want to cancel your membership? You&apos;ll lose
               access to premium features and will be limited to 3 songs per
               month.
             </Typography>
