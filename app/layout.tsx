@@ -73,9 +73,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL('https://www.stemi.app'),
-  alternates: {
-    canonical: '/',
-  },
+  // Per-page canonicals are defined in route metadata files
   openGraph: {
     type: 'website',
     locale: 'en_US',
