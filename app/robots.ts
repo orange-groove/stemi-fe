@@ -6,7 +6,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/stems', '/subscribe', '/profile'],
+        // Disallow only truly private/user-specific areas
+        disallow: ['/profile'],
       },
     ],
     sitemap: 'https://www.stemi.app/sitemap.xml',
