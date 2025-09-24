@@ -283,7 +283,11 @@ const SessionSongProcessor = () => {
             alignItems: 'center',
           }}
         >
-          <CircularProgress size={96} thickness={4} />
+          <CircularProgress
+            size={96}
+            thickness={4}
+            aria-label="Processing stems"
+          />
           <Typography sx={{ mt: 2 }}>Processing stems...</Typography>
         </Box>
       )
@@ -334,7 +338,11 @@ const SessionSongProcessor = () => {
             flexDirection: 'column',
           }}
         >
-          <input {...getInputProps()} />
+          <input
+            {...getInputProps({
+              'aria-label': 'Upload audio file',
+            })}
+          />
           <UploadFile
             sx={{ fontSize: ['40px', '60px'], mb: 2, color: 'primary.main' }}
           />
@@ -371,7 +379,7 @@ const SessionSongProcessor = () => {
   if (previewLoading) {
     return (
       <Box sx={{ p: 4, textAlign: 'center' }}>
-        <CircularProgress size={40} />
+        <CircularProgress size={40} aria-label="Loading session preview" />
         <Typography sx={{ mt: 2 }}>Loading preview...</Typography>
       </Box>
     )
@@ -471,7 +479,7 @@ const SessionSongProcessor = () => {
                   p: 4,
                 }}
               >
-                <CircularProgress size={40} />
+                <CircularProgress size={40} aria-label="Downloading mixdown" />
                 <Typography sx={{ ml: 2 }}>Loading audio tracks...</Typography>
               </Box>
             ) : (

@@ -54,6 +54,7 @@ export default function UsageCounter() {
       </Box>
 
       <LinearProgress
+        aria-label={`Monthly usage: ${usage.current_usage} of ${usage.monthly_limit}`}
         variant="determinate"
         value={Math.min(usagePercentage, 100)}
         sx={{
