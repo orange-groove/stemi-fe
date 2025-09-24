@@ -13,6 +13,7 @@ import {
   InputLabel,
   Alert,
   CircularProgress,
+  useTheme,
 } from '@mui/material'
 import { UploadFile, Download, Delete } from '@mui/icons-material'
 import supabase from '@/lib/supabase'
@@ -37,6 +38,7 @@ const SessionSongProcessor = () => {
   const [upgradeMessage, setUpgradeMessage] = useState('')
   const searchParams = useSearchParams()
   const router = useRouter()
+  const theme = useTheme()
   const { usage, refetch: refetchUsage } = useUsage()
 
   // Debug usage data
@@ -269,29 +271,6 @@ const SessionSongProcessor = () => {
     }
   }
 
-  const handleFinish = () => {
-    if (sessionId) {
-      deleteSessionMutation.mutate(
-        { sessionId },
-        {
-          onSuccess: () => {
-            setSessionId(null)
-            setSelectedTracks([])
-            // Clear the URL parameter when session is deleted
-            const newUrl = new URL(window.location.href)
-            newUrl.searchParams.delete('sessionId')
-            router.replace(newUrl.pathname + newUrl.search)
-          },
-          onError: (error) => {
-            console.error('Error deleting session:', error)
-          },
-        },
-      )
-    }
-  }
-
-  // Tracks are now created in useEffect with authorization tokens
-
   if (!sessionId) {
     if (processSongMutation.isPending) {
       return (
@@ -318,6 +297,7 @@ const SessionSongProcessor = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          gap: 6,
         }}
       >
         <UsageCounter />
@@ -328,17 +308,25 @@ const SessionSongProcessor = () => {
         <Box
           {...getRootProps()}
           sx={{
-            border: '2px dashed #ccc',
+            border: `2px dashed ${theme.palette.mode === 'dark' ? theme.palette.grey[600] : theme.palette.grey[400]}`,
             borderRadius: '50%',
             width: ['200px', '400px'],
             height: ['200px', '400px'],
             p: 4,
             cursor: usage && !usage.can_process ? 'not-allowed' : 'pointer',
-            backgroundColor: isDragActive ? '#f5f5f5' : 'transparent',
+            backgroundColor: isDragActive
+              ? theme.palette.mode === 'dark'
+                ? theme.palette.grey[800]
+                : theme.palette.grey[100]
+              : 'transparent',
             opacity: usage && !usage.can_process ? 0.5 : 1,
             '&:hover': {
               backgroundColor:
-                usage && !usage.can_process ? 'transparent' : '#f5f5f5',
+                usage && !usage.can_process
+                  ? 'transparent'
+                  : theme.palette.mode === 'dark'
+                    ? theme.palette.grey[900]
+                    : theme.palette.grey[300],
             },
             justifyContent: 'center',
             alignItems: 'center',
