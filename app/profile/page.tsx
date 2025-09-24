@@ -9,17 +9,33 @@ import {
   Button,
   Alert,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import { blue } from '@mui/material/colors'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/state/user'
 import config from '@/config'
 import { client as apiClient } from '@/api/client/services.gen'
+import { useCancelSubscription } from '@/hooks/useCancelSubscription'
+import { useUsage } from '@/hooks/useUsage'
+import { useRouter } from 'next/navigation'
 
 const ProfilePage = () => {
   const user = useAtomValue(userAtom)
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
+  const { usage } = useUsage()
+  const {
+    cancelSubscription,
+    loading: cancelLoading,
+    error: cancelError,
+    setError: setCancelError,
+  } = useCancelSubscription()
 
   async function openBillingPortal() {
     if (!user) return
@@ -43,6 +59,15 @@ const ProfilePage = () => {
       setError(e?.message ?? 'Something went wrong')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleCancelSubscription = async () => {
+    const result = await cancelSubscription()
+    if (result.success) {
+      setCancelDialogOpen(false)
+      // Optionally redirect to home or show success message
+      window.location.href = '/'
     }
   }
 
@@ -102,8 +127,58 @@ const ProfilePage = () => {
             >
               {loading ? 'Opening…' : 'Manage billing'}
             </Button>
+
+            {usage?.is_premium ? (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setCancelDialogOpen(true)}
+              >
+                Cancel membership
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={() => router.push('/subscribe')}
+              >
+                Upgrade to Premium
+              </Button>
+            )}
           </Stack>
         </Paper>
+
+        {/* Cancel Subscription Confirmation Dialog */}
+        <Dialog
+          open={cancelDialogOpen}
+          onClose={() => setCancelDialogOpen(false)}
+        >
+          <DialogTitle>Cancel Membership</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to cancel your membership? You'll lose
+              access to premium features and will be limited to 3 songs per
+              month.
+            </Typography>
+            {cancelError && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {cancelError}
+              </Alert>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCancelDialogOpen(false)}>
+              Keep membership
+            </Button>
+            <Button
+              onClick={handleCancelSubscription}
+              color="error"
+              variant="contained"
+              disabled={cancelLoading}
+            >
+              {cancelLoading ? 'Cancelling...' : 'Yes, cancel membership'}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     )
   )
