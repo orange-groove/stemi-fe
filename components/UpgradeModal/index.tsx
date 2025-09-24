@@ -71,7 +71,7 @@ export default function UpgradeModal({
         )}
 
         <Typography variant="body1" sx={{ mb: 2 }}>
-          You've used {currentUsage}/{monthlyLimit} free songs this month.
+          You&apos;ve used {currentUsage}/{monthlyLimit} free songs this month.
           Upgrade to Premium for unlimited access!
         </Typography>
 
