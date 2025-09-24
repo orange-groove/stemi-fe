@@ -63,7 +63,7 @@ export default function Home() {
             <Typography
               component="h1"
               variant="h1"
-              sx={{ mb: 4, fontWeight: 300, color: 'secondary.main' }}
+              sx={{ mb: 4, fontWeight: 300, color: 'primary.main' }}
             >
               stemi
             </Typography>
@@ -147,8 +147,7 @@ export default function Home() {
             mt: 8,
             py: 8,
             height: '500px',
-            background:
-              'linear-gradient(0deg, rgba(176,0,124,1) 0%, rgba(0,0,0,1) 100%)',
+            background: 'linear-gradient(0deg, #6933ff 0%, rgba(0,0,0,1) 100%)',
             color: 'white',
           }}
         >
@@ -219,7 +218,7 @@ export default function Home() {
                 p: 4,
                 width: '400px',
                 textAlign: 'center',
-                backgroundColor: 'secondary.main',
+                backgroundColor: 'primary.main',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',

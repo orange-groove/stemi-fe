@@ -58,7 +58,7 @@ export default function NavBar() {
       }}
     >
       <Box onClick={() => router.push('/')} sx={{ cursor: 'pointer' }}>
-        <Typography variant="h4" color="secondary.main">
+        <Typography variant="h4" color="primary.main">
           stemi
         </Typography>
       </Box>
