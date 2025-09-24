@@ -145,7 +145,6 @@ export default function Home() {
           component="section"
           sx={{
             mt: 8,
-            py: 8,
             height: '500px',
             background: 'linear-gradient(0deg, #6933ff 0%, rgba(0,0,0,1) 100%)',
             color: 'white',
@@ -154,7 +153,7 @@ export default function Home() {
           <Typography
             component="h2"
             variant="h3"
-            sx={{ textAlign: 'center', mb: 2, mt: 8 }}
+            sx={{ textAlign: 'center', mb: 2, mt: 2 }}
           >
             Features
           </Typography>
