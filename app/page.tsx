@@ -234,7 +234,7 @@ export default function Home() {
                 }}
               >
                 <Typography sx={{ mt: 2 }}>
-                  Unlimited stem separation
+                  Up to 100 song separations per month
                 </Typography>
                 <Typography>High-quality AI processing</Typography>
                 <Typography>Multiple download formats</Typography>
